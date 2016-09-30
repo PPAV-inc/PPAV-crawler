@@ -1,0 +1,37 @@
+'use strict';
+
+const nodemon = require('nodemon');
+const babel = require("babel-core");
+const gaze = require('gaze'); 
+const fs = require('fs');
+const path = require('path');
+
+// Watch the src folder and recompile when the files changed
+gaze('src/**/*', (err, watcher) => {
+  if (err) throw err;
+  watcher.on('changed', (sourceFile) => {
+    console.log(sourceFile + " has changed");
+    try {
+      let targetFile = path.relative(__dirname, sourceFile).replace(/\/src\//, '/lib/');
+      targetFile = path.resolve(__dirname, targetFile);
+      fs.writeFile(targetFile, babel.transformFileSync(sourceFile).code);
+    } catch (e) {
+      console.error(e.message, e.stack);
+    }
+  });
+});
+
+// Run and watch dist 
+try {
+  nodemon({
+    script: 'bin/ppav-bot',
+    ext: 'js json',
+    watch: 'lib'
+  });
+} catch (e) {
+  console.error(e.message, e.stack);
+}
+
+process.once('SIGINT', function() {
+    process.exit(0);
+});
