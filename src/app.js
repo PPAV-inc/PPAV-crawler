@@ -29,12 +29,10 @@ const callSendAPI = (messageData) => {
         messageId, recipientId);
     } else {
       console.error("Unable to send message.");
-      console.error(response);
-      console.error(error);
+      // console.error(response);
     }
   });  
 }
-
 
 const sendTextMessage = (recipientId, messageText) => {
   const messageData = {
@@ -49,23 +47,54 @@ const sendTextMessage = (recipientId, messageText) => {
   callSendAPI(messageData);
 }
 
+const startedConv = (recipientId) => {
+  console.log("startedConv");
+  let name = '';
+
+  request({
+    url: 'https://graph.facebook.com/v2.6/'+ recipientId +'?fields=first_name',
+    qs: {access_token: PAGE_TOKEN},
+    method: 'GET'
+  }, function(error, response, body) {
+    if (error) {
+      console.log('Error sending message: ', error);
+    } else if (response.body.error) {
+      console.log('Error: ', response.body.error);
+    } else {
+      name = JSON.parse(body);
+      sendTextMessage(recipientId, "Hello "+ name.first_name + ", do you have a pen? ")
+    }
+  });
+}
+
 const receivedMessage = (event) => {
   const senderID = event.sender.id,
         recipientID = event.recipient.id,
         timeOfMessage = event.timestamp,
-        message = event.message;
-
+        message = event.message,
+        messageText = "小白是變態";
+        
   console.log("Received message for user %d and page %d at %d with message:", 
     senderID, recipientID, timeOfMessage);
-  console.log(JSON.stringify(message));
-
-  const messageText = message.text;
-
+    
   if (messageText) {
     sendTextMessage(senderID, messageText);
   } 
 }
 
+const receivedPostback = (event) => {
+  const senderID = event.sender.id,
+        recipientID = event.recipient.id,
+        timeOfPostback = event.timestamp,
+        payload = event.postback.payload;
+
+  console.log("Received postback for user %d and page %d with payload '%s' " + 
+    "at %d", senderID, recipientID, payload, timeOfPostback);
+
+  // When a postback is called, we'll send a message back to the sender to 
+  // let them know it was successful
+  startedConv(senderID);
+}
 
 app.get('/webhook/', (req, res) => {
   if (req.query['hub.verify_token'] === VERIFY_TOKEN) {
@@ -83,6 +112,8 @@ app.post('/webhook', function (req, res) {
       pageEntry.messaging.forEach(function(messagingEvent) {
         if (messagingEvent.message) {
           receivedMessage(messagingEvent);
+        } else if (messagingEvent.postback) {
+          receivedPostback(messagingEvent);
         } else {
           console.log("Webhook received unknown messagingEvent: ", messagingEvent);
         }
