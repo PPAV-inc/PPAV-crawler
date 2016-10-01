@@ -3,7 +3,9 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import request from 'request';
+import path from 'path';
 import config from '../config';
+import parseJson from './parse_film_info';
 
 const app = express();
 const port = process.env.PORT;
@@ -22,8 +24,8 @@ const callSendAPI = (messageData) => {
 
   }, function (error, response, body) {
     if (!error && response.statusCode == 200) {
-      var recipientId = body.recipient_id;
-      var messageId = body.message_id;
+      const recipientId = body.recipient_id,
+            messageId = body.message_id;
 
       console.log("Successfully sent generic message with id %s to recipient %s", 
         messageId, recipientId);
@@ -48,7 +50,6 @@ const sendTextMessage = (recipientId, messageText) => {
 }
 
 const startedConv = (recipientId) => {
-  console.log("startedConv");
   let name = '';
 
   request({
@@ -71,15 +72,21 @@ const receivedMessage = (event) => {
   const senderID = event.sender.id,
         recipientID = event.recipient.id,
         timeOfMessage = event.timestamp,
-        message = event.message,
-        messageText = "小白是變態";
+        message = event.message;
+  
+  let messageText = message.text;
         
   console.log("Received message for user %d and page %d at %d with message:", 
     senderID, recipientID, timeOfMessage);
     
-  if (messageText) {
-    sendTextMessage(senderID, messageText);
-  } 
+  if (messageText === 'PPAV') {
+    const retrunArr = parseJson();
+    retrunArr.forEach((value) => {
+      sendTextMessage(senderID, value);
+    })
+  } else {
+    sendTextMessage(senderID, '想看片請輸入 PPAV');
+  }
 }
 
 const receivedPostback = (event) => {
@@ -126,5 +133,5 @@ app.post('/webhook', function (req, res) {
   }
 });
 
-
+app.use(express.static(path.join(__dirname, '/../public')));
 app.listen(port, () => console.log(`listening on port ${port}`));
