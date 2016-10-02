@@ -1,5 +1,6 @@
 import urllib.request
 import re
+import json
 
 class PPAV_Parser():
     def __init__(self, orig_url):
@@ -9,7 +10,6 @@ class PPAV_Parser():
         self.film_infos = []
 
     def parse_film_link(self, url):
-
         page_web = self.parse_webpage(url)
 
         page_str = ''
@@ -27,7 +27,6 @@ class PPAV_Parser():
 
 
     def parse_film_info(self, url):
-
         page_film = self.parse_webpage(url)
 
         view_count_re = '<div class=\"film_view_count\".*</div>'
@@ -93,13 +92,11 @@ class PPAV_Parser():
 
 
 if __name__ == '__main__':
-
     orig_url = "http://xonline.vip"
     parser = PPAV_Parser(orig_url)
     parser.parse_start()
 
     film_infos = parser.get_film_infos()
 
-    with open('film_info.txt', 'w') as fp:
-        for info in film_infos:
-            print(info, file=fp)
+    with open('../public/film_info.json', 'w+') as fp:
+        json.dump(film_infos, fp)
