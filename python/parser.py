@@ -101,4 +101,4 @@ if __name__ == '__main__':
     film_infos = parser.get_film_infos()
 
     with open('../public/film_info.json', 'w+') as fp:
-        json.dump(film_infos, fp)
+        json.dump(film_infos, fp, indent=2)
