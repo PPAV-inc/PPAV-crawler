@@ -9,6 +9,26 @@ class PPAV_Parser():
         self.film_url_set = set()
         self.link_url_set = set([self.orig_url])
         self.film_infos = []
+        
+    def parse_indexav(self, video_code):
+        page_indexav = self.parse_webpage('https://indexav.com/search?keyword=' + video_code)
+        returnObj = {}
+        
+        model_re = '<span class=\"video_actor\".*?>(.*)</span>'
+        model = re.search(model_re, page_indexav)
+        if model is None:
+            returnObj['model'] = None
+        else:
+            returnObj['model'] = re.sub('<.*?>', '', model.group())
+        
+        video_title_re = '<span class=\"video_title\".*?>(.*)</span>'
+        video_title = re.search(video_title_re, page_indexav)
+        if video_title is None:
+            returnObj['video_title'] = None
+        else:
+            returnObj['video_title'] = re.sub('<.*?>', '', video_title.group())
+        
+        return returnObj
 
     def code_special_case(self, code):
         if 'TOKYO-HOT' in code:
@@ -67,11 +87,17 @@ class PPAV_Parser():
         model_re = '<.*>Models:.*?>.*?>'
         model = re.search(model_re, page_film).group()
         model = re.sub('<.*?>', '', model)
+        model = re.sub('Models: ', '', model)
+        
+        parse_indexav_obj = self.parse_indexav(search_video_code)
+        if parse_indexav_obj['model'] is not None:
+            model = parse_indexav_obj['model']
 
         info = {}
         info['code'] = video_code
         info['search_code'] = search_video_code
         info['url'] = url
+        info['title'] = parse_indexav_obj['video_title']
         info['count'] = view_count
         info['models'] = model
         return info
@@ -127,4 +153,4 @@ if __name__ == '__main__':
     film_infos = parser.get_film_infos()
 
     with open('../public/film_info.json', 'w+') as fp:
-        json.dump(film_infos, fp, indent=2)
+        json.dump(film_infos, fp, ensure_ascii=False, indent=2)
