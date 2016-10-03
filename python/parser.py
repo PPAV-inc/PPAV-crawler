@@ -3,11 +3,34 @@ import re
 import json
 
 class PPAV_Parser():
+    
     def __init__(self, orig_url):
         self.orig_url = orig_url
         self.film_url_set = set()
         self.link_url_set = set([self.orig_url])
         self.film_infos = []
+
+    def code_special_case(self, code):
+        if 'TOKYO-HOT' in code:
+            return re.sub('TOKYO-HOT-', '', code)
+        elif 'CARIB' in code and \
+             'CARIBPR' not in code:
+            code_re = '([0-9]+-[0-9]+)'
+            code = re.search(code_re, code).group()
+            return code
+            
+        elif 'CARIBPR' in code or \
+             'PACO' in code or \
+             '10MU' in code or \
+             '1PONDO' in code:
+            code_re = '([0-9]+-[0-9]+)'
+            code = re.search(code_re, code).group()
+            code = code.replace('-', '_')
+            return code
+        elif 'GACHINCO' in code:
+            return re.sub('GACHINCO-', '', code)
+        else:
+            return code
 
     def parse_film_link(self, url):
         page_web = self.parse_webpage(url)
@@ -18,7 +41,7 @@ class PPAV_Parser():
             page_str = '/page.*?' # ? is for not greedy
 
         film_re = '(?<=href=\")/watch.*?.html(?=\")'
-        link_re = '(?<=href=\")/\S+'+page_str+'/(?=\")'
+        link_re = '(?<=href=\")/\S+' + page_str + '/(?=\")'
 
         film_set = set(re.findall(film_re, page_web))
         self.film_url_set |= film_set
@@ -35,6 +58,7 @@ class PPAV_Parser():
         if video_code is None:
             return None
         video_code = video_code.group().upper()
+        search_video_code = self.code_special_case(video_code)
 
         view_count_re = '<div class=\"film_view_count\".*?>\d*</div>'
         view_count = re.search(view_count_re, page_film).group()
@@ -46,6 +70,7 @@ class PPAV_Parser():
 
         info = {}
         info['code'] = video_code
+        info['search_code'] = search_video_code
         info['url'] = url
         info['count'] = view_count
         info['models'] = model
@@ -103,4 +128,3 @@ if __name__ == '__main__':
 
     with open('../public/film_info.json', 'w+') as fp:
         json.dump(film_infos, fp, indent=2)
-
