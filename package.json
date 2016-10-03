@@ -9,6 +9,7 @@
     "babel-runtime": "^6.5.0",
     "body-parser": "^1.14.2",
     "express": "^4.13.4",
+    "firebase": "^3.4.1",
     "jsonfile": "^2.4.0",
     "path": "^0.12.7",
     "request": "^2.65.0"

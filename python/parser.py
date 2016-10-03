@@ -28,6 +28,11 @@ class PPAV_Parser():
 
     def parse_film_info(self, url):
         page_film = self.parse_webpage(url)
+        
+        video_code_re = 'watch-.*?-\w*\d+'
+        video_code = re.search(video_code_re, url).group()
+        video_code = re.sub('watch-', '',video_code)
+        video_code = video_code.upper()
 
         view_count_re = '<div class=\"film_view_count\".*</div>'
         view_count = re.search(view_count_re, page_film).group()
@@ -38,18 +43,16 @@ class PPAV_Parser():
         model = re.sub('<.*?>', '', model)
 
         info = {}
+        info['code'] = video_code
         info['url'] = url
         info['count'] = view_count
         info['models'] = model
         return info
-        
 
     def parse_webpage(self, url):
         req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla 7.0'})
         page = urllib.request.urlopen(req).read().decode('utf-8')
         return page
-
-
 
     def parse_start(self):
         url = self.orig_url
@@ -65,7 +68,7 @@ class PPAV_Parser():
             url = self.link_url_set.pop()
             while url in done_url_set:
                 url = self.link_url_set.pop()
-            print(url)
+            
             url = re.sub('"', '', url)
             url = re.sub('href=', '', url)
             url = self.orig_url + url
@@ -78,7 +81,8 @@ class PPAV_Parser():
             url = self.orig_url + url
             
             print(idx, url)
-            self.film_infos.append(self.parse_film_info(url))
+            if url.find('\u3000') == -1:
+                self.film_infos.append(self.parse_film_info(url))
         
         print("parse film info finished!")  
 
@@ -86,10 +90,8 @@ class PPAV_Parser():
         #with open('film_url_set.pkl', 'wb') as fp:
         #   pickle.dump(film_url_set, fp)
 
-        
     def get_film_infos(self):
         return self.film_infos
-
 
 if __name__ == '__main__':
     orig_url = "http://xonline.vip"

@@ -6,7 +6,7 @@ import path from 'path';
 const jsonPath = path.join(__dirname, '..', 'public', 'film_info.json');
 
 const inArray = (arr, el) => {
-    for(let i = 0 ; i < arr.length; i++) 
+    for (let i = 0 ; i < arr.length; i++) 
             if(arr[i] == el) return true;
     return false;
 };
@@ -23,6 +23,7 @@ const getRandomIntNoDuplicates = (min, max, DuplicateArr) => {
 
 const parseJson = () => {
   const obj = jsonfile.readFileSync(jsonPath);
+  
   let duplicates = [],
       retrunArr = [];
       
