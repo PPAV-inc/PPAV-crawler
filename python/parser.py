@@ -78,6 +78,7 @@ class PPAV_Parser():
 
         for idx, url in enumerate(self.film_url_set):
             url = self.orig_url + url
+            url = ''.join(url.split())
             
             print(idx, url)
             info = self.parse_film_info(url)
