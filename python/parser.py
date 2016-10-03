@@ -89,15 +89,21 @@ class PPAV_Parser():
         model = re.sub('<.*?>', '', model)
         model = re.sub('Models: ', '', model)
         
+        title_re = '<title>(.*)</title>'
+        title = re.search(title_re, page_film).group()
+        title = re.sub('<.*?>', '', title)
+        
         parse_indexav_obj = self.parse_indexav(search_video_code)
         if parse_indexav_obj['model'] is not None:
             model = parse_indexav_obj['model']
+        if parse_indexav_obj['video_title'] is not None:
+            title = parse_indexav_obj['video_title']
 
         info = {}
         info['code'] = video_code
         info['search_code'] = search_video_code
         info['url'] = url
-        info['title'] = parse_indexav_obj['video_title']
+        info['title'] = title
         info['count'] = view_count
         info['models'] = model
         return info
