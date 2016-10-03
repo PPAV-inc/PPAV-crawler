@@ -12,33 +12,35 @@ class PPAV_Parser():
     def parse_film_link(self, url):
         page_web = self.parse_webpage(url)
 
+        # subpage of link
         page_str = ''
         if url[-1] == '/':
-            page_str = '/page.*?'
+            page_str = '/page.*?' # ? is for not greedy
 
-        film_re = 'href=\"/watch.*.html\"'
-        link_re = 'href=\"/\S+'+page_str+'/\"'  # ? is for not greedy
+        film_re = '(?<=href=\")/watch.*?.html(?=\")'
+        link_re = '(?<=href=\")/\S+'+page_str+'/(?=\")'
 
         film_set = set(re.findall(film_re, page_web))
         self.film_url_set |= film_set
         link_set = set(re.findall(link_re, page_web))
         self.link_url_set |= link_set
-        print("film_url_set size: {}, link_url_set size: {}".format(len(self.film_url_set), len(self.link_url_set)))    
+        print("film_url_set size: {}, link_url_set size: {}".format(len(self.film_url_set), len(self.link_url_set)))
 
 
     def parse_film_info(self, url):
         page_film = self.parse_webpage(url)
         
-        video_code_re = 'watch-.*?-\w*\d+'
-        video_code = re.search(video_code_re, url).group()
-        video_code = re.sub('watch-', '',video_code)
-        video_code = video_code.upper()
+        video_code_re = '(?<=watch-)(\w+-){0,2}\w*\d+'
+        video_code = re.search(video_code_re, url)
+        if video_code is None:
+            return None
+        video_code = video_code.group().upper()
 
-        view_count_re = '<div class=\"film_view_count\".*</div>'
+        view_count_re = '<div class=\"film_view_count\".*?>\d*</div>'
         view_count = re.search(view_count_re, page_film).group()
         view_count = re.sub('<.*?>', '', view_count)
 
-        model_re = '<.*>Models:.*>.*<.*>'
+        model_re = '<.*>Models:.*?>.*?>'
         model = re.search(model_re, page_film).group()
         model = re.sub('<.*?>', '', model)
 
@@ -69,20 +71,19 @@ class PPAV_Parser():
             while url in done_url_set:
                 url = self.link_url_set.pop()
             
-            url = re.sub('"', '', url)
-            url = re.sub('href=', '', url)
             url = self.orig_url + url
+            url = ''.join(url.split())
 
         print("parse film link finished!")
 
         for idx, url in enumerate(self.film_url_set):
-            url = re.sub('"', '', url)
-            url = re.sub('href=', '', url)
             url = self.orig_url + url
+            url = ''.join(url.split())
             
             print(idx, url)
-            if url.find('\u3000') == -1:
-                self.film_infos.append(self.parse_film_info(url))
+            info = self.parse_film_info(url)
+            if info:
+                self.film_infos.append(info)
         
         print("parse film info finished!")  
 
@@ -102,3 +103,4 @@ if __name__ == '__main__':
 
     with open('../public/film_info.json', 'w+') as fp:
         json.dump(film_infos, fp, indent=2)
+
