@@ -72,6 +72,7 @@ class PPAV_Parser():
                 url = self.link_url_set.pop()
             
             url = self.orig_url + url
+            url = ''.join(url.split())
 
         print("parse film link finished!")
 
