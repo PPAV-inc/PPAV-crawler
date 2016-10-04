@@ -82,7 +82,9 @@ const receivedMessage = (event) => {
   if (messageText === 'PPAV') {
     const retrunArr = parseJson();
     retrunArr.forEach((value) => {
-      sendTextMessage(senderID, value);
+      let str = '片名:' + value.title + '\n' + '女優:' + value.models + '\n' + value.url;
+      console.log(str);
+      sendTextMessage(senderID, str);
     })
   } else {
     sendTextMessage(senderID, '想看片請輸入 PPAV');

@@ -32,7 +32,11 @@ const parseJson = () => {
   }
     
   duplicates.forEach((value) => {
-    retrunArr.push(obj[value].url);
+    retrunArr.push({
+      'url': obj[value].url,
+      'title': obj[value].title,
+      'models': obj[value].models,
+    });
   })
   
   return retrunArr;
