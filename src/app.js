@@ -83,7 +83,6 @@ const receivedMessage = (event) => {
     const retrunArr = parseJson();
     retrunArr.forEach((value) => {
       let str = '片名:' + value.title + '\n' + '女優:' + value.models + '\n' + value.url;
-      console.log(str);
       sendTextMessage(senderID, str);
     })
   } else {

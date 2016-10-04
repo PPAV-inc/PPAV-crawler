@@ -2,6 +2,8 @@ import urllib.request
 import re
 import json
 from collections import defaultdict
+from urllib import parse
+import os.path
 
 class PPAV_Parser():
     
@@ -113,33 +115,39 @@ class PPAV_Parser():
         return info
 
     def parse_webpage(self, url):
+        scheme, netloc, path, query, fragment = parse.urlsplit(url)
+        path = parse.quote(path)
+        url = parse.urlunsplit((scheme, netloc, path, query, fragment))
         req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla 7.0'})
         page = urllib.request.urlopen(req).read().decode('utf-8')
         return page
 
     def parse_start(self):
         url = self.orig_url
-
-        self.parse_film_link(url)
-        for link_type in self.link_url_set:
-
-            if self.orig_url not in link_type:
-                link_type = self.orig_url + link_type
-            subpage_num = 0
-
-            while True:
-                subpage_num += 1
-                url = link_type + 'page-' + str(subpage_num) + '/'
-                if self.parse_film_link(url) == "Done":
-                    break
-
-        self.film_url_set = set(self.film_url_list)
-        print("change film list to set, size: {} -> {}".format(len(self.film_url_list), len(self.film_url_set)))
-
-        with open('../public/film_link.txt', 'w') as fp:
-            for each in self.film_url_set:
-                print(each, file=fp)
-
+        file_path = '../public/film_link.txt'
+        
+        if not os.path.exists(file_path):
+            self.parse_film_link(url)
+            for link_type in self.link_url_set:
+                if self.orig_url not in link_type:
+                    link_type = self.orig_url + link_type
+                subpage_num = 0
+    
+                while True:
+                    subpage_num += 1
+                    url = link_type + 'page-' + str(subpage_num) + '/'
+                    if self.parse_film_link(url) == "Done":
+                        break
+    
+            self.film_url_set = set(self.film_url_list)
+            print("change film list to set, size: {} -> {}".format(len(self.film_url_list), len(self.film_url_set)))
+    
+            with open('../public/film_link.txt', 'w') as fp:
+                for each in self.film_url_set:
+                    print(each, file=fp)
+        else:
+            self.film_url_set = set(line.strip() for line in open(file_path))
+            
         print("parse film link finished and write in file!")
 
         for idx, url in enumerate(self.film_url_set):
@@ -150,6 +158,9 @@ class PPAV_Parser():
             info = self.parse_film_info(url)
             if info:
                 self.film_infos.append(info)
+            if (idx % 20) == 0:
+                with open('../public/film_info.json', 'w+') as fp:
+                    json.dump(self.film_infos, fp, ensure_ascii=False, indent=2)
         
         print("parse film info finished!")
 
@@ -165,7 +176,6 @@ if __name__ == '__main__':
     parser = PPAV_Parser(orig_url)
     parser.parse_start()
 
-    film_infos = parser.get_film_infos()
+    #film_infos = parser.get_film_infos()
 
-    with open('../public/film_info.json', 'w+') as fp:
-        json.dump(film_infos, fp, ensure_ascii=False, indent=2)
+    
