@@ -1,14 +1,16 @@
 import urllib.request
 import re
 import json
+from collections import defaultdict
 
 class PPAV_Parser():
     
     def __init__(self, orig_url):
         self.orig_url = orig_url
         self.film_url_set = set()
-        self.link_url_set = set([self.orig_url])
+        self.link_url_set = set()
         self.film_infos = []
+        self.film_url_list = []
         
     def parse_indexav(self, video_code):
         page_indexav = self.parse_webpage('https://indexav.com/search?keyword=' + video_code)
@@ -53,22 +55,24 @@ class PPAV_Parser():
             return code
 
     def parse_film_link(self, url):
+
+        print(url)
         page_web = self.parse_webpage(url)
 
-        # subpage of link
-        page_str = ''
-        if url[-1] == '/':
-            page_str = '/page.*?' # ? is for not greedy
+        if url == self.orig_url:
+            link_re = '(?<=href=\")(?:'+self.orig_url+')?/\S+?/\S+?/(?:page-\d+/)?(?=\")'
+            link_set = set(re.findall(link_re, page_web))
+            self.link_url_set |= link_set
 
         film_re = '(?<=href=\")/watch.*?.html(?=\")'
-        link_re = '(?<=href=\")/\S+' + page_str + '/(?=\")'
+        film_list = re.findall(film_re, page_web)
 
-        film_set = set(re.findall(film_re, page_web))
-        self.film_url_set |= film_set
-        link_set = set(re.findall(link_re, page_web))
-        self.link_url_set |= link_set
-        print("film_url_set size: {}, link_url_set size: {}".format(len(self.film_url_set), len(self.link_url_set)))
+        # last page
+        if len(film_list) == 0:
+            return "Done"
 
+        self.film_url_list += film_list
+        print("film_url_list size: {}".format(len(self.film_url_list)))
 
     def parse_film_info(self, url):
         page_film = self.parse_webpage(url)
@@ -115,23 +119,28 @@ class PPAV_Parser():
 
     def parse_start(self):
         url = self.orig_url
-        done_url_set = set()
 
-        while self.link_url_set:
-            if len(self.film_url_set) >= 100:
-                break
-            
-            self.parse_film_link(url)   
-            done_url_set.add(url)
+        self.parse_film_link(url)
+        for link_type in self.link_url_set:
 
-            url = self.link_url_set.pop()
-            while url in done_url_set:
-                url = self.link_url_set.pop()
-            
-            url = self.orig_url + url
-            url = ''.join(url.split())
+            if self.orig_url not in link_type:
+                link_type = self.orig_url + link_type
+            subpage_num = 0
 
-        print("parse film link finished!")
+            while True:
+                subpage_num += 1
+                url = link_type + 'page-' + str(subpage_num) + '/'
+                if self.parse_film_link(url) == "Done":
+                    break
+
+        self.film_url_set = set(self.film_url_list)
+        print("change film list to set, size: {} -> {}".format(len(self.film_url_list), len(self.film_url_set)))
+
+        with open('../public/film_link.txt', 'w') as fp:
+            for each in self.film_url_set:
+                print(each, file=fp)
+
+        print("parse film link finished and write in file!")
 
         for idx, url in enumerate(self.film_url_set):
             url = self.orig_url + url
@@ -142,7 +151,7 @@ class PPAV_Parser():
             if info:
                 self.film_infos.append(info)
         
-        print("parse film info finished!")  
+        print("parse film info finished!")
 
         #import cPickle as pickle
         #with open('film_url_set.pkl', 'wb') as fp:
