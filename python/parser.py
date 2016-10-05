@@ -40,17 +40,23 @@ class PPAV_Parser():
         elif 'CARIB' in code and \
              'CARIBPR' not in code:
             code_re = '([0-9]+-[0-9]+)'
-            code = re.search(code_re, code).group()
-            return code
+            code = re.search(code_re, code)
+            if code is None:
+                return
+            else:
+                return code.group()
             
         elif 'CARIBPR' in code or \
              'PACO' in code or \
              '10MU' in code or \
              '1PONDO' in code:
             code_re = '([0-9]+-[0-9]+)'
-            code = re.search(code_re, code).group()
-            code = code.replace('-', '_')
-            return code
+            code = re.search(code_re, code)
+            if code is None:
+                return
+            else:
+                code = code.group().replace('-', '_')
+                return code
         elif 'GACHINCO' in code:
             return re.sub('GACHINCO-', '', code)
         else:
@@ -99,11 +105,12 @@ class PPAV_Parser():
         title = re.search(title_re, page_film).group()
         title = re.sub('<.*?>', '', title)
         
-        parse_indexav_obj = self.parse_indexav(search_video_code)
-        if parse_indexav_obj['model'] is not None:
-            model = parse_indexav_obj['model']
-        if parse_indexav_obj['video_title'] is not None:
-            title = parse_indexav_obj['video_title']
+        if search_video_code is not None:
+            parse_indexav_obj = self.parse_indexav(search_video_code)
+            if parse_indexav_obj['model'] is not None:
+                model = parse_indexav_obj['model']
+            if parse_indexav_obj['video_title'] is not None:
+                title = parse_indexav_obj['video_title']
 
         info = {}
         info['code'] = video_code
@@ -146,19 +153,20 @@ class PPAV_Parser():
                 for each in self.film_url_set:
                     print(each, file=fp)
         else:
-            self.film_url_set = set(line.strip() for line in open(file_path))
+            self.film_url_list = list(line.strip() for line in open(file_path))
             
         print("parse film link finished and write in file!")
 
-        for idx, url in enumerate(self.film_url_set):
+        for idx, url in enumerate(self.film_url_list):
             url = self.orig_url + url
             url = ''.join(url.split())
             
             print(idx, url)
             info = self.parse_film_info(url)
+            
             if info:
+                info['id'] = idx + 1
                 self.film_infos.append(info)
-            if (idx % 20) == 0:
                 with open('../public/film_info.json', 'w+') as fp:
                     json.dump(self.film_infos, fp, ensure_ascii=False, indent=2)
         
