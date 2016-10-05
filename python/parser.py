@@ -39,7 +39,7 @@ class PPAV_Parser():
             return re.sub('TOKYO-HOT-', '', code)
         elif 'CARIB' in code and \
              'CARIBPR' not in code:
-            code_re = '([0-9]+.*-[0-9]+)'
+            code_re = '([0-9]+-[0-9]+)'
             code = re.search(code_re, code)
             if code is None:
                 return
@@ -167,7 +167,6 @@ class PPAV_Parser():
             if info:
                 info['id'] = idx + 1
                 self.film_infos.append(info)
-            if (idx % 20) == 0:
                 with open('../public/film_info.json', 'w+') as fp:
                     json.dump(self.film_infos, fp, ensure_ascii=False, indent=2)
         
