@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import request from 'request';
 import path from 'path';
 import config from '../config';
-import parseJson from './parse_film_info';
+import { findThreeVideos, findVideoByCode } from './mongodb';
 
 const app = express();
 const port = process.env.PORT;
@@ -72,21 +72,48 @@ const receivedMessage = (event) => {
   const senderID = event.sender.id,
         recipientID = event.recipient.id,
         timeOfMessage = event.timestamp,
-        message = event.message;
-  
-  let messageText = message.text;
+        message = event.message,
+        messageText = message.text,
+        firstStr = messageText.split(' ')[0];
         
   console.log("Received message for user %d and page %d at %d with message:", 
     senderID, recipientID, timeOfMessage);
-    
-  if (messageText === 'PPAV') {
-    const retrunArr = parseJson();
-    retrunArr.forEach((value) => {
-      let str = '片名:' + value.title + '\n' + '女優:' + value.models + '\n' + value.url;
-      sendTextMessage(senderID, str);
-    })
-  } else {
-    sendTextMessage(senderID, '想看片請輸入 PPAV');
+  
+  switch (firstStr) {
+    case 'PPAV':
+      findThreeVideos((retrunArr) => { 
+        retrunArr.forEach((value) => {
+          let str = 
+            '片名：' + value.title + '\n' + 
+            '番號：' + value.code + '\n' +
+            '女優：' + value.models + '\n' + 
+            value.url;
+          sendTextMessage(senderID, str);
+        })
+      })
+      break;
+    case '#':
+      findVideoByCode(messageText.split(' ')[1], (retrunArr) => {
+        let str = '';
+        if (retrunArr.length == 0) {
+          str = '搜尋不到此番號';
+          sendTextMessage(senderID, str);
+        } else {
+          retrunArr.forEach((value) => {
+            str = 
+              '片名：' + value.title + '\n' + 
+              '番號：' + value.code + '\n' +
+              '女優：' + value.models + '\n' + 
+              value.url;
+            sendTextMessage(senderID, str);
+          })
+        }
+      });
+      break;
+      
+    default:
+      sendTextMessage(senderID, '想看片請輸入 PPAV');
+      break;
   }
 }
 
