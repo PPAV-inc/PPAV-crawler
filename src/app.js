@@ -34,7 +34,7 @@ const callSendAPI = (messageData) => {
       // console.error(response);
     }
   });  
-}
+};
 
 const sendTextMessage = (recipientId, messageText) => {
   const messageData = {
@@ -47,7 +47,7 @@ const sendTextMessage = (recipientId, messageText) => {
   };
 
   callSendAPI(messageData);
-}
+};
 
 const startedConv = (recipientId) => {
   let name = '';
@@ -66,7 +66,18 @@ const startedConv = (recipientId) => {
       sendTextMessage(recipientId, "Hello "+ name.first_name + ", do you have a pen? ")
     }
   });
-}
+};
+
+const returnFinalStr = (senderID, returnArr) => {
+  returnArr.forEach((value) => {
+    let str = 
+      '片名：' + value.title + '\n' + 
+      '番號：' + value.code + '\n' +
+      '女優：' + value.models + '\n' + 
+      value.url;
+    sendTextMessage(senderID, str);
+  })
+};
 
 const receivedMessage = (event) => {
   const senderID = event.sender.id,
@@ -81,51 +92,29 @@ const receivedMessage = (event) => {
   
   switch (firstStr) {
     case 'PPAV':
-      findThreeVideos((retrunArr) => { 
-        retrunArr.forEach((value) => {
-          let str = 
-            '片名：' + value.title + '\n' + 
-            '番號：' + value.code + '\n' +
-            '女優：' + value.models + '\n' + 
-            value.url;
-          sendTextMessage(senderID, str);
-        })
+      findThreeVideos((returnArr) => { 
+        returnFinalStr(senderID, returnArr)
       })
       break;
     case '#':
-      findVideoByCode(messageText.split(' ')[1], (retrunArr) => {
-        let str = '';
-        if (retrunArr.length == 0) {
-          str = '搜尋不到此番號';
+      findVideoByCode(messageText.split(' ')[1], (returnArr) => {
+        if (returnArr.length == 0) {
+          let str = '搜尋不到此番號';
           sendTextMessage(senderID, str);
         } else {
-          retrunArr.forEach((value) => {
-            str = 
-              '片名：' + value.title + '\n' + 
-              '番號：' + value.code + '\n' +
-              '女優：' + value.models + '\n' + 
-              value.url;
-            sendTextMessage(senderID, str);
-          })
+          returnFinalStr(senderID, returnArr)
         }
       });
       break;
       
     case '@':
-      findVideoByModel(messageText.split(' ')[1], (retrunArr) => {
+      findVideoByModel(messageText.split(' ')[1], (returnArr) => {
         let str = '';
-        if (retrunArr.length == 0) {
+        if (returnArr.length == 0) {
           str = '搜尋不到此女優';
           sendTextMessage(senderID, str);
         } else {
-          retrunArr.forEach((value) => {
-            str = 
-              '片名：' + value.title + '\n' + 
-              '番號：' + value.code + '\n' +
-              '女優：' + value.models + '\n' + 
-              value.url;
-            sendTextMessage(senderID, str);
-          })
+          returnFinalStr(senderID, returnArr)
         }
       });
       break;
@@ -134,7 +123,7 @@ const receivedMessage = (event) => {
       sendTextMessage(senderID, '想看片請輸入 PPAV');
       break;
   }
-}
+};
 
 const receivedPostback = (event) => {
   const senderID = event.sender.id,
@@ -148,7 +137,7 @@ const receivedPostback = (event) => {
   // When a postback is called, we'll send a message back to the sender to 
   // let them know it was successful
   startedConv(senderID);
-}
+};
 
 app.get('/webhook/', (req, res) => {
   if (req.query['hub.verify_token'] === VERIFY_TOKEN) {
