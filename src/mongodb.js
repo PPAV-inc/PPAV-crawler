@@ -62,3 +62,11 @@ export const findVideoByCode = (code, callback) => {
     callback(found);
   });
 };
+
+export const findVideoByModel = (model, callback) => {
+  const regex = new RegExp(escapeRegex(model), 'gi');
+
+  VideoCollection.find({models: regex}, function (err, found) {
+    callback(found);
+  });
+};
