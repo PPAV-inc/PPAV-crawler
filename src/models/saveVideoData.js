@@ -2,7 +2,7 @@
 
 import jsonfile from 'jsonfile';
 import path from 'path';
-import { VideoCollection } from './models/schema';
+import { VideoCollection } from './schema';
 
 const jsonPath = path.join(__dirname, '..', 'public', 'film_info.json');
 
