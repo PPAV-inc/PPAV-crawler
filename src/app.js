@@ -8,7 +8,7 @@ import config from '../config';
 import { findThreeVideos, findVideoByCode, findVideoByModel } from './mongodb';
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 8080;
 const VERIFY_TOKEN = config.VERIFY_TOKEN;
 const PAGE_TOKEN = config.PAGE_TOKEN;
 
