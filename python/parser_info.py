@@ -1,21 +1,18 @@
-import urllib.request
 import re
 import json
-from collections import defaultdict
-from urllib import parse
 import os.path
+from parser_link import Parser_link, parse_webpage
 
-class PPAV_Parser():
+class Parser_info():
     
-    def __init__(self, orig_url):
-        self.orig_url = orig_url
-        self.film_url_set = set()
+    def __init__(self, file_path):
+        self.file_path = file_path
         self.link_url_set = set()
         self.film_infos = []
         self.film_url_list = []
         
     def parse_indexav(self, video_code):
-        page_indexav = self.parse_webpage('https://indexav.com/search?keyword=' + video_code)
+        page_indexav = parse_webpage('https://indexav.com/search?keyword=' + video_code)
         returnObj = {}
         
         model_re = '<span class=\"video_actor\".*?>(.*)</span>'
@@ -62,28 +59,8 @@ class PPAV_Parser():
         else:
             return code
 
-    def parse_film_link(self, url):
-
-        print(url)
-        page_web = self.parse_webpage(url)
-
-        if url == self.orig_url:
-            link_re = '(?<=href=\")(?:'+self.orig_url+')?/\S+?/\S+?/(?:page-\d+/)?(?=\")'
-            link_set = set(re.findall(link_re, page_web))
-            self.link_url_set |= link_set
-
-        film_re = '(?<=href=\")/watch.*?.html(?=\")'
-        film_list = re.findall(film_re, page_web)
-
-        # last page
-        if len(film_list) == 0:
-            return "Done"
-
-        self.film_url_list += film_list
-        print("film_url_list size: {}".format(len(self.film_url_list)))
-
     def parse_film_info(self, url):
-        page_film = self.parse_webpage(url)
+        page_film = parse_webpage(url)
         
         video_code_re = '(?<=watch-)(\w+-){0,2}\w*\d+'
         video_code = re.search(video_code_re, url)
@@ -121,44 +98,16 @@ class PPAV_Parser():
         info['models'] = model
         return info
 
-    def parse_webpage(self, url):
-        scheme, netloc, path, query, fragment = parse.urlsplit(url)
-        path = parse.quote(path)
-        url = parse.urlunsplit((scheme, netloc, path, query, fragment))
-        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla 7.0'})
-        page = urllib.request.urlopen(req).read().decode('utf-8')
-        return page
+    def parse_info_start(self):
+        file_path = self.file_path
+        parser_link = Parser_link()
+        orig_url = parser_link.get_orig_url()
 
-    def parse_start(self):
-        url = self.orig_url
-        file_path = '../public/film_link.txt'
-        
-        if not os.path.exists(file_path):
-            self.parse_film_link(url)
-            for link_type in self.link_url_set:
-                if self.orig_url not in link_type:
-                    link_type = self.orig_url + link_type
-                subpage_num = 0
-    
-                while True:
-                    subpage_num += 1
-                    url = link_type + 'page-' + str(subpage_num) + '/'
-                    if self.parse_film_link(url) == "Done":
-                        break
-    
-            self.film_url_set = set(self.film_url_list)
-            print("change film list to set, size: {} -> {}".format(len(self.film_url_list), len(self.film_url_set)))
-    
-            with open('../public/film_link.txt', 'w') as fp:
-                for each in self.film_url_set:
-                    print(each, file=fp)
-        else:
-            self.film_url_list = list(line.strip() for line in open(file_path))
-            
-        print("parse film link finished and write in file!")
+        parser_link.parse_link_start(file_path)
+        self.film_url_list = list(line.strip() for line in open(file_path))
 
         for idx, url in enumerate(self.film_url_list):
-            url = self.orig_url + url
+            url = orig_url + url
             url = ''.join(url.split())
             
             print(idx, url)
@@ -172,18 +121,8 @@ class PPAV_Parser():
         
         print("parse film info finished!")
 
-        #import cPickle as pickle
-        #with open('film_url_set.pkl', 'wb') as fp:
-        #   pickle.dump(film_url_set, fp)
-
-    def get_film_infos(self):
-        return self.film_infos
-
 if __name__ == '__main__':
-    orig_url = "http://xonline.vip"
-    parser = PPAV_Parser(orig_url)
-    parser.parse_start()
+    file_path = '../public/film_link.txt'
+    parser = Parser_info(file_path)
+    parser.parse_info_start()
 
-    #film_infos = parser.get_film_infos()
-
-    
