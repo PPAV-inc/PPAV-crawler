@@ -1,8 +1,9 @@
 'use strict';
 
 import mongoose from 'mongoose';
+import config from '../../config';
 
-mongoose.connect('mongodb://localhost:27017/ppav');
+mongoose.connect(config.MONGODB_PATH);
 
 // Create a schema
 const videoSchema = new mongoose.Schema({
