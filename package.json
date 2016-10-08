@@ -31,5 +31,9 @@
     "build": "./node_modules/.bin/babel src/ -d lib/",
     "start": "node ./bin/ppav-bot",
     "prepublish": "npm run build"
-  }
+  },
+  "engines": {
+    "node": "4.5.0",
+    "npm": "2.15.9"
+  }, 
 }
