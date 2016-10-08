@@ -97,7 +97,7 @@ const receivedMessage = (event) => {
   } else {
     switch (firstStr) {
       case '#':
-        findVideoByCode(messageText.split(' ')[1], (returnArr) => {
+        findVideoByCode(messageText.split('#')[1], (returnArr) => {
           if (returnArr.length == 0) {
             let str = '搜尋不到此番號';
             sendTextMessage(senderID, str);
@@ -108,7 +108,7 @@ const receivedMessage = (event) => {
         break;
         
       case '@':
-        findVideoByModel(messageText.split(' ')[1], (returnArr) => {
+        findVideoByModel(messageText.split('@')[1], (returnArr) => {
           let str = '';
           if (returnArr.length == 0) {
             str = '搜尋不到此女優';
