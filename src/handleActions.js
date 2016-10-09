@@ -64,6 +64,7 @@ const returnFinalStr = (senderID, returnArr) => {
   returnArr.forEach((value) => {
     let str = 
       '片名：' + value.title + '\n' + 
+      '點擊數：' + value.count + '\n' +
       '番號：' + value.code + '\n' +
       '女優：' + value.models + '\n' + 
       value.url;
