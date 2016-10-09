@@ -19,7 +19,6 @@ gaze(['src/**/*', 'app.js'], (err, watcher) => {
         targetFile = targetFile.replace('app', '/lib/app');
       }
       targetFile = path.resolve(__dirname, targetFile);
-      console.log(targetFile);
       fs.writeFile(targetFile, babel.transformFileSync(sourceFile).code);
     } catch (e) {
       console.error(e.message, e.stack);

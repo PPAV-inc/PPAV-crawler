@@ -1,9 +1,6 @@
-'use strict';
-
 import request from 'request';
 import { findThreeVideos, findVideo } from './mongodb';
 import config from '../config';
-
 
 const PAGE_TOKEN = config.PAGE_TOKEN;
 
