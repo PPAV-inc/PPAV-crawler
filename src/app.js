@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import request from 'request';
 import path from 'path';
 import config from '../config';
-import { findThreeVideos, findVideoByCode, findVideoByModel } from './mongodb';
+import { findThreeVideos, findVideo } from './mongodb';
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -97,7 +97,7 @@ const receivedMessage = (event) => {
   } else {
     switch (firstStr) {
       case '#':
-        findVideoByCode(messageText.split('#')[1], (returnArr) => {
+        findVideo('code', messageText.split('#')[1], (returnArr) => {
           if (returnArr.length == 0) {
             let str = '搜尋不到此番號';
             sendTextMessage(senderID, str);
@@ -108,7 +108,7 @@ const receivedMessage = (event) => {
         break;
         
       case '@':
-        findVideoByModel(messageText.split('@')[1], (returnArr) => {
+        findVideo('models', messageText.split('@')[1], (returnArr) => {
           let str = '';
           if (returnArr.length == 0) {
             str = '搜尋不到此女優';
