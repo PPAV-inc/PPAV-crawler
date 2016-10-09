@@ -55,18 +55,10 @@ const escapeRegex = (text) => {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 };
 
-export const findVideoByCode = (code, callback) => {
-  const regex = new RegExp(escapeRegex(code), 'gi');
+export const findVideo = (key, value, callback) => {
+  const regex = new RegExp(escapeRegex(value), 'gi');
 
-  VideoCollection.find({code: regex}, function (err, found) {
-    callback(found);
-  });
-};
-
-export const findVideoByModel = (model, callback) => {
-  const regex = new RegExp(escapeRegex(model), 'gi');
-
-  VideoCollection.find({models: regex}, function (err, found) {
+  VideoCollection.find().where(key, regex).exec((err, found) => {
     callback(found);
   });
 };
