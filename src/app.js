@@ -107,8 +107,8 @@ const receivedMessage = (event) => {
         });
         break;
         
-      case '@':
-        findVideo('models', messageText.split('@')[1], (returnArr) => {
+      case '%':
+        findVideo('models', messageText.split('%')[1], (returnArr) => {
           let str = '';
           if (returnArr.length == 0) {
             str = '搜尋不到此女優';
@@ -118,7 +118,17 @@ const receivedMessage = (event) => {
           }
         });
         break;
-        
+      case '@':
+        findVideo('title', messageText.split('@')[1], (returnArr) => {
+          let str = '';
+          if (returnArr.length == 0) {
+            str = '搜尋不到此片名';
+            sendTextMessage(senderID, str);
+          } else {
+            returnFinalStr(senderID, returnArr)
+          }
+        });
+        break;  
       default:
         sendTextMessage(senderID, '想看片請輸入 PPAV');
         break;
