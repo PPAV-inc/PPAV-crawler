@@ -1,19 +1,25 @@
 'use strict';
 
 const nodemon = require('nodemon');
-const babel = require("babel-core");
+const babel = require('babel-core');
 const gaze = require('gaze'); 
 const fs = require('fs');
 const path = require('path');
 
 // Watch the src folder and recompile when the files changed
-gaze('src/**/*', (err, watcher) => {
+gaze(['src/**/*', 'app.js'], (err, watcher) => {
   if (err) throw err;
   watcher.on('changed', (sourceFile) => {
-    console.log(sourceFile + " has changed");
+    console.log(sourceFile + ' has changed');
     try {
-      let targetFile = path.relative(__dirname, sourceFile).replace(/\/src\//, '/lib/');
+      let targetFile = path.relative(__dirname, sourceFile);
+      if (targetFile.indexOf('src') != -1) {
+        targetFile = targetFile.replace(/\/src\//, '/lib/');
+      } else {
+        targetFile = targetFile.replace('app', '/lib/app');
+      }
       targetFile = path.resolve(__dirname, targetFile);
+      console.log(targetFile);
       fs.writeFile(targetFile, babel.transformFileSync(sourceFile).code);
     } catch (e) {
       console.error(e.message, e.stack);
