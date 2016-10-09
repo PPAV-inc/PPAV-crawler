@@ -1,5 +1,3 @@
-'use strict';
-
 import jsonfile from 'jsonfile';
 import path from 'path';
 import { VideoCollection } from './schema';

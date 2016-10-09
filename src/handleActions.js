@@ -1,19 +1,8 @@
-'use strict';
-
-import express from 'express';
-import bodyParser from 'body-parser';
 import request from 'request';
-import path from 'path';
-import config from '../config';
 import { findThreeVideos, findVideo } from './mongodb';
+import config from '../config';
 
-const app = express();
-const port = process.env.PORT || 8080;
-const VERIFY_TOKEN = config.VERIFY_TOKEN;
 const PAGE_TOKEN = config.PAGE_TOKEN;
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 const callSendAPI = (messageData) => {
   request({
@@ -72,6 +61,7 @@ const returnFinalStr = (senderID, returnArr) => {
   returnArr.forEach((value) => {
     let str = 
       '片名：' + value.title + '\n' + 
+      '點擊數：' + value.count + '\n' +
       '番號：' + value.code + '\n' +
       '女優：' + value.models + '\n' + 
       value.url;
@@ -79,7 +69,7 @@ const returnFinalStr = (senderID, returnArr) => {
   })
 };
 
-const receivedMessage = (event) => {
+export const receivedMessage = (event) => {
   const senderID = event.sender.id,
         recipientID = event.recipient.id,
         timeOfMessage = event.timestamp,
@@ -136,7 +126,7 @@ const receivedMessage = (event) => {
   }
 };
 
-const receivedPostback = (event) => {
+export const receivedPostback = (event) => {
   const senderID = event.sender.id,
         recipientID = event.recipient.id,
         timeOfPostback = event.timestamp,
@@ -149,36 +139,3 @@ const receivedPostback = (event) => {
   // let them know it was successful
   startedConv(senderID);
 };
-
-app.get('/webhook/', (req, res) => {
-  if (req.query['hub.verify_token'] === VERIFY_TOKEN) {
-    res.send(req.query['hub.challenge']);
-  }
-  res.send('Error, wrong validation token');
-})
-
-app.post('/webhook', function (req, res) {
-  var data = req.body;
-
-  // Make sure this is a page subscription
-  if (data.object == 'page') {
-    data.entry.forEach(function(pageEntry) {
-      pageEntry.messaging.forEach(function(messagingEvent) {
-        if (messagingEvent.message) {
-          receivedMessage(messagingEvent);
-        } else if (messagingEvent.postback) {
-          receivedPostback(messagingEvent);
-        } else {
-          console.log("Webhook received unknown messagingEvent: ", messagingEvent);
-        }
-      });
-    });
-
-    // Must send back a 200, within 20 seconds, to let facebook know you've 
-    // successfully received the callback. Otherwise, the request will time out.
-    res.sendStatus(200);
-  }
-});
-
-app.use(express.static(path.join(__dirname, '/../public')));
-app.listen(port, () => console.log(`listening on port ${port}`));
