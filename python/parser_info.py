@@ -70,8 +70,8 @@ class Parser_info():
         search_video_code = self.code_special_case(video_code)
 
         view_count_re = '<div class=\"film_view_count\".*?>\d*</div>'
-        view_count = re.search(view_count_re, page_film).group()
-        view_count = re.sub('<.*?>', '', view_count)
+        view_count_str = re.search(view_count_re, page_film).group()
+        view_count_str = re.sub('<.*?>', '', view_count_str)
 
         model_re = '<.*>Models:.*?>.*?>'
         model = re.search(model_re, page_film).group()
@@ -94,7 +94,7 @@ class Parser_info():
         info['search_code'] = search_video_code
         info['url'] = url
         info['title'] = title
-        info['count'] = view_count
+        info['count'] = int(view_count_str)
         info['models'] = model
         return info
 
