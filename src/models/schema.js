@@ -10,7 +10,7 @@ const videoSchema = new mongoose.Schema({
   search_code: String,
   title: String,
   models: String,
-  count: String,
+  count: Number,
   url: String,
 });
 

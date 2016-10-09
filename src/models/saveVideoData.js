@@ -2,7 +2,7 @@ import jsonfile from 'jsonfile';
 import path from 'path';
 import { VideoCollection } from './schema';
 
-const jsonPath = path.join(__dirname, '..', 'public', 'film_info.json');
+const jsonPath = path.join(__dirname, '..', '..', 'public', 'film_info.json');
 
 const saveVideoData = (obj) => {
   obj.forEach((value) => {
