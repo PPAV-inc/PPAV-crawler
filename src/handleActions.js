@@ -74,13 +74,16 @@ export const receivedMessage = (event) => {
         recipientID = event.recipient.id,
         timeOfMessage = event.timestamp,
         message = event.message,
-        messageText = message.text.toUpperCase(),
-        firstStr = messageText.split('')[0];
+        messageText = message.text;
+  let   firstStr = '';
+        
+  if (messageText !== undefined)  
+    firstStr = messageText.split('')[0];
         
   console.log("Received message for user %d and page %d at %d with message:", 
     senderID, recipientID, timeOfMessage);
   
-  if (messageText === 'PPAV') {
+  if (messageText === 'PPAV' || messageText === 'ppav') {
     findThreeVideos((returnArr) => { 
       returnFinalStr(senderID, returnArr)
     })
