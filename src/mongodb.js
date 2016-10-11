@@ -3,13 +3,12 @@
 import { VideoCollection } from './models/schema';
 
 const inArray = (arr, el) => {
-    for (let i = 0 ; i < arr.length; i++) 
-            if(arr[i] == el) return true;
-    return false;
+  for (let i = 0 ; i < arr.length; i++) 
+    if (arr[i] == el) return true;
+  return false;
 };
 
 export const findThreeVideos = (callback) => {
-
   VideoCollection.aggregate(
     {
       $sort: {
@@ -24,19 +23,19 @@ export const findThreeVideos = (callback) => {
         size: 3
       },
     },
-  ).exec(function(err, docs) {
+  ).exec((err, docs) => {
     callback(docs);
   });
 };
 
 const escapeRegex = (text) => {
-    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 };
 
 export const findVideo = (key, value, callback) => {
   const regex = new RegExp(escapeRegex(value), 'gi');
 
-  VideoCollection.find().where(key, regex).exec((err, found) => {
+  VideoCollection.find().where(key, regex).limit(5).exec((err, found) => {
     callback(found);
   });
 };
