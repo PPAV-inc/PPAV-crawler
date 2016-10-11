@@ -64,7 +64,7 @@ const returnFinalStr = (senderID, returnArr) => {
       '點擊數：' + value.count + '\n' +
       '番號：' + value.code + '\n' +
       '女優：' + value.models + '\n' + 
-      value.url;
+      value.url + '\n';
     sendTextMessage(senderID, str);
   })
 };
