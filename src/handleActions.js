@@ -69,6 +69,20 @@ const returnFinalStr = (senderID, returnArr) => {
   })
 };
 
+const strArr = [
+  'https://www.youtube.com/watch?v=reCu0H-moTA', 
+  'https://www.youtube.com/watch?v=0E00Zuayv9Q',
+  'https://www.youtube.com/watch?v=kaZBow9_wQY',
+  'https://www.youtube.com/watch?v=MkQD76FPPc0',
+  'https://www.youtube.com/watch?v=1KGOdB-XkGg',
+  'https://www.youtube.com/watch?v=XwlOCm79Kr4',
+  'https://www.youtube.com/watch?v=YIF2mSTNtEc',
+  'https://www.youtube.com/watch?v=QMvKbdI2A7Y',
+  'https://www.youtube.com/watch?v=-UJlGOm3ry8',
+  'https://www.youtube.com/watch?v=3c3Gw7E687s'
+]
+  
+
 export const receivedMessage = (event) => {
   const senderID = event.sender.id,
         recipientID = event.recipient.id,
@@ -80,50 +94,52 @@ export const receivedMessage = (event) => {
   console.log("Received message for user %d and page %d at %d with message:", 
     senderID, recipientID, timeOfMessage);
   
-  if (messageText === 'PPAV') {
-    findThreeVideos((returnArr) => { 
-      returnFinalStr(senderID, returnArr)
-    })
-  } else {
-    switch (firstStr) {
-      case '#':
-        findVideo('code', messageText.split('#')[1], (returnArr) => {
-          if (returnArr.length == 0) {
-            let str = '搜尋不到此番號';
-            sendTextMessage(senderID, str);
-          } else {
-            returnFinalStr(senderID, returnArr)
-          }
-        });
-        break;
+  let str = strArr[Math.floor(Math.random() * 10)];
+  sendTextMessage(senderID, str);
+  // if (messageText === 'PPAV') {
+  //   findThreeVideos((returnArr) => { 
+  //     returnFinalStr(senderID, returnArr)
+  //   })
+  // } else {
+  //   switch (firstStr) {
+  //     case '#':
+  //       findVideo('code', messageText.split('#')[1], (returnArr) => {
+  //         if (returnArr.length == 0) {
+  //           let str = '搜尋不到此番號';
+  //           sendTextMessage(senderID, str);
+  //         } else {
+  //           returnFinalStr(senderID, returnArr)
+  //         }
+  //       });
+  //       break;
         
-      case '%':
-        findVideo('models', messageText.split('%')[1], (returnArr) => {
-          let str = '';
-          if (returnArr.length == 0) {
-            str = '搜尋不到此女優';
-            sendTextMessage(senderID, str);
-          } else {
-            returnFinalStr(senderID, returnArr)
-          }
-        });
-        break;
-      case '@':
-        findVideo('title', messageText.split('@')[1], (returnArr) => {
-          let str = '';
-          if (returnArr.length == 0) {
-            str = '搜尋不到此片名';
-            sendTextMessage(senderID, str);
-          } else {
-            returnFinalStr(senderID, returnArr)
-          }
-        });
-        break;  
-      default:
-        sendTextMessage(senderID, '想看片請輸入 PPAV');
-        break;
-    }
-  }
+  //     case '%':
+  //       findVideo('models', messageText.split('%')[1], (returnArr) => {
+  //         let str = '';
+  //         if (returnArr.length == 0) {
+  //           str = '搜尋不到此女優';
+  //           sendTextMessage(senderID, str);
+  //         } else {
+  //           returnFinalStr(senderID, returnArr)
+  //         }
+  //       });
+  //       break;
+  //     case '@':
+  //       findVideo('title', messageText.split('@')[1], (returnArr) => {
+  //         let str = '';
+  //         if (returnArr.length == 0) {
+  //           str = '搜尋不到此片名';
+  //           sendTextMessage(senderID, str);
+  //         } else {
+  //           returnFinalStr(senderID, returnArr)
+  //         }
+  //       });
+  //       break;  
+  //     default:
+  //       sendTextMessage(senderID, '想看片請輸入 PPAV');
+  //       break;
+  //   }
+  // }
 };
 
 export const receivedPostback = (event) => {
