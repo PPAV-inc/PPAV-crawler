@@ -63,8 +63,8 @@ const returnFinalStr = (senderID, returnArr) => {
       '片名：' + value.title + '\n' + 
       '點擊數：' + value.count + '\n' +
       '番號：' + value.code + '\n' +
-      '女優：' + value.models + '\n' + 
-      value.url + '\n';
+      '女優：' + value.models + '\n\n' + 
+      value.url;
     sendTextMessage(senderID, str);
   })
 };
@@ -120,7 +120,8 @@ export const receivedMessage = (event) => {
         });
         break;  
       default:
-        sendTextMessage(senderID, '想看片請輸入 PPAV');
+        let str = '想看片請輸入 PPAV \n\n其他搜尋功能：\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"'
+        sendTextMessage(senderID, str);
         break;
     }
   }
