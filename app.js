@@ -18,16 +18,15 @@ app.get('/webhook/', (req, res) => {
   res.send('Error, wrong validation token');
 })
 
-app.post('/webhook', function (req, res) {
-  var data = req.body;
-
+app.post('/webhook', (req, res) => {
+  const data = req.body;
   // Make sure this is a page subscription
   if (data.object == 'page') {
-    data.entry.forEach(function(pageEntry) {
-      pageEntry.messaging.forEach(function(messagingEvent) {
+    data.entry.forEach((pageEntry) => {
+      pageEntry.messaging.forEach((messagingEvent) => {
         if (messagingEvent.message) {
           receivedMessage(messagingEvent);
-        } else if (messagingEvent.postback) {
+        } else if (messagingEvent.postback) { // first time
           receivedPostback(messagingEvent);
         } else {
           console.log("Webhook received unknown messagingEvent: ", messagingEvent);
