@@ -11,7 +11,7 @@ const callSendAPI = (messageData) => {
     method: 'POST',
     json: messageData
 
-  }, function (error, response, body) {
+  }, (error, response, body) => {
     if (!error && response.statusCode == 200) {
       const recipientId = body.recipient_id,
             messageId = body.message_id;
@@ -24,6 +24,25 @@ const callSendAPI = (messageData) => {
     }
   });  
 };
+
+const sendImageMessage = (recipientId, imagesUrl) => {
+  console.log(imagesUrl);
+  var messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      attachment: {
+        type: "image",
+        payload: {
+          url: imagesUrl
+        }
+      }
+    }
+  };
+
+  callSendAPI(messageData);
+}
 
 const sendTextMessage = (recipientId, messageText) => {
   const messageData = {
@@ -65,6 +84,7 @@ const returnFinalStr = (senderID, returnArr) => {
       '番號：' + value.code + '\n' +
       '女優：' + value.models + '\n\n' + 
       value.url;
+    sendImageMessage(senderID, value.img_url);
     sendTextMessage(senderID, str);
   })
 };
