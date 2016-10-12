@@ -1,5 +1,3 @@
-'use strict';
-
 import { VideoCollection } from './models/schema';
 
 const inArray = (arr, el) => {
