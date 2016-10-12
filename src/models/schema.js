@@ -12,6 +12,7 @@ const videoSchema = new mongoose.Schema({
   models: String,
   count: Number,
   url: String,
+  img_url: String,
 });
 
 // Create a model based on the schema

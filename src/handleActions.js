@@ -84,6 +84,7 @@ const returnFinalStr = (senderID, returnArr) => {
       '番號：' + value.code + '\n' +
       '女優：' + value.models + '\n\n' + 
       value.url;
+    console.log(value);
     sendImageMessage(senderID, value.img_url);
     sendTextMessage(senderID, str);
   })
