@@ -14,6 +14,7 @@ const saveVideoData = (obj) => {
       models: value.models, 
       count: value.count, 
       url: value.url, 
+      img_url: value.img_url, 
     });
     
     // Save it to database
