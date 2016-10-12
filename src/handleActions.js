@@ -11,7 +11,7 @@ const callSendAPI = (messageData) => {
     method: 'POST',
     json: messageData
 
-  }, function (error, response, body) {
+  }, (error, response, body) => {
     if (!error && response.statusCode == 200) {
       const recipientId = body.recipient_id,
             messageId = body.message_id;
@@ -24,6 +24,35 @@ const callSendAPI = (messageData) => {
     }
   });  
 };
+
+const sendGenericMessage = (recipientId, title, str, url, img_url) => {
+  var messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      attachment: {
+        type: "template",
+        payload: {
+          template_type: "generic",
+          elements: [{
+            title: title,
+            subtitle: str,
+            item_url: url,               
+            image_url: img_url,
+            buttons: [{
+              type: "web_url",
+              url: url,
+              title: "開啟網頁"
+            }],
+          }]
+        }
+      }
+    }
+  };  
+
+  callSendAPI(messageData);
+}
 
 const sendTextMessage = (recipientId, messageText) => {
   const messageData = {
@@ -45,7 +74,7 @@ const startedConv = (recipientId) => {
     url: 'https://graph.facebook.com/v2.6/'+ recipientId +'?fields=first_name',
     qs: {access_token: PAGE_TOKEN},
     method: 'GET'
-  }, function(error, response, body) {
+  }, (error, response, body) => {
     if (error) {
       console.log('Error sending message: ', error);
     } else if (response.body.error) {
@@ -59,13 +88,11 @@ const startedConv = (recipientId) => {
 
 const returnFinalStr = (senderID, returnArr) => {
   returnArr.forEach((value) => {
-    let str = 
-      '片名：' + value.title + '\n' + 
+    let str =  
       '點擊數：' + value.count + '\n' +
       '番號：' + value.code + '\n' +
-      '女優：' + value.models + '\n\n' + 
-      value.url;
-    sendTextMessage(senderID, str);
+      '女優：' + value.models;
+    sendGenericMessage(senderID, value.title, str, value.url, value.img_url);
   })
 };
 
