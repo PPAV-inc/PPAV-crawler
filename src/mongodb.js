@@ -2,30 +2,14 @@
 
 import { VideoCollection } from './models/schema';
 
-const inArray = (arr, el) => {
-  for (let i = 0 ; i < arr.length; i++) 
-    if (arr[i] == el) return true;
-  return false;
-};
-
 export const findThreeVideos = (callback) => {
-  VideoCollection.aggregate(
-    {
-      $sort: {
-        count: -1,
-      },
-    },
-    {
-      $limit: 50,
-    },
-    {
-      $sample: {
-        size: 3
-      },
-    },
-  ).exec((err, docs) => {
-    callback(docs);
-  });
+  VideoCollection.aggregate()
+    .sort({count: -1})
+    .limit(50)
+    .sample(3)
+    .exec((err, docs) => {
+       callback(docs);
+    });
 };
 
 const escapeRegex = (text) => {
