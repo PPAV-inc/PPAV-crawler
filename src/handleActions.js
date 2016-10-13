@@ -106,7 +106,7 @@ export const receivedMessage = (event) => {
         
   if (messageText !== undefined) {
     firstStr = messageText.split('')[0];
-    messageText = messageText.replace(/\s/g, ''); 
+    messageText = messageText.replace(/\s/g, '');
   }
         
   console.log("Received message for user %d and page %d at %d with message:", 
@@ -118,8 +118,9 @@ export const receivedMessage = (event) => {
     })
   } else {
     switch (firstStr) {
+      case '＃':
       case '#':
-        findVideo('code', messageText.split('#')[1], (returnArr) => {
+        findVideo('code', messageText.split(firstStr)[1], (returnArr) => {
           if (returnArr.length == 0) {
             let str = '搜尋不到此番號';
             sendTextMessage(senderID, str);
@@ -128,9 +129,9 @@ export const receivedMessage = (event) => {
           }
         });
         break;
-        
+      case '％':
       case '%':
-        findVideo('models', messageText.split('%')[1], (returnArr) => {
+        findVideo('models', messageText.split(firstStr)[1], (returnArr) => {
           let str = '';
           if (returnArr.length == 0) {
             str = '搜尋不到此女優';
@@ -140,8 +141,9 @@ export const receivedMessage = (event) => {
           }
         });
         break;
+      case '＠':
       case '@':
-        findVideo('title', messageText.split('@')[1], (returnArr) => {
+        findVideo('title', messageText.split(firstStr)[1], (returnArr) => {
           let str = '';
           if (returnArr.length == 0) {
             str = '搜尋不到此片名';
@@ -168,7 +170,5 @@ export const receivedPostback = (event) => {
   console.log("Received postback for user %d and page %d with payload '%s' " + 
     "at %d", senderID, recipientID, payload, timeOfPostback);
 
-  // When a postback is called, we'll send a message back to the sender to 
-  // let them know it was successful
   startedConv(senderID);
 };
