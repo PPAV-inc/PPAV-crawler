@@ -100,17 +100,19 @@ export const receivedMessage = (event) => {
   const senderID = event.sender.id,
         recipientID = event.recipient.id,
         timeOfMessage = event.timestamp,
-        message = event.message,
+        message = event.message;
+  let   firstStr = '',
         messageText = message.text;
-  let   firstStr = '';
         
-  if (messageText !== undefined)  
+  if (messageText !== undefined) {
     firstStr = messageText.split('')[0];
+    messageText = messageText.replace(/\s/g, ''); 
+  }
         
   console.log("Received message for user %d and page %d at %d with message:", 
     senderID, recipientID, timeOfMessage);
   
-  if (messageText === 'PPAV' || messageText === 'ppav') {
+  if (messageText === 'PPAV' || messageText === 'ppav' || messageText === 'Ppav') {
     findThreeVideos((returnArr) => { 
       returnFinalStr(senderID, returnArr)
     })
