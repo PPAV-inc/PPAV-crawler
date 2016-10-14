@@ -63,7 +63,7 @@ const sendTextMessage = (recipientId, messageText) => {
       text: messageText
     }
   };
-
+  console.log(messageData);
   callSendAPI(messageData);
 };
 
@@ -94,6 +94,7 @@ const returnFinalStr = (senderID, returnArr) => {
       '女優：' + value.models;
     sendGenericMessage(senderID, value.title, str, value.url, value.img_url);
   })
+  console.log(returnArr);
 };
 
 export const receivedMessage = (event) => {
@@ -120,36 +121,43 @@ export const receivedMessage = (event) => {
     switch (firstStr) {
       case '＃':
       case '#':
-        findVideo('code', messageText.split(firstStr)[1], (returnArr) => {
-          if (returnArr.length == 0) {
-            let str = '搜尋不到此番號';
+        findVideo('code', messageText.split(firstStr)[1], (returnObj) => {
+          let str = '';
+          if (returnObj.results == 0) {
+            str = '搜尋不到此番號';
             sendTextMessage(senderID, str);
           } else {
-            returnFinalStr(senderID, returnArr)
+            str = '幫你搜尋: '+returnObj.search_value;
+            sendTextMessage(senderID, str);
+            returnFinalStr(senderID, returnObj.results);
           }
         });
         break;
       case '％':
       case '%':
-        findVideo('models', messageText.split(firstStr)[1], (returnArr) => {
+        findVideo('models', messageText.split(firstStr)[1], (returnObj) => {
           let str = '';
-          if (returnArr.length == 0) {
+          if (returnObj.results == 0) {
             str = '搜尋不到此女優';
             sendTextMessage(senderID, str);
           } else {
-            returnFinalStr(senderID, returnArr)
+            str = '幫你搜尋: '+returnObj.search_value;
+            sendTextMessage(senderID, str);
+            returnFinalStr(senderID, returnObj.results);
           }
         });
         break;
       case '＠':
       case '@':
-        findVideo('title', messageText.split(firstStr)[1], (returnArr) => {
+        findVideo('title', messageText.split(firstStr)[1], (returnObj) => {
           let str = '';
-          if (returnArr.length == 0) {
+          if (returnObj.results == 0) {
             str = '搜尋不到此片名';
             sendTextMessage(senderID, str);
           } else {
-            returnFinalStr(senderID, returnArr)
+            str = '幫你搜尋: '+returnObj.search_value;
+            sendTextMessage(senderID, str);
+            returnFinalStr(senderID, returnObj.results);
           }
         });
         break;  
