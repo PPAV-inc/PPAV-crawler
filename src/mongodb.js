@@ -18,16 +18,22 @@ export const findVideo = (key, value, callback) => {
   const regex = new RegExp(escapeRegex(value), 'gi');
 
   VideoCollection.find().where(key, regex).exec((err, found) => {
+    if(found.length == 0 && key == 'models') {
+      findVideo(key, value.slice(0, -1), (returnArr) => {
+        callback(returnArr);
+      });
+    } else {
+      let limit_num = 5;
+      let set = new Set();
 
-    let limit_num = 5;
-    let set = new Set();
+      while(found.length != 0 && set.size < limit_num) {
+        let random_item = found[Math.floor(Math.random() * found.length)];
+        set.add(random_item);
+      }
 
-    while(found.length != 0 && set.size < limit_num) {
-      let random_item = found[Math.floor(Math.random() * found.length)];
-      set.add(random_item);
+      let out_arr = Array.from(set);
+      callback(out_arr);
     }
-
-    let out_arr = Array.from(set);
-    callback(out_arr);
   });
 };
+
