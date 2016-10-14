@@ -1,0 +1,24 @@
+{
+  "parser": "babel-eslint",
+  "extends": [
+    "airbnb"
+  ],
+  "env": {
+    "node": true
+  },
+  "rules": {
+    "arrow-body-style": "off",
+    "arrow-parens": "off",
+    "import/prefer-default-export": "off",
+    "indent": [0, "tab"],
+    "no-case-declarations": "off",
+    "no-trailing-spaces": "off",
+    "object-shorthand": "off",
+    "one-var": "off",
+    "prefer-template": "off",
+    "prefer-const": 1
+  },
+  "plugins": [
+    "babel"
+  ]
+}
