@@ -17,7 +17,17 @@ const escapeRegex = (text) => {
 export const findVideo = (key, value, callback) => {
   const regex = new RegExp(escapeRegex(value), 'gi');
 
-  VideoCollection.find().where(key, regex).limit(5).exec((err, found) => {
-    callback(found);
+  VideoCollection.find().where(key, regex).exec((err, found) => {
+
+    let limit_num = 5;
+    let set = new Set();
+
+    while(set.size < limit_num) {
+      let random_item = found[Math.floor(Math.random() * found.length)];
+      set.add(random_item);
+    }
+
+    let out_arr = Array.from(set);
+    callback(out_arr);
   });
 };
