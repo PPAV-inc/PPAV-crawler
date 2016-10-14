@@ -22,7 +22,7 @@ export const findVideo = (key, value, callback) => {
     let limit_num = 5;
     let set = new Set();
 
-    while(set.size < limit_num) {
+    while(found.length != 0 && set.size < limit_num) {
       let random_item = found[Math.floor(Math.random() * found.length)];
       set.add(random_item);
     }
