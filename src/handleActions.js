@@ -128,7 +128,7 @@ export const receivedMessage = (event) => {
             sendTextMessage(senderID, str);
           } else {
             str = '幫你搜尋: '+returnObj.search_value;
-            sendTextMessage(senderID, returnObj.search_value);
+            sendTextMessage(senderID, str);
             returnFinalStr(senderID, returnObj.results);
           }
         });
