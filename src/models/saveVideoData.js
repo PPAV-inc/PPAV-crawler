@@ -18,13 +18,14 @@ const saveVideoData = (obj) => {
     });
     
     // Save it to database
-    Video.save(function(err){
-      if(err)
+    Video.save((err) => {
+      if (err) {
         console.log(err);
-      else
-        console.log("push" + value.code + " finished");
+      } else {
+        console.log('push' + value.code + ' finished');
+      }
     });
-  })
+  });
 };
 
 const obj = jsonfile.readFileSync(jsonPath);
