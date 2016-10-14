@@ -123,12 +123,12 @@ export const receivedMessage = (event) => {
       case '#':
         findVideo('code', messageText.split(firstStr)[1], (returnObj) => {
           let str = '';
-          if (returnObj.results == 0) {
+          if (returnObj.results.length == 0) {
             str = '搜尋不到此番號';
             sendTextMessage(senderID, str);
           } else {
             str = '幫你搜尋: '+returnObj.search_value;
-            sendTextMessage(senderID, str);
+            sendTextMessage(senderID, returnObj.search_value);
             returnFinalStr(senderID, returnObj.results);
           }
         });
@@ -137,7 +137,7 @@ export const receivedMessage = (event) => {
       case '%':
         findVideo('models', messageText.split(firstStr)[1], (returnObj) => {
           let str = '';
-          if (returnObj.results == 0) {
+          if (returnObj.results.length == 0) {
             str = '搜尋不到此女優';
             sendTextMessage(senderID, str);
           } else {
@@ -151,7 +151,7 @@ export const receivedMessage = (event) => {
       case '@':
         findVideo('title', messageText.split(firstStr)[1], (returnObj) => {
           let str = '';
-          if (returnObj.results == 0) {
+          if (returnObj.results.length == 0) {
             str = '搜尋不到此片名';
             sendTextMessage(senderID, str);
           } else {
