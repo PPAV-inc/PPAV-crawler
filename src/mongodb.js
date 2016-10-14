@@ -27,8 +27,9 @@ export const findVideo = (key, value, callback) => {
       let set = new Set();
 
       while(found.length != 0 && set.size < limit_num) {
-        let random_item = found[Math.floor(Math.random() * found.length)];
-        set.add(random_item);
+        let rand_num = Math.floor(Math.random() * found.length);
+        set.add(found[rand_num]);
+        found.splice([rand_num], 1);
       }
 
       let returnObj = {};
