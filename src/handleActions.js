@@ -120,7 +120,7 @@ export const receivedMessage = (event) => {
     switch (firstStr) {
       case '＃':
       case '#':
-        findVideo('code', messageText.split(firstStr)[1].toUpperCase(), (returnObj) => {
+        findVideo('code', messageText.split(firstStr)[1].toUpperCase()).then(returnObj => {
           let str = '';
           if (returnObj.results.length === 0) {
             str = '搜尋不到此番號';
@@ -134,7 +134,7 @@ export const receivedMessage = (event) => {
         break;
       case '％':
       case '%':
-        findVideo('models', messageText.split(firstStr)[1], (returnObj) => {
+        findVideo('models', messageText.split(firstStr)[1]).then(returnObj => {
           let str = '';
           if (returnObj.results.length === 0) {
             str = '搜尋不到此女優';
@@ -148,7 +148,7 @@ export const receivedMessage = (event) => {
         break;
       case '＠':
       case '@':
-        findVideo('title', messageText.split(firstStr)[1], (returnObj) => {
+        findVideo('title', messageText.split(firstStr)[1]).then(returnObj => {
           let str = '';
           if (returnObj.results.length === 0) {
             str = '搜尋不到此片名';
@@ -161,7 +161,7 @@ export const receivedMessage = (event) => {
         });
         break;  
       default:
-        let str = '想看片請輸入 PPAV \n\n其他搜尋功能：\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"';
+        const str = '想看片請輸入 PPAV \n\n其他搜尋功能：\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"';
         sendTextMessage(senderID, str);
         break;
     }
