@@ -5,8 +5,7 @@ from parser_link import Parser_link, parse_webpage
 
 class Parser_info():
     
-    def __init__(self, file_path):
-        self.file_path = file_path
+    def __init__(self):
         self.link_url_set = set()
         self.film_infos = []
         self.film_url_list = []
@@ -89,23 +88,27 @@ class Parser_info():
             if parse_indexav_obj['video_title'] is not None:
                 title = parse_indexav_obj['video_title']
 
+        img_url_re = '<img itemprop=\"image\" src=\"(.*?)\" title=\"'
+        img_url = re.search(img_url_re, page_film).group(1)
+
         info = {}
         info['code'] = video_code
         info['search_code'] = search_video_code
         info['url'] = url
-        info['title'] = title
         info['count'] = int(view_count_str)
         info['models'] = model
+        info['title'] = title
+        info['img_url'] = img_url
         return info
 
-    def parse_info_start(self):
-        file_path = self.file_path
+    def parse_info_start(self, file_link_path, outfile_info_path = 'film_info_tmp.json'):
         parser_link = Parser_link()
+        if not os.path.exists(file_link_path):
+            parser_link.parse_link_start(file_link_path)
+
+        self.film_url_list = list(line.strip() for line in open(file_link_path))
+
         orig_url = parser_link.get_orig_url()
-
-        parser_link.parse_link_start(file_path)
-        self.film_url_list = list(line.strip() for line in open(file_path))
-
         for idx, url in enumerate(self.film_url_list):
             url = orig_url + url
             url = ''.join(url.split())
@@ -116,13 +119,14 @@ class Parser_info():
             if info:
                 info['id'] = idx + 1
                 self.film_infos.append(info)
-                with open('../public/film_info.json', 'w+') as fp:
+                with open(outfile_info_path, 'w+') as fp:
                     json.dump(self.film_infos, fp, ensure_ascii=False, indent=2)
         
-        print("parse film info finished!")
+        print("parse film info finished and write in {} !".format(outfile_info_path))
 
 if __name__ == '__main__':
-    file_path = '../public/film_link.txt'
-    parser = Parser_info(file_path)
-    parser.parse_info_start()
+    file_link_path = '../public/film_link.txt'
+    outfile_info_path = '../public/film_info_test.json'
+    parser = Parser_info()
+    parser.parse_info_start(file_link_path, outfile_info_path)
 

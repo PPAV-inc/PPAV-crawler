@@ -29,10 +29,10 @@ class Parser_link():
         self.film_url_list += film_list
         print("film_url_list size: {}".format(len(self.film_url_list)))
 
-    def parse_link_start(self, file_path = '../public/film_link1.txt'):
-        url = self.orig_url
-        
+    def parse_link_start(self, file_path = 'film_link_tmp.txt'):
         if not os.path.exists(file_path):
+            print("start parsing link.")
+            url = self.orig_url
             self.parse_film_link(url)
             for link_type in self.link_url_set:
                 if self.orig_url not in link_type:
@@ -48,10 +48,10 @@ class Parser_link():
             film_url_set = set(self.film_url_list)
             print("change film list to set, size: {} -> {}".format(len(self.film_url_list), len(film_url_set)))
     
-            with open('../public/film_link.txt', 'w') as fp:
+            with open(file_path, 'w') as fp:
                 for each in film_url_set:
                     print(each, file=fp)
-            print("parse film link finished and write in file!")
+            print("parse film link finished and write in {} !".format(file_path))
         else:
            print("{} exists!".format(file_path))
 
@@ -69,6 +69,7 @@ def parse_webpage(url):
 
 if __name__ == '__main__':
     orig_url = "http://xonline.vip"
+    file_path = '../public/film_link.txt'
     parser = Parser_link(orig_url)
-    parser.parse_link_start()
+    parser.parse_link_start(file_path)
 
