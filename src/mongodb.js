@@ -22,7 +22,7 @@ export const findVideo = (key, value) => {
   
     VideoCollection.find().where(key, regex).exec((err, found) => {
       if (found.length === 0 && key === 'models' && value.length > 1) {
-        findVideo(key, value.slice(0, -1), (returnObj) => {
+        findVideo(key, value.slice(0, -1)).then(returnObj => {
           resolve(returnObj);
         });
       } else {

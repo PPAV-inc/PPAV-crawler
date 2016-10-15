@@ -126,7 +126,7 @@ export const receivedMessage = (event) => {
             str = '搜尋不到此番號';
             sendTextMessage(senderID, str);
           } else {
-            str = '幫你搜尋: ' + returnObj.search_value;
+            str = '幫你搜尋：' + returnObj.search_value;
             sendTextMessage(senderID, str);
             returnFinalStr(senderID, returnObj.results);
           }
@@ -140,7 +140,7 @@ export const receivedMessage = (event) => {
             str = '搜尋不到此女優';
             sendTextMessage(senderID, str);
           } else {
-            str = '幫你搜尋: ' + returnObj.search_value;
+            str = '幫你搜尋：' + returnObj.search_value;
             sendTextMessage(senderID, str);
             returnFinalStr(senderID, returnObj.results);
           }
@@ -154,7 +154,7 @@ export const receivedMessage = (event) => {
             str = '搜尋不到此片名';
             sendTextMessage(senderID, str);
           } else {
-            str = '幫你搜尋: ' + returnObj.search_value;
+            str = '幫你搜尋：' + returnObj.search_value;
             sendTextMessage(senderID, str);
             returnFinalStr(senderID, returnObj.results);
           }
