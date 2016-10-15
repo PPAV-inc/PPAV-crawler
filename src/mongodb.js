@@ -1,13 +1,15 @@
 import { VideoCollection } from './models/schema';
 
-export const findThreeVideos = (callback) => {
-  VideoCollection.aggregate()
+export const findThreeVideos = () => {
+  return new Promise ((resolve, reject) => {
+    VideoCollection.aggregate()
     .sort({ count: -1 })
     .limit(50)
     .sample(3)
     .exec((err, docs) => {
-       callback(docs);
+       resolve(docs);
     });
+  });
 };
 
 const escapeRegex = (text) => {

@@ -113,14 +113,14 @@ export const receivedMessage = (event) => {
     senderID, recipientID, timeOfMessage);
   
   if (messageText === 'PPAV' || messageText === 'ppav' || messageText === 'Ppav') {
-    findThreeVideos((returnArr) => { 
+    findThreeVideos().then(returnArr => { 
       returnFinalStr(senderID, returnArr);
     });
   } else {
     switch (firstStr) {
       case '＃':
       case '#':
-        findVideo('code', messageText.split(firstStr)[1], (returnObj) => {
+        findVideo('code', messageText.split(firstStr)[1].toUpperCase(), (returnObj) => {
           let str = '';
           if (returnObj.results.length === 0) {
             str = '搜尋不到此番號';
