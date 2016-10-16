@@ -3,7 +3,6 @@ import config from '../../config';
 
 mongoose.connect(config.MONGODB_PATH);
 
-// Create a schema
 const videoSchema = new mongoose.Schema({
   id: Number,
   code: String,
@@ -15,6 +14,12 @@ const videoSchema = new mongoose.Schema({
   img_url: String,
 });
 
-// Create a model based on the schema
+const logSchema = new mongoose.Schema({
+  senderID: String,
+  messageText: String,
+  result: String,
+});
+
 export const VideoCollection = mongoose.model('Video', videoSchema);
+export const LogCollection = mongoose.model('Log', logSchema);
 

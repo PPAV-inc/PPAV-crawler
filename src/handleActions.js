@@ -1,5 +1,6 @@
 import request from 'request';
 import { findThreeVideos, findVideo } from './mongodb';
+import saveLogData from './models/saveLogData';
 import config from '../config';
 
 const PAGE_TOKEN = config.PAGE_TOKEN;
@@ -125,6 +126,11 @@ export const receivedMessage = (event) => {
           if (returnObj.results.length === 0) {
             str = '搜尋不到此番號';
             sendTextMessage(senderID, str);
+            saveLogData({
+              senderID: senderID,
+              messageText: messageText,
+              result: str,
+            });
           } else {
             str = '幫你搜尋：' + returnObj.search_value;
             sendTextMessage(senderID, str);
@@ -139,6 +145,11 @@ export const receivedMessage = (event) => {
           if (returnObj.results.length === 0) {
             str = '搜尋不到此女優';
             sendTextMessage(senderID, str);
+            saveLogData({
+              senderID: senderID,
+              messageText: messageText,
+              result: str,
+            });
           } else {
             str = '幫你搜尋：' + returnObj.search_value;
             sendTextMessage(senderID, str);
@@ -153,6 +164,11 @@ export const receivedMessage = (event) => {
           if (returnObj.results.length === 0) {
             str = '搜尋不到此片名';
             sendTextMessage(senderID, str);
+            saveLogData({
+              senderID: senderID,
+              messageText: messageText,
+              result: str,
+            });
           } else {
             str = '幫你搜尋：' + returnObj.search_value;
             sendTextMessage(senderID, str);
