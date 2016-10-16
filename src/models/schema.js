@@ -14,12 +14,18 @@ const videoSchema = new mongoose.Schema({
   img_url: String,
 });
 
-const logSchema = new mongoose.Schema({
+const errorLogSchema = new mongoose.Schema({
+  senderID: String,
+  messageText: String,
+  result: String,
+});
+
+const successLogSchema = new mongoose.Schema({
   senderID: String,
   messageText: String,
   result: String,
 });
 
 export const VideoCollection = mongoose.model('Video', videoSchema);
-export const LogCollection = mongoose.model('Log', logSchema);
-
+export const ErrorLogCollection = mongoose.model('ErrorLog', errorLogSchema);
+export const SuccessLogCollection = mongoose.model('SuccessLog', successLogSchema);

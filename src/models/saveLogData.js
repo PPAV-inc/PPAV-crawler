@@ -1,11 +1,21 @@
-import { LogCollection } from './schema';
+import { ErrorLogCollection, SuccessLogCollection } from './schema';
 
-const saveLogData = (Obj) => {
-  let Log = new LogCollection({
-    senderID: Obj.senderID,
-    messageText: Obj.messageText,
-    result: Obj.result,
-  });
+const saveLogData = (successOrNot, Obj) => {
+  let Log;
+  if (successOrNot) {
+    Log = new SuccessLogCollection({
+      senderID: Obj.senderID,
+      messageText: Obj.messageText,
+      result: Obj.result,
+    });
+  } else {
+    Log = new ErrorLogCollection({
+      senderID: Obj.senderID,
+      messageText: Obj.messageText,
+      result: Obj.result,
+    });
+  }
+  
     
   // Save it to database
   Log.save((err) => {

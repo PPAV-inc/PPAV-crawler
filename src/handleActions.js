@@ -85,7 +85,7 @@ const startedConv = (recipientId) => {
   });
 };
 
-const returnFinalStr = (senderID, returnArr) => {
+const sendGenericMessageByArr = (senderID, returnArr) => {
   returnArr.forEach((value) => {
     let str =  
       '點擊數：' + value.count + '\n' +
@@ -115,7 +115,12 @@ export const receivedMessage = (event) => {
   
   if (messageText === 'PPAV' || messageText === 'ppav' || messageText === 'Ppav') {
     findThreeVideos().then(returnArr => { 
-      returnFinalStr(senderID, returnArr);
+      sendGenericMessageByArr(senderID, returnArr);
+      saveLogData(true, {
+        senderID: senderID,
+        messageText: messageText,
+        result: 'PPAV',
+      });
     });
   } else {
     switch (firstStr) {
@@ -126,7 +131,7 @@ export const receivedMessage = (event) => {
           if (returnObj.results.length === 0) {
             str = '搜尋不到此番號';
             sendTextMessage(senderID, str);
-            saveLogData({
+            saveLogData(false, {
               senderID: senderID,
               messageText: messageText,
               result: str,
@@ -134,7 +139,12 @@ export const receivedMessage = (event) => {
           } else {
             str = '幫你搜尋：' + returnObj.search_value;
             sendTextMessage(senderID, str);
-            returnFinalStr(senderID, returnObj.results);
+            sendGenericMessageByArr(senderID, returnObj.results);
+            saveLogData(true, {
+              senderID: senderID,
+              messageText: messageText,
+              result: str,
+            });
           }
         });
         break;
@@ -145,7 +155,7 @@ export const receivedMessage = (event) => {
           if (returnObj.results.length === 0) {
             str = '搜尋不到此女優';
             sendTextMessage(senderID, str);
-            saveLogData({
+            saveLogData(false, {
               senderID: senderID,
               messageText: messageText,
               result: str,
@@ -153,7 +163,12 @@ export const receivedMessage = (event) => {
           } else {
             str = '幫你搜尋：' + returnObj.search_value;
             sendTextMessage(senderID, str);
-            returnFinalStr(senderID, returnObj.results);
+            sendGenericMessageByArr(senderID, returnObj.results);
+            saveLogData(true, {
+              senderID: senderID,
+              messageText: messageText,
+              result: str,
+            });
           }
         });
         break;
@@ -164,7 +179,7 @@ export const receivedMessage = (event) => {
           if (returnObj.results.length === 0) {
             str = '搜尋不到此片名';
             sendTextMessage(senderID, str);
-            saveLogData({
+            saveLogData(false, {
               senderID: senderID,
               messageText: messageText,
               result: str,
@@ -172,7 +187,12 @@ export const receivedMessage = (event) => {
           } else {
             str = '幫你搜尋：' + returnObj.search_value;
             sendTextMessage(senderID, str);
-            returnFinalStr(senderID, returnObj.results);
+            sendGenericMessageByArr(senderID, returnObj.results);
+            saveLogData(true, {
+              senderID: senderID,
+              messageText: messageText,
+              result: str,
+            });
           }
         });
         break;  
