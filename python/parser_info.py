@@ -2,13 +2,14 @@ import re
 import json
 import os.path
 from parser_link import Parser_link, parse_webpage
+import datetime
+from mongodb import MongoOP
 
-class Parser_info():
+class Parser_info:
     
-    def __init__(self):
-        self.link_url_set = set()
+    def __init__(self, host):
         self.film_infos = []
-        self.film_url_list = []
+        self.mongo = MongoOP(host)
         
     def parse_indexav(self, video_code):
         page_indexav = parse_webpage('https://indexav.com/search?keyword=' + video_code)
@@ -99,34 +100,39 @@ class Parser_info():
         info['models'] = model
         info['title'] = title
         info['img_url'] = img_url
+        info['update_date'] = datetime.datetime.now()
         return info
 
-    def parse_info_start(self, file_link_path, outfile_info_path = 'film_info_tmp.json'):
-        parser_link = Parser_link()
-        if not os.path.exists(file_link_path):
-            parser_link.parse_link_start(file_link_path)
-
-        self.film_url_list = list(line.strip() for line in open(file_link_path))
-
-        orig_url = parser_link.get_orig_url()
-        for idx, url in enumerate(self.film_url_list):
-            url = orig_url + url
+    def parse_info_and_update(self, film_url_list):
+        for idx, url in enumerate(film_url_list):
             url = ''.join(url.split())
-            
             print(idx, url)
             info = self.parse_film_info(url)
             
             if info:
-                info['id'] = idx + 1
                 self.film_infos.append(info)
-                with open(outfile_info_path, 'w+') as fp:
-                    json.dump(self.film_infos, fp, ensure_ascii=False, indent=2)
-        
-        print("parse film info finished and write in {} !".format(outfile_info_path))
+                self.mongo.update_JSON(self.film_infos, collect_name='film_info')
+
+    def parse_info_start(self):
+        parser_link = Parser_link()
+        film_url_list = []
+
+        # get unfinished urls and finished it
+        film_url_list = [each['url'] for each in self.mongo.get_unfinished_url(collect_name='film_info')]
+        self.parse_info_and_update(film_url_list)
+
+        print("unfinished urls are done!")
+
+        # update film information
+        link_url_set = parser_link.parse_link_start()
+        film_url_json_list = [ {'url': url} for url in link_url_set]
+        self.mongo.update_JSON(film_url_json_list, collect_name='film_info')
+        film_url_list = list(link_url_set)
+        self.parse_info_and_update(film_url_list)
+
+        print("update film info finished!")
 
 if __name__ == '__main__':
-    file_link_path = '../public/film_link.txt'
-    outfile_info_path = '../public/film_info_test.json'
-    parser = Parser_info()
-    parser.parse_info_start(file_link_path, outfile_info_path)
+    parser = Parser_info('localhost')
+    parser.parse_info_start()
 
