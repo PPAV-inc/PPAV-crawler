@@ -107,7 +107,7 @@ class ParserInfo:
             info['update_date'] = datetime.datetime.now()
             return info
 
-    def parse_info_and_update(self, film_url_json_list):
+    def parse_info_and_update(self, film_url_json_list, collect_name=None):
         for idx, json in enumerate(film_url_json_list):
             url = json['url']
             url = ''.join(url.split())
@@ -115,9 +115,9 @@ class ParserInfo:
             info = self.parse_film_info(url)
 
             if info:
-                self.mongo.update_json_list([info])
+                self.mongo.update_json_list([info], collect_name)
             else:
-                self.mongo.remove_url(url)
+                self.mongo.remove_url(url, collect_name)
 
     def parse_info_start(self):
         parser_link = Parser_link()
