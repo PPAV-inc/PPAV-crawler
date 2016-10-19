@@ -103,36 +103,50 @@ class Parser_info:
         info['update_date'] = datetime.datetime.now()
         return info
 
-    def parse_info_and_update(self, film_url_list):
-        for idx, url in enumerate(film_url_list):
+    def parse_info_and_update(self, film_url_json_list):
+        for idx, json in enumerate(film_url_json_list):
+            url = json['url']
             url = ''.join(url.split())
             print(idx, url)
             info = self.parse_film_info(url)
-            
+
             if info:
-                self.film_infos.append(info)
-                self.mongo.update_JSON(self.film_infos, collect_name='film_info')
+                self.mongo.update_json_list([info])
 
     def parse_info_start(self):
         parser_link = Parser_link()
         film_url_list = []
 
         # get unfinished urls and finished it
-        film_url_list = [each['url'] for each in self.mongo.get_unfinished_url(collect_name='film_info')]
-        self.parse_info_and_update(film_url_list)
-
+        film_url_json_list = self.mongo.get_unfinished_url_list()
+        print("unfinished url list size: {}".format(len(film_url_json_list)))
+        self.parse_info_and_update(film_url_json_list)
         print("unfinished urls are done!")
 
         # update film information
+        print("get all films link")
         link_url_set = parser_link.parse_link_start()
         film_url_json_list = [ {'url': url} for url in link_url_set]
-        self.mongo.update_JSON(film_url_json_list, collect_name='film_info')
-        film_url_list = list(link_url_set)
-        self.parse_info_and_update(film_url_list)
+        self.mongo.update_json_list(film_url_json_list)  # update all url first
+        self.parse_info_and_update(film_url_json_list) # then update all url info.
+
+        # update new video in new collection
+        exists_url_set = self.mongo.get_all_url_set()
+        new_url_set = link_url_set - exists_url_set # get new film url set
+        print("link url set size: {}".format(len(link_url_set)))
+        print("exists url set size: {}".format(len(exists_url_set)))
+        print("new url set size: {}".format(len(new_url_set)))
+        new_url_json_list = [ {'url': url} for url in new_url_set]
+        self.mongo.update_json_list(new_url_json_list, collect_name='newVideos')
+        self.parse_info_and_update(new_url_json_list, collect_name='newVideos')
 
         print("update film info finished!")
 
 if __name__ == '__main__':
-    parser = Parser_info('localhost')
+    mongo_uri = 'mongodb://localhost:27017/test'
+    #import json
+    #with open('../config.json') as fp:
+    #    mongo_uri = json.load(fp)['MONGODB_PATH']
+    parser = Parser_info(mongo_uri)
     parser.parse_info_start()
 
