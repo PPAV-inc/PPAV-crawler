@@ -1,0 +1,31 @@
+{
+  "VERIFY_TOKEN": "ppavppav",
+  "PAGE_TOKEN": "EAACbDW0Qrl4BALFSlZC9rvt1btGhepvJv7wZBwgOrjyFzVirbsFWnNpvWLZCDF8TqSPIhevxrI8om4WcZAZA9wQMcuF8GS39i9b74VRZBIWJL0fivewsqQtrJ0EoZAmp5FCLo61RXfuM2PMzOYtL17nIJ0BcHxSXH13KZC2vrOwRsgZDZD",
+  "MONGODB_PATH": "mongodb://ppav:ppavppav@13.75.88.158:27017/ppav",
+  "SERVER_ADDRESS": "https://ppav-ffc6f.appspot.com",
+  "TEST_MESSAGE": {
+    "entry": [
+      {
+        "id": "297590880623480",
+        "time": 1476001829886,
+        "messaging": [
+          {
+            "sender": {
+              "id": "1084793478302481"
+            },
+            "recipient": {
+              "id": "297590880623480"
+            },
+            "timestamp": 1476001829886,
+            "message": {
+              "mid": "mid.1475998902672:8d66fe8bc32003a719",
+              "seq": 2384,
+              "text": "%三上"
+            }
+          }
+        ]
+      }
+    ],
+    "object": "page"
+  }
+}

@@ -1,8 +1,11 @@
+import jsonfile from 'jsonfile';
 import request from 'request';
+import path from 'path';
 import { findThreeVideos, findVideo } from './mongodb';
 import saveLogData from './models/saveLogData';
-import config from '../config';
 
+const jsonPath = path.join(__dirname, '..', 'config.json');
+const config = jsonfile.readFileSync(jsonPath);
 const PAGE_TOKEN = config.PAGE_TOKEN;
 
 const callSendAPI = (messageData) => {

@@ -1,12 +1,15 @@
-import express from 'express';
 import bodyParser from 'body-parser';
+import express from 'express';
+import jsonfile from 'jsonfile';
 import path from 'path';
-import config from '../config';
 import { receivedMessage, receivedPostback } from './handleActions'; 
+
+const jsonPath = path.join(__dirname, '..', 'config.json');
+const config = jsonfile.readFileSync(jsonPath);
+const VERIFY_TOKEN = config.VERIFY_TOKEN;
 
 const app = express();
 const port = process.env.PORT || 8080;
-const VERIFY_TOKEN = config.VERIFY_TOKEN;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -41,4 +44,4 @@ app.post('/webhook', (req, res) => {
 });
 
 app.use(express.static(path.join(__dirname, '/../public')));
-app.listen(port, () => console.log(`listening on port ${port}`));
+app.listen(port, () => console.log('listening on port ${port}'));
