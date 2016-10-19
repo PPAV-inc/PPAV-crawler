@@ -2,7 +2,7 @@ from pymongo import MongoClient
 
 
 class MongoOP:
-    
+
     def __init__(self, mongo_uri='mongodb://localhost:27017/test', collect_name='videos'):
         self.db = MongoClient(mongo_uri).get_default_database()
         self.collect_name = collect_name
@@ -25,7 +25,7 @@ class MongoOP:
         if collect_name is None:
             collect_name = self.collect_name
         collect = self.db[collect_name]
-        url_json_list = list(collect.find({'title': {'$exists': False} }, {'url':1, '_id':0}))
+        url_json_list = list(collect.find({'title': {'$exists': False}}, {'url':1, '_id':0}))
         return url_json_list
 
     def get_all_url_set(self, collect_name=None):
@@ -36,12 +36,9 @@ class MongoOP:
         url_set = set(each['url'] for each in collect.find({}, {'url':1, '_id':0}))
         return url_set
 
-    def isExists_in_collect(self, url, collect_name=None):
+    def is_exists_in_collect(self, url, collect_name=None):
         if collect_name is None:
             collect_name = self.collect_name
         collect = self.db[collect_name]
 
-        if collect.find({'url': url, 'title': {'$exists': True}}).count() > 0:
-            return True
-        else:
-            return False
+        return bool(collect.find({'url': url, 'title': {'$exists': True}}).count() > 0)

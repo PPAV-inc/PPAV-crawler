@@ -1,6 +1,6 @@
 import re
 import datetime
-from parser_link import Parser_link, parse_webpage
+from parser_link import ParserLink, parse_webpage
 from mongodb import MongoOP
 
 class ParserInfo:
@@ -59,14 +59,14 @@ class ParserInfo:
     def parse_film_info(self, url):
         page_film = parse_webpage(url)
 
-        video_code_re = '(?<=watch-)(\w+-){0,2}\w*\d+'
+        video_code_re = '(?<=watch-)(\\w+-){0,2}\\w*\\d+'
         video_code = re.search(video_code_re, url)
         if video_code is None:
             return None
         video_code = video_code.group().upper()
         search_video_code = self.code_special_case(video_code)
 
-        view_count_re = '<div class=\"film_view_count\".*?>\d*</div>'
+        view_count_re = '<div class=\"film_view_count\".*?>\\d*</div>'
         view_count_str = re.search(view_count_re, page_film).group()
         view_count_str = re.sub('<.*?>', '', view_count_str)
 
@@ -82,7 +82,7 @@ class ParserInfo:
         img_url_re = '<img itemprop=\"image\" src=\"(.*?)\" title=\"'
         img_url = re.search(img_url_re, page_film).group(1)
 
-        if self.mongo.isExists_in_collect(url):
+        if self.mongo.is_exists_in_collect(url):
             info = {}
             info['url'] = url
             info['count'] = int(view_count_str)
@@ -120,7 +120,7 @@ class ParserInfo:
                 self.mongo.remove_url(url, collect_name)
 
     def parse_info_start(self):
-        parser_link = Parser_link()
+        parser_link = ParserLink()
         film_url_json_list = []
         # get unfinished urls and finished it
         film_url_json_list = self.mongo.get_unfinished_url_list()

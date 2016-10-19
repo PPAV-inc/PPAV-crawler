@@ -1,11 +1,10 @@
-import urllib.request
 import re
+import urllib.request
 from urllib import parse
-import os.path
 
-class Parser_link:
-    
-    def __init__(self, orig_url = 'http://xonline.vip'):
+class ParserLink:
+
+    def __init__(self, orig_url='http://xonline.vip'):
         self.orig_url = orig_url
         self.link_url_set = set()
         self.film_url_list = []
@@ -15,7 +14,7 @@ class Parser_link:
         page_web = parse_webpage(url)
 
         if url == self.orig_url:
-            link_re = '(?<=href=\")(?:'+self.orig_url+')?/\S+?/\S+?/(?:page-\d+/)?(?=\")'
+            link_re = '(?<=href=\")(?:'+self.orig_url+')?/\\S+?/\\S+?/(?:page-\\d+/)?(?=\")'
             link_set = set(re.findall(link_re, page_web))
             self.link_url_set |= link_set
 
@@ -44,7 +43,8 @@ class Parser_link:
                     break
                 
         film_url_set = set(self.orig_url + url for url in self.film_url_list)
-        print("parse finished, change film list to set, size: {} -> {}".format(len(self.film_url_list), len(film_url_set)))
+        print("parse finished, change film list to set, size: {} -> {}" \
+            .format(len(self.film_url_list), len(film_url_set)))
 
         return film_url_set
 
@@ -61,7 +61,6 @@ def parse_webpage(url):
     return page
 
 if __name__ == '__main__':
-    orig_url = "http://xonline.vip"
-    parser = Parser_link(orig_url)
-    parser.parse_link_start()
-
+    ORIG_URL = "http://xonline.vip"
+    PARSER = ParserLink(ORIG_URL)
+    PARSER.parse_link_start()
