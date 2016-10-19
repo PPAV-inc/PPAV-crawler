@@ -7,9 +7,9 @@ from mongodb import MongoOP
 
 class Parser_info:
     
-    def __init__(self, host):
+    def __init__(self, mongo_uri):
         self.film_infos = []
-        self.mongo = MongoOP(host)
+        self.mongo = MongoOP(mongo_uri)
         
     def parse_indexav(self, video_code):
         page_indexav = parse_webpage('https://indexav.com/search?keyword=' + video_code)
@@ -81,27 +81,34 @@ class Parser_info:
         title_re = '<title>(.*)</title>'
         title = re.search(title_re, page_film).group()
         title = re.sub('<.*?>', '', title)
-        
-        if search_video_code is not None:
-            parse_indexav_obj = self.parse_indexav(search_video_code)
-            if parse_indexav_obj['model'] is not None:
-                model = parse_indexav_obj['model']
-            if parse_indexav_obj['video_title'] is not None:
-                title = parse_indexav_obj['video_title']
 
         img_url_re = '<img itemprop=\"image\" src=\"(.*?)\" title=\"'
         img_url = re.search(img_url_re, page_film).group(1)
 
-        info = {}
-        info['code'] = video_code
-        info['search_code'] = search_video_code
-        info['url'] = url
-        info['count'] = int(view_count_str)
-        info['models'] = model
-        info['title'] = title
-        info['img_url'] = img_url
-        info['update_date'] = datetime.datetime.now()
-        return info
+        if self.mongo.isExists_in_collect(url):
+            info = {}
+            info['url'] = url
+            info['count'] = int(view_count_str)
+            info['update_date'] = datetime.datetime.now()
+            return info
+        else:
+            if search_video_code is not None:
+                parse_indexav_obj = self.parse_indexav(search_video_code)
+                if parse_indexav_obj['model'] is not None:
+                    model = parse_indexav_obj['model']
+                if parse_indexav_obj['video_title'] is not None:
+                    title = parse_indexav_obj['video_title']
+
+            info = {}
+            info['code'] = video_code
+            info['search_code'] = search_video_code
+            info['url'] = url
+            info['count'] = int(view_count_str)
+            info['img_url'] = img_url
+            info['models'] = model
+            info['title'] = title
+            info['update_date'] = datetime.datetime.now()
+            return info
 
     def parse_info_and_update(self, film_url_json_list):
         for idx, json in enumerate(film_url_json_list):
@@ -115,7 +122,7 @@ class Parser_info:
 
     def parse_info_start(self):
         parser_link = Parser_link()
-        film_url_list = []
+        film_url_json_list = []
 
         # get unfinished urls and finished it
         film_url_json_list = self.mongo.get_unfinished_url_list()

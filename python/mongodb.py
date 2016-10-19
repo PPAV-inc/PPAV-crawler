@@ -12,7 +12,7 @@ class MongoOP:
             collect_name = self.collect_name
         collect = self.db[collect_name]
         for json in json_list:
-            collect.update({'url': json['url']}, json, upsert=True)
+            collect.update({'url': json['url']}, {'$set': json}, upsert=True)
 
     def get_unfinished_url_list(self, collect_name=None):
         if collect_name is None:
@@ -28,3 +28,13 @@ class MongoOP:
 
         url_set = set(each['url'] for each in collect.find({}, {'url':1, '_id':0}))
         return url_set
+
+    def isExists_in_collect(self, url, collect_name=None):
+        if collect_name is None:
+            collect_name = self.collect_name
+        collect = self.db[collect_name]
+
+        if collect.find({'url': url, 'title': {'$exists': True}}).count() > 0:
+            return True
+        else:
+            return False
