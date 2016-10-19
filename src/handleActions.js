@@ -3,6 +3,7 @@ import request from 'request';
 import path from 'path';
 import { findThreeVideos, findVideo } from './mongodb';
 import saveLogData from './models/saveLogData';
+import saveSubscribeData from './models/saveSubscribeData';
 
 const jsonPath = path.join(__dirname, '..', 'config.json');
 const config = jsonfile.readFileSync(jsonPath);
@@ -125,6 +126,8 @@ export const receivedMessage = (event) => {
         result: 'PPAV',
       });
     });
+  } else if (messageText === 'GGinin') {
+    saveSubscribeData(senderID);
   } else {
     switch (firstStr) {
       case '＃':

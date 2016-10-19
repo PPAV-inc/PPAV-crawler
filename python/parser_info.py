@@ -34,6 +34,8 @@ class ParserInfo:
     def code_special_case(cls, code):
         if 'TOKYO-HOT' in code:
             return re.sub('TOKYO-HOT-', '', code)
+        elif 'GACHINCO' in code:
+            return re.sub('GACHINCO-', '', code)
         elif 'CARIB' in code and \
              'CARIBPR' not in code:
             code_re = '([0-9]+-[0-9]+)'
@@ -42,20 +44,15 @@ class ParserInfo:
                 return
             else:
                 return code.group()
-
         elif 'CARIBPR' in code or \
              'PACO' in code or \
              '10MU' in code or \
              '1PONDO' in code:
             code_re = '([0-9]+-[0-9]+)'
             code = re.search(code_re, code)
-            if code is None:
-                return
-            else:
+            if code is not None:
                 code = code.group().replace('-', '_')
                 return code
-        elif 'GACHINCO' in code:
-            return re.sub('GACHINCO-', '', code)
         else:
             return code
 
