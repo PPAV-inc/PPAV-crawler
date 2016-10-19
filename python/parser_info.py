@@ -1,37 +1,37 @@
 import re
-import json
-import os.path
-from parser_link import Parser_link, parse_webpage
 import datetime
+from parser_link import Parser_link, parse_webpage
 from mongodb import MongoOP
 
-class Parser_info:
-    
+class ParserInfo:
+
     def __init__(self, mongo_uri):
         self.film_infos = []
         self.mongo = MongoOP(mongo_uri)
-        
-    def parse_indexav(self, video_code):
+
+    @classmethod
+    def parse_indexav(cls, video_code):
         page_indexav = parse_webpage('https://indexav.com/search?keyword=' + video_code)
-        returnObj = {}
-        
+        return_obj = {}
+
         model_re = '<span class=\"video_actor\".*?>(.*)</span>'
         model = re.search(model_re, page_indexav)
         if model is None:
-            returnObj['model'] = None
+            return_obj['model'] = None
         else:
-            returnObj['model'] = re.sub('<.*?>', '', model.group())
-        
+            return_obj['model'] = re.sub('<.*?>', '', model.group())
+
         video_title_re = '<span class=\"video_title\".*?>(.*)</span>'
         video_title = re.search(video_title_re, page_indexav)
         if video_title is None:
-            returnObj['video_title'] = None
+            return_obj['video_title'] = None
         else:
-            returnObj['video_title'] = re.sub('<.*?>', '', video_title.group())
-        
-        return returnObj
+            return_obj['video_title'] = re.sub('<.*?>', '', video_title.group())
 
-    def code_special_case(self, code):
+        return return_obj
+
+    @classmethod
+    def code_special_case(cls, code):
         if 'TOKYO-HOT' in code:
             return re.sub('TOKYO-HOT-', '', code)
         elif 'CARIB' in code and \
@@ -42,7 +42,7 @@ class Parser_info:
                 return
             else:
                 return code.group()
-            
+
         elif 'CARIBPR' in code or \
              'PACO' in code or \
              '10MU' in code or \
@@ -61,7 +61,7 @@ class Parser_info:
 
     def parse_film_info(self, url):
         page_film = parse_webpage(url)
-        
+
         video_code_re = '(?<=watch-)(\w+-){0,2}\w*\d+'
         video_code = re.search(video_code_re, url)
         if video_code is None:
@@ -77,7 +77,7 @@ class Parser_info:
         model = re.search(model_re, page_film).group()
         model = re.sub('<.*?>', '', model)
         model = re.sub('Models: ', '', model)
-        
+
         title_re = '<title>(.*)</title>'
         title = re.search(title_re, page_film).group()
         title = re.sub('<.*?>', '', title)
@@ -92,7 +92,7 @@ class Parser_info:
             info['update_date'] = datetime.datetime.now()
             return info
         else:
-            if search_video_code is not None:
+            if search_video_code is not None:   # filter some films don't have code number
                 parse_indexav_obj = self.parse_indexav(search_video_code)
                 if parse_indexav_obj['model'] is not None:
                     model = parse_indexav_obj['model']
@@ -119,6 +119,8 @@ class Parser_info:
 
             if info:
                 self.mongo.update_json_list([info])
+            else:
+                self.mongo.remove_url(url)
 
     def parse_info_start(self):
         parser_link = Parser_link()
@@ -133,7 +135,7 @@ class Parser_info:
         # update film information
         print("get all films link")
         link_url_set = parser_link.parse_link_start()
-        film_url_json_list = [ {'url': url} for url in link_url_set]
+        film_url_json_list = [{'url': url} for url in link_url_set]
         self.mongo.update_json_list(film_url_json_list)  # update all url first
         self.parse_info_and_update(film_url_json_list) # then update all url info.
 
@@ -143,17 +145,16 @@ class Parser_info:
         print("link url set size: {}".format(len(link_url_set)))
         print("exists url set size: {}".format(len(exists_url_set)))
         print("new url set size: {}".format(len(new_url_set)))
-        new_url_json_list = [ {'url': url} for url in new_url_set]
+        new_url_json_list = [{'url': url} for url in new_url_set]
         self.mongo.update_json_list(new_url_json_list, collect_name='newVideos')
         self.parse_info_and_update(new_url_json_list, collect_name='newVideos')
 
         print("update film info finished!")
 
 if __name__ == '__main__':
-    mongo_uri = 'mongodb://localhost:27017/test'
+    MONGO_URI = 'mongodb://localhost:27017/test'
     #import json
     #with open('../config.json') as fp:
     #    mongo_uri = json.load(fp)['MONGODB_PATH']
-    parser = Parser_info(mongo_uri)
-    parser.parse_info_start()
-
+    PARSER = ParserInfo(MONGO_URI)
+    PARSER.parse_info_start()
