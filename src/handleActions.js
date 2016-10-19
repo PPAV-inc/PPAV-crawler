@@ -126,8 +126,10 @@ export const receivedMessage = (event) => {
         result: 'PPAV',
       });
     });
-  } else if (messageText === 'GGinin') {
-    saveSubscribeData(senderID);
+  } else if (messageText === 'GGinin' || messageText === 'GGININ' || messageText === 'gginin') {
+    saveSubscribeData(senderID).then(str => {
+      sendTextMessage(senderID, str);
+    });
   } else {
     switch (firstStr) {
       case '＃':

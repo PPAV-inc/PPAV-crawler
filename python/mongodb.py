@@ -12,6 +12,7 @@ class MongoOP:
             collect_name = self.collect_name
         collect = self.db[collect_name]
         for json in json_list:
+            print(json)
             collect.update({'url': json['url']}, {'$set': json}, upsert=True)
 
     def remove_url(self, url, collect_name=None):
