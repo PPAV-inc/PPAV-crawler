@@ -152,6 +152,6 @@ if __name__ == '__main__':
     MONGO_URI = 'mongodb://localhost:27017/test'
     #import json
     #with open('../config.json') as fp:
-    #    mongo_uri = json.load(fp)['MONGODB_PATH']
+    #    MONGO_URI = json.load(fp)['MONGODB_PATH']
     PARSER = ParserInfo(MONGO_URI)
     PARSER.parse_info_start()
