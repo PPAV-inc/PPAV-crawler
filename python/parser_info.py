@@ -125,7 +125,6 @@ class ParserInfo:
     def parse_info_start(self):
         parser_link = Parser_link()
         film_url_json_list = []
-        print(parser_link)
         # get unfinished urls and finished it
         film_url_json_list = self.mongo.get_unfinished_url_list()
         print("unfinished url list size: {}".format(len(film_url_json_list)))
@@ -153,8 +152,8 @@ class ParserInfo:
 
 if __name__ == '__main__':
     MONGO_URI = 'mongodb://localhost:27017/test'
-    #import json
-    #with open('../config.json') as fp:
-    #    mongo_uri = json.load(fp)['MONGODB_PATH']
+    import json
+    with open('../config.json') as fp:
+        MONGO_URI = json.load(fp)['MONGODB_PATH']
     PARSER = ParserInfo(MONGO_URI)
     PARSER.parse_info_start()
