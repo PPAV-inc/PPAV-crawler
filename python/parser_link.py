@@ -41,7 +41,7 @@ class ParserLink:
                 url = link_type + 'page-' + str(subpage_num) + '/'
                 if self.parse_film_link(url) == "Done":
                     break
-                
+
         film_url_set = set(self.orig_url + url for url in self.film_url_list)
         print("parse finished, change film list to set, size: {} -> {}" \
             .format(len(self.film_url_list), len(film_url_set)))

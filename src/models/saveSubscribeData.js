@@ -10,7 +10,7 @@ const saveSubscribeData = senderID => {
         const subscribeId = new SubscribeIdCollection({
           senderID,
         });
-        
+
         // Save it to database
         subscribeId.save(errSave => {
           if (errSave) {

@@ -25,7 +25,7 @@ const callSendAPI = (messageData) => {
       console.error('Unable to send message.');
       // console.error(response);
     }
-  });  
+  });
 };
 
 const sendGenericMessage = (recipientId, title, str, url, imgUrl) => {
@@ -41,7 +41,7 @@ const sendGenericMessage = (recipientId, title, str, url, imgUrl) => {
           elements: [{
             title: title,
             subtitle: str,
-            item_url: url,               
+            item_url: url,
             image_url: imgUrl,
             buttons: [{
               type: 'web_url',
@@ -52,7 +52,7 @@ const sendGenericMessage = (recipientId, title, str, url, imgUrl) => {
         },
       },
     },
-  };  
+  };
 
   callSendAPI(messageData);
 };
@@ -90,13 +90,12 @@ const startedConv = (recipientId) => {
 
 const sendGenericMessageByArr = (senderID, returnArr) => {
   returnArr.forEach((value) => {
-    let str =  
-      `點擊數：${value.count} 
+    let str =
+      `點擊數：${value.count}
        番號：${value.code}
        女優：${value.models}`;
     sendGenericMessage(senderID, value.title, str, value.url, value.img_url);
   });
-  console.log(returnArr);
 };
 
 export const receivedMessage = (event) => {
@@ -104,19 +103,19 @@ export const receivedMessage = (event) => {
         recipientID = event.recipient.id,
         timeOfMessage = event.timestamp,
         message = event.message;
-  
+
   let firstStr = '',
       messageText = message.text;
-        
+
   if (messageText !== undefined) {
     firstStr = messageText.split('')[0];
     messageText = messageText.replace(/\s/g, '');
   }
-        
+
   console.log(`Received message for user ${senderID} and page ${recipientID} at ${timeOfMessage} with message:`);
-  
+
   if (messageText === 'PPAV' || messageText === 'ppav' || messageText === 'Ppav') {
-    findThreeVideos().then(returnArr => { 
+    findThreeVideos().then(returnArr => {
       sendGenericMessageByArr(senderID, returnArr);
       saveLogData(true, {
         senderID: senderID,
@@ -201,7 +200,7 @@ export const receivedMessage = (event) => {
             });
           }
         });
-        break;  
+        break;
       default:
         const str = '想看片請輸入 PPAV \n\n其他搜尋功能：\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"';
         sendTextMessage(senderID, str);
@@ -220,3 +219,5 @@ export const receivedPostback = (event) => {
 
   startedConv(senderID);
 };
+
+export { sendGenericMessageByArr };
