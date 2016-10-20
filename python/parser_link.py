@@ -55,8 +55,12 @@ def parse_webpage(url):
     path = parse.quote(path)
     url = parse.urlunsplit((scheme, netloc, path, query, fragment))
     req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla 7.0'})
-    page = urllib.request.urlopen(req).read().decode('utf-8')
-    return page
+    try:
+        page = urllib.request.urlopen(req).read().decode('utf-8')
+        return page
+    except:
+        print("GG")
+        return None
 
 if __name__ == '__main__':
     ORIG_URL = "http://xonline.vip"

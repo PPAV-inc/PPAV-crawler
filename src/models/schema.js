@@ -6,6 +6,17 @@ const jsonPath = path.join(__dirname, '..', '..', 'config.json');
 const config = jsonfile.readFileSync(jsonPath);
 mongoose.connect(config.MONGODB_PATH);
 
+const newVideoSchema = new mongoose.Schema({
+  id: Number,
+  code: String,
+  search_code: String,
+  title: String,
+  models: String,
+  count: Number,
+  url: String,
+  img_url: String,
+});
+
 const videoSchema = new mongoose.Schema({
   id: Number,
   code: String,
@@ -34,6 +45,7 @@ const subscribeIdSchema = new mongoose.Schema({
 });
 
 export const VideoCollection = mongoose.model('Video', videoSchema);
+export const NewVideoCollection = mongoose.model('NewVideo', newVideoSchema);
 export const ErrorLogCollection = mongoose.model('ErrorLog', errorLogSchema);
 export const SuccessLogCollection = mongoose.model('SuccessLog', successLogSchema);
-export const SubscribeIdCollectionb = mongoose.model('SubscribeId', subscribeIdSchema);
+export const SubscribeIdCollection = mongoose.model('SubscribeId', subscribeIdSchema);

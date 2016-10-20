@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import re
 import datetime
 from parser_link import ParserLink, parse_webpage
@@ -16,19 +14,23 @@ class ParserInfo:
         page_indexav = parse_webpage('https://indexav.com/search?keyword=' + video_code)
         return_obj = {}
 
-        model_re = '<span class=\"video_actor\".*?>(.*)</span>'
-        model = re.search(model_re, page_indexav)
-        if model is None:
-            return_obj['model'] = None
-        else:
-            return_obj['model'] = re.sub('<.*?>', '', model.group())
+        if page_indexav:
+            model_re = '<span class=\"video_actor\".*?>(.*)</span>'
+            model = re.search(model_re, page_indexav)
+            if model is None:
+                return_obj['model'] = None
+            else:
+                return_obj['model'] = re.sub('<.*?>', '', model.group())
 
-        video_title_re = '<span class=\"video_title\".*?>(.*)</span>'
-        video_title = re.search(video_title_re, page_indexav)
-        if video_title is None:
-            return_obj['video_title'] = None
+            video_title_re = '<span class=\"video_title\".*?>(.*)</span>'
+            video_title = re.search(video_title_re, page_indexav)
+            if video_title is None:
+                return_obj['video_title'] = None
+            else:
+                return_obj['video_title'] = re.sub('<.*?>', '', video_title.group())
         else:
-            return_obj['video_title'] = re.sub('<.*?>', '', video_title.group())
+            return_obj['model'] = None
+            return_obj['video_title'] = None
 
         return return_obj
 
@@ -84,7 +86,7 @@ class ParserInfo:
         img_url_re = '<img itemprop=\"image\" src=\"(.*?)\" title=\"'
         img_url = re.search(img_url_re, page_film).group(1)
 
-        if self.mongo.info_is_exists(url):
+        if self.mongo.is_exists(url):
             info = {}
             info['url'] = url
             info['count'] = int(view_count_str)
@@ -112,20 +114,14 @@ class ParserInfo:
     def parse_info_and_update(self, film_url_json_list, collect_name=None):
         for idx, url_json in enumerate(film_url_json_list):
             url = url_json['url']
+            url = ''.join(url.split())
             print(idx, url)
-            date_info = self.mongo.get_url_update_date(url)
-            diff_days = 1   # the days difference between today and last update_date
-
-            if date_info is not None \
-                and (datetime.date.today() - date_info['update_date'].date()).days <= diff_days:
-                print("update_date is {}, skip it".format(date_info['update_date']))
-                continue
-
             info = self.parse_film_info(url)
+
             if info:
                 self.mongo.update_json_list([info], collect_name)
             else:
-                self.mongo.delete_url(url, collect_name)
+                self.mongo.remove_url(url, collect_name)
 
     def parse_info_start(self):
         parser_link = ParserLink()
@@ -138,31 +134,27 @@ class ParserInfo:
         print("unfinished urls are done!")
 
         # update film information
-        for url_list in parser_link.parse_link_generator():
-            print("get films link size: {}".format(len(url_list)))
-            film_url_json_list = [{'url': ''.join(url.split())} for url in url_list]
-            self.mongo.update_json_list(film_url_json_list)  # update url first
-            self.parse_info_and_update(film_url_json_list) # then parse and update url info.
-
-        print("update film info finished!")
+        link_url_set = parser_link.parse_link_start()
+        print("get all films link, size: {}".format(len(link_url_set)))
+        film_url_json_list = [{'url': url} for url in link_url_set]
+        self.mongo.update_json_list(film_url_json_list)  # update all url first
+        self.parse_info_and_update(film_url_json_list) # then update all url info.
 
         # update new video in new collection
-        old_url_set = self.mongo.get_all_url_set(collect_name='videos')
-        update_url_set = self.mongo.get_all_url_set(collect_name='video_updates')
-        new_url_set = update_url_set - old_url_set # get new film url set
-        print("link url set size: {}".format(len(update_url_set)))
+        old_url_set = self.mongo.get_old_all_url_set()
+        new_url_set = link_url_set - old_url_set # get new film url set
+        print("link url set size: {}".format(len(link_url_set)))
         print("old url set size: {}".format(len(old_url_set)))
         print("new url set size: {}".format(len(new_url_set)))
         info_json_list = self.mongo.get_film_info_list(list(new_url_set))
         self.mongo.update_json_list(info_json_list, collect_name='newVideos')
 
-        print("create new collection finished!")
+        print("update film info finished!")
 
 if __name__ == '__main__':
     MONGO_URI = 'mongodb://localhost:27017/test'
-    #with open('../config.json') as fp:
-    #    import json
-    #    MONGO_URI = json.load(fp)['MONGODB_PATH']
-
+    import json
+    with open('../config.json') as fp:
+        MONGO_URI = json.load(fp)['MONGODB_PATH']
     PARSER = ParserInfo(MONGO_URI)
     PARSER.parse_info_start()

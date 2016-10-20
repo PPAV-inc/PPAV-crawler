@@ -7,16 +7,16 @@ const jsonPath = path.join(__dirname, '..', '..', 'public', 'film_info.json');
 const saveVideoData = (obj) => {
   obj.forEach((value) => {
     let Video = new VideoCollection({
-      id: value.id, 
+      id: value.id,
       code: value.code,
-      search_code: value.search_code, 
-      title: value.title, 
-      models: value.models, 
-      count: value.count, 
-      url: value.url, 
-      img_url: value.img_url, 
+      search_code: value.search_code,
+      title: value.title,
+      models: value.models,
+      count: value.count,
+      url: value.url,
+      img_url: value.img_url,
     });
-    
+
     // Save it to database
     Video.save((err) => {
       if (err) {
