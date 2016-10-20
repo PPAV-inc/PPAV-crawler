@@ -1,8 +1,12 @@
+import jsonfile from 'jsonfile';
 import request from 'request';
+import path from 'path';
 import { findThreeVideos, findVideo } from './mongodb';
 import saveLogData from './models/saveLogData';
-import config from '../config';
+import saveSubscribeData from './models/saveSubscribeData';
 
+const jsonPath = path.join(__dirname, '..', 'config.json');
+const config = jsonfile.readFileSync(jsonPath);
 const PAGE_TOKEN = config.PAGE_TOKEN;
 
 const callSendAPI = (messageData) => {
@@ -16,8 +20,7 @@ const callSendAPI = (messageData) => {
       const recipientId = body.recipient_id,
             messageId = body.message_id;
 
-      console.log('Successfully sent generic message with id %s to recipient %s', 
-        messageId, recipientId);
+      console.log(`Successfully sent generic message with id ${messageId} to recipient ${recipientId}`);
     } else {
       console.error('Unable to send message.');
       // console.error(response);
@@ -70,17 +73,17 @@ const startedConv = (recipientId) => {
   let name = '';
 
   request({
-    url: 'https://graph.facebook.com/v2.6/' + recipientId + '?fields=first_name',
+    url: `https://graph.facebook.com/v2.6/${recipientId}?fields=first_name`,
     qs: { access_token: PAGE_TOKEN },
     method: 'GET',
   }, (error, response, body) => {
     if (error) {
-      console.log('Error sending message: ', error);
+      console.log(`Error sending message: ${error}`);
     } else if (response.body.error) {
-      console.log('Error: ', response.body.error);
+      console.log(`Error: ${response.body.error}`);
     } else {
       name = JSON.parse(body);
-      sendTextMessage(recipientId, 'Hello ' + name.first_name + ', do you have a pen? ');
+      sendTextMessage(recipientId, `Hello ${name.first_name} do you have a pen?`);
     }
   });
 };
@@ -88,9 +91,9 @@ const startedConv = (recipientId) => {
 const sendGenericMessageByArr = (senderID, returnArr) => {
   returnArr.forEach((value) => {
     let str =  
-      '點擊數：' + value.count + '\n' +
-      '番號：' + value.code + '\n' +
-      '女優：' + value.models;
+      `點擊數：${value.count} 
+       番號：${value.code}
+       女優：${value.models}`;
     sendGenericMessage(senderID, value.title, str, value.url, value.img_url);
   });
   console.log(returnArr);
@@ -110,8 +113,7 @@ export const receivedMessage = (event) => {
     messageText = messageText.replace(/\s/g, '');
   }
         
-  console.log('Received message for user %d and page %d at %d with message:', 
-    senderID, recipientID, timeOfMessage);
+  console.log(`Received message for user ${senderID} and page ${recipientID} at ${timeOfMessage} with message:`);
   
   if (messageText === 'PPAV' || messageText === 'ppav' || messageText === 'Ppav') {
     findThreeVideos().then(returnArr => { 
@@ -121,6 +123,10 @@ export const receivedMessage = (event) => {
         messageText: messageText,
         result: 'PPAV',
       });
+    });
+  } else if (messageText === 'GGinin' || messageText === 'GGININ' || messageText === 'gginin') {
+    saveSubscribeData(senderID).then(str => {
+      sendTextMessage(senderID, str);
     });
   } else {
     switch (firstStr) {
@@ -137,7 +143,7 @@ export const receivedMessage = (event) => {
               result: str,
             });
           } else {
-            str = '幫你搜尋：' + returnObj.search_value;
+            str = `幫你搜尋：${returnObj.search_value}`;
             sendTextMessage(senderID, str);
             sendGenericMessageByArr(senderID, returnObj.results);
             saveLogData(true, {
@@ -161,7 +167,7 @@ export const receivedMessage = (event) => {
               result: str,
             });
           } else {
-            str = '幫你搜尋：' + returnObj.search_value;
+            str = `幫你搜尋：${returnObj.search_value}`;
             sendTextMessage(senderID, str);
             sendGenericMessageByArr(senderID, returnObj.results);
             saveLogData(true, {
@@ -185,7 +191,7 @@ export const receivedMessage = (event) => {
               result: str,
             });
           } else {
-            str = '幫你搜尋：' + returnObj.search_value;
+            str = `幫你搜尋：${returnObj.search_value}`;
             sendTextMessage(senderID, str);
             sendGenericMessageByArr(senderID, returnObj.results);
             saveLogData(true, {
@@ -210,8 +216,7 @@ export const receivedPostback = (event) => {
         timeOfPostback = event.timestamp,
         payload = event.postback.payload;
 
-  console.log('Received postback for user %d and page %d with payload \'%s\' ' + 
-    'at %d', senderID, recipientID, payload, timeOfPostback);
+  console.log(`Received postback for user ${senderID} and page ${recipientID} with payload '${payload}' at ${timeOfPostback}`);
 
   startedConv(senderID);
 };
