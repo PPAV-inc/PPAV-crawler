@@ -38,6 +38,3 @@ jspm_packages
 
 # Ignore config.js
 config.js
-
-# Ignore data
-data
