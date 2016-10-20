@@ -122,6 +122,7 @@ class ParserInfo:
     def parse_info_start(self):
         parser_link = ParserLink()
         film_url_json_list = []
+
         # get unfinished urls and finished it
         film_url_json_list = self.mongo.get_unfinished_url_list()
         print("unfinished url list size: {}".format(len(film_url_json_list)))
@@ -136,10 +137,10 @@ class ParserInfo:
         self.parse_info_and_update(film_url_json_list) # then update all url info.
 
         # update new video in new collection
-        exists_url_set = self.mongo.get_all_url_set()
-        new_url_set = link_url_set - exists_url_set # get new film url set
+        old_url_set = self.mongo.get_old_all_url_set()
+        new_url_set = link_url_set - old_url_set # get new film url set
         print("link url set size: {}".format(len(link_url_set)))
-        print("exists url set size: {}".format(len(exists_url_set)))
+        print("old url set size: {}".format(len(old_url_set)))
         print("new url set size: {}".format(len(new_url_set)))
         info_json_list = self.mongo.get_film_info_list(list(new_url_set))
         self.mongo.update_json_list(info_json_list, collect_name='newVideos')
