@@ -82,7 +82,7 @@ class ParserInfo:
         img_url_re = '<img itemprop=\"image\" src=\"(.*?)\" title=\"'
         img_url = re.search(img_url_re, page_film).group(1)
 
-        if self.mongo.is_exists_in_collect(url):
+        if self.mongo.is_exists(url):
             info = {}
             info['url'] = url
             info['count'] = int(view_count_str)
@@ -108,8 +108,8 @@ class ParserInfo:
             return info
 
     def parse_info_and_update(self, film_url_json_list, collect_name=None):
-        for idx, json in enumerate(film_url_json_list):
-            url = json['url']
+        for idx, url_json in enumerate(film_url_json_list):
+            url = url_json['url']
             url = ''.join(url.split())
             print(idx, url)
             info = self.parse_film_info(url)
@@ -129,8 +129,8 @@ class ParserInfo:
         print("unfinished urls are done!")
 
         # update film information
-        print("get all films link")
         link_url_set = parser_link.parse_link_start()
+        print("get all films link, size: {}".format(len(link_url_set)))
         film_url_json_list = [{'url': url} for url in link_url_set]
         self.mongo.update_json_list(film_url_json_list)  # update all url first
         self.parse_info_and_update(film_url_json_list) # then update all url info.
@@ -141,9 +141,8 @@ class ParserInfo:
         print("link url set size: {}".format(len(link_url_set)))
         print("exists url set size: {}".format(len(exists_url_set)))
         print("new url set size: {}".format(len(new_url_set)))
-        new_url_json_list = [{'url': url} for url in new_url_set]
-        self.mongo.update_json_list(new_url_json_list, collect_name='newVideos')
-        self.parse_info_and_update(new_url_json_list, collect_name='newVideos')
+        info_json_list = self.mongo.get_film_info_list(list(new_url_set))
+        self.mongo.update_json_list(info_json_list, collect_name='newVideos')
 
         print("update film info finished!")
 
