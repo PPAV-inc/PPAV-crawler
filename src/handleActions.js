@@ -73,14 +73,14 @@ const startedConv = (recipientId) => {
   let name = '';
 
   request({
-    url: 'https://graph.facebook.com/v2.6/' + recipientId + '?fields=first_name',
+    url: `https://graph.facebook.com/v2.6/${recipientId}?fields=first_name`,
     qs: { access_token: PAGE_TOKEN },
     method: 'GET',
   }, (error, response, body) => {
     if (error) {
-      console.log('Error sending message: ', error);
+      console.log(`Error sending message: ${error}`);
     } else if (response.body.error) {
-      console.log('Error: ', response.body.error);
+      console.log(`Error: ${response.body.error}`);
     } else {
       name = JSON.parse(body);
       sendTextMessage(recipientId, `Hello ${name.first_name} do you have a pen?`);
@@ -113,8 +113,7 @@ export const receivedMessage = (event) => {
     messageText = messageText.replace(/\s/g, '');
   }
         
-  console.log('Received message for user %d and page %d at %d with message:', 
-    senderID, recipientID, timeOfMessage);
+  console.log(`Received message for user ${senderID} and page ${recipientID} at ${timeOfMessage} with message:`);
   
   if (messageText === 'PPAV' || messageText === 'ppav' || messageText === 'Ppav') {
     findThreeVideos().then(returnArr => { 

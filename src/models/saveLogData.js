@@ -22,7 +22,7 @@ const saveLogData = (successOrNot, Obj) => {
     if (err) {
       console.log(err);
     } else {
-      console.log('push' + Obj.messageText + ' finished');
+      console.log(`push ${Obj.messageText} finished`);
     }
   });
 };

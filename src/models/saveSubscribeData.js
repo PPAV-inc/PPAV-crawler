@@ -1,22 +1,22 @@
-import { subscribeIdCollection } from './schema';
+import { SubscribeIdCollection } from './schema';
 
-const saveSubscribeData = (senderID) => {
+const saveSubscribeData = senderID => {
   return new Promise(resolve => {
-    subscribeIdCollection.count({senderID: senderID}, (err, count) => {
+    SubscribeIdCollection.count({ senderID: senderID }, (err, count) => {
       if (count > 0) {
         const str = '你已訂閱過了喔';
         resolve(str);
       } else {
-        const SubscribeId = new subscribeIdCollection({
+        const subscribeId = new SubscribeIdCollection({
           senderID,
         });
         
         // Save it to database
-        SubscribeId.save((err) => {
-          if (err) {
-            console.log(err);
+        subscribeId.save(errSave => {
+          if (errSave) {
+            console.log(errSave);
           } else {
-            console.log('push' + senderID + ' finished');
+            console.log(`push ${senderID} finished`);
           }
         });
         const str = '成功訂閱\n敬請期待每日新片';

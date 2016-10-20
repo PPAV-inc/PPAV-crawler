@@ -22,7 +22,7 @@ const saveVideoData = (obj) => {
       if (err) {
         console.log(err);
       } else {
-        console.log('push' + value.code + ' finished');
+        console.log(`push ${value.code} finished`);
       }
     });
   });

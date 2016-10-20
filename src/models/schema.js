@@ -36,4 +36,4 @@ const subscribeIdSchema = new mongoose.Schema({
 export const VideoCollection = mongoose.model('Video', videoSchema);
 export const ErrorLogCollection = mongoose.model('ErrorLog', errorLogSchema);
 export const SuccessLogCollection = mongoose.model('SuccessLog', successLogSchema);
-export const subscribeIdCollection= mongoose.model('SubscribeId', subscribeIdSchema);
+export const SubscribeIdCollectionb = mongoose.model('SubscribeId', subscribeIdSchema);
