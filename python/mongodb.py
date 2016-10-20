@@ -3,9 +3,10 @@ from pymongo import MongoClient
 
 class MongoOP:
 
-    def __init__(self, mongo_uri='mongodb://localhost:27017/test', collect_name='video_updates'):
+    def __init__(self, mongo_uri='mongodb://localhost:27017/test', collect_name='video_updates', old_collect_name='videos'):
         self.db = MongoClient(mongo_uri).get_default_database()
         self.collect_name = collect_name
+        self.old_collect_name = old_collect_name
 
     def update_json_list(self, json_list, collect_name=None):
         if collect_name is None:
@@ -27,7 +28,9 @@ class MongoOP:
         url_json_list = list(collect.find({'title': {'$exists': False}}, {'url':1, '_id':0}))
         return url_json_list
 
-    def get_old_all_url_set(self, old_collect_name='videos'):
+    def get_old_all_url_set(self, old_collect_name=None):
+        if old_collect_name is None:
+            old_collect_name = self.old_collect_name
         collect = self.db[old_collect_name]
 
         url_set = set(each['url'] for each in collect.find({}, {'url':1, '_id':0}))

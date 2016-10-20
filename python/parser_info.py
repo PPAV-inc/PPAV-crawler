@@ -110,7 +110,6 @@ class ParserInfo:
     def parse_info_and_update(self, film_url_json_list, collect_name=None):
         for idx, url_json in enumerate(film_url_json_list):
             url = url_json['url']
-            url = ''.join(url.split())
             print(idx, url)
             info = self.parse_film_info(url)
 
@@ -132,7 +131,7 @@ class ParserInfo:
         # update film information
         link_url_set = parser_link.parse_link_start()
         print("get all films link, size: {}".format(len(link_url_set)))
-        film_url_json_list = [{'url': url} for url in link_url_set]
+        film_url_json_list = [{'url': ''.join(url.split())} for url in link_url_set]
         self.mongo.update_json_list(film_url_json_list)  # update all url first
         self.parse_info_and_update(film_url_json_list) # then update all url info.
 
