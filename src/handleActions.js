@@ -1,7 +1,7 @@
 import jsonfile from 'jsonfile';
 import request from 'request';
 import path from 'path';
-import { findThreeVideos, findVideo } from './mongodb';
+import { findThreeVideos, findVideo, removeSubscribeId } from './mongodb';
 import saveLogData from './models/saveLogData';
 import saveSubscribeData from './models/saveSubscribeData';
 
@@ -125,6 +125,10 @@ export const receivedMessage = (event) => {
     });
   } else if (messageText === 'GGinin' || messageText === 'GGININ' || messageText === 'gginin') {
     saveSubscribeData(senderID).then(str => {
+      sendTextMessage(senderID, str);
+    });
+  } else if (messageText === 'NoGG' || messageText === 'NOGG' || messageText === 'nogg' || messageText === 'noGG') {
+    removeSubscribeId(senderID).then(str => {
       sendTextMessage(senderID, str);
     });
   } else {

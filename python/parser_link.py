@@ -61,7 +61,7 @@ def parse_webpage(url):
     except:
         print("GG")
         return None
-
+        
 if __name__ == '__main__':
     ORIG_URL = "http://xonline.vip"
     PARSER = ParserLink(ORIG_URL)
