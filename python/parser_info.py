@@ -111,12 +111,18 @@ class ParserInfo:
         for idx, url_json in enumerate(film_url_json_list):
             url = url_json['url']
             print(idx, url)
-            info = self.parse_film_info(url)
+            update_date = self.mongo.get_url_update_date(url)['update_date']
+            diff_days = 1   # the days difference between today and last update_date
 
+            if (datetime.date.today() - update_date.date()).days <= diff_days:
+                print("update_date is {}, skip it".format(update_date))
+                continue
+
+            info = self.parse_film_info(url)
             if info:
                 self.mongo.update_json_list([info], collect_name)
             else:
-                self.mongo.remove_url(url, collect_name)
+                self.mongo.delete_url(url, collect_name)
 
     def parse_info_start(self):
         parser_link = ParserLink()
@@ -135,6 +141,8 @@ class ParserInfo:
         self.mongo.update_json_list(film_url_json_list)  # update all url first
         self.parse_info_and_update(film_url_json_list) # then update all url info.
 
+        print("update film info finished!")
+
         # update new video in new collection
         old_url_set = self.mongo.get_old_all_url_set()
         new_url_set = link_url_set - old_url_set # get new film url set
@@ -144,12 +152,13 @@ class ParserInfo:
         info_json_list = self.mongo.get_film_info_list(list(new_url_set))
         self.mongo.update_json_list(info_json_list, collect_name='newVideos')
 
-        print("update film info finished!")
+        print("create new collection finished!")
 
 if __name__ == '__main__':
     MONGO_URI = 'mongodb://localhost:27017/test'
-    import json
     with open('../config.json') as fp:
+        import json
         MONGO_URI = json.load(fp)['MONGODB_PATH']
+
     PARSER = ParserInfo(MONGO_URI)
     PARSER.parse_info_start()
