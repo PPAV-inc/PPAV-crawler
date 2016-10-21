@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import re
 import datetime
 from parser_link import ParserLink, parse_webpage

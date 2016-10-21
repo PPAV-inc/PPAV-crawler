@@ -1,5 +1,6 @@
-from pymongo import MongoClient
+#!/usr/bin/env python3
 
+from pymongo import MongoClient
 
 class MongoOP:
 
@@ -20,6 +21,11 @@ class MongoOP:
 
         collect.delete_one({'url': url})
 
+    def info_is_exists(self, url, collect_name=None):
+        collect = self.get_collection(collect_name)
+
+        return bool(collect.find_one({'url': url, 'title': {'$exists': True}}))
+
     def get_unfinished_url_list(self, collect_name=None):
         collect = self.get_collection(collect_name)
 
@@ -31,11 +37,6 @@ class MongoOP:
 
         url_set = set(each['url'] for each in collect.find({}, {'url':1, '_id':0}))
         return url_set
-
-    def info_is_exists(self, url, collect_name=None):
-        collect = self.get_collection(collect_name)
-
-        return bool(collect.find_one({'url': url, 'title': {'$exists': True}}))
 
     def get_film_info_list(self, url_list, collect_name=None):
         collect = self.get_collection(collect_name)
