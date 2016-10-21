@@ -26,12 +26,18 @@ class ParserLink:
             return False
 
         film_url_list += film_list
-        print("film_url_list size: {}".format(len(film_url_list)))
         return True
 
     def parse_link_generator(self):
         url = self.orig_url
         link_url_set = self.parse_film_link(url)   # get all link_type
+
+        ##################################
+        # only parse link_type is asia
+        link_url_set.clear()
+        link_url_set.add('/country/asia/')
+        ##################################
+
         for link_type in link_url_set:
             if self.orig_url not in link_type:
                 link_type = self.orig_url + link_type
