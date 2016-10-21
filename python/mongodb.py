@@ -26,18 +26,16 @@ class MongoOP:
         url_json_list = list(collect.find({'title': {'$exists': False}}, {'url':1, '_id':0}))
         return url_json_list
 
-    def get_old_all_url_set(self, old_collect_name=None):
-        if old_collect_name is None:
-            old_collect_name = self.old_collect_name
-        collect = self.get_collection(old_collect_name)
+    def get_all_url_set(self, collect_name):
+        collect = self.get_collection(collect_name)
 
         url_set = set(each['url'] for each in collect.find({}, {'url':1, '_id':0}))
         return url_set
 
-    def is_exists(self, url, collect_name=None):
+    def info_is_exists(self, url, collect_name=None):
         collect = self.get_collection(collect_name)
 
-        return bool(collect.find({'url': url, 'title': {'$exists': True}}).count() > 0)
+        return bool(collect.find_one({'url': url, 'title': {'$exists': True}}))
 
     def get_film_info_list(self, url_list, collect_name=None):
         collect = self.get_collection(collect_name)

@@ -6,50 +6,46 @@ class ParserLink:
 
     def __init__(self, orig_url='http://xonline.vip'):
         self.orig_url = orig_url
-        self.link_url_set = set()
-        self.film_url_list = []
 
-    def parse_film_link(self, url):
+    def parse_film_link(self, url, film_url_list=None):
         print(url)
         page_web = parse_webpage(url)
 
         if url == self.orig_url:
             link_re = '(?<=href=\")(?:'+self.orig_url+')?/\\S+?/\\S+?/(?:page-\\d+/)?(?=\")'
             link_set = set(re.findall(link_re, page_web))
-            self.link_url_set |= link_set
+            return link_set
 
         film_re = '(?<=href=\")/watch.*?.html(?=\")'
         film_list = re.findall(film_re, page_web)
 
         # last page
         if len(film_list) == 0:
-            return "Done"
+            return False
 
-        self.film_url_list += film_list
-        print("film_url_list size: {}".format(len(self.film_url_list)))
+        film_url_list += film_list
+        print("film_url_list size: {}".format(len(film_url_list)))
+        return True
 
-    def parse_link_start(self):
+    def parse_link_generator(self):
         url = self.orig_url
-        self.parse_film_link(url)
-        for link_type in self.link_url_set:
+        link_url_set = self.parse_film_link(url)   # get all link_type
+        for link_type in link_url_set:
             if self.orig_url not in link_type:
                 link_type = self.orig_url + link_type
-            subpage_num = 0
 
-            while True:
+            subpage_num = 1
+            url = link_type
+            film_url_list = []
+
+            while self.parse_film_link(url, film_url_list):
                 subpage_num += 1
                 url = link_type + 'page-' + str(subpage_num) + '/'
-                if self.parse_film_link(url) == "Done":
-                    break
-                
-        film_url_set = set(self.orig_url + url for url in self.film_url_list)
-        print("parse finished, change film list to set, size: {} -> {}" \
-            .format(len(self.film_url_list), len(film_url_set)))
 
-        return film_url_set
+            film_url_list = [self.orig_url + url for url in film_url_list]
+            yield film_url_list
 
-    def get_orig_url(self):
-        return self.orig_url
+        return None
 
 # global function
 def parse_webpage(url):
@@ -63,4 +59,6 @@ def parse_webpage(url):
 if __name__ == '__main__':
     ORIG_URL = "http://xonline.vip"
     PARSER = ParserLink(ORIG_URL)
-    PARSER.parse_link_start()
+    for each in PARSER.parse_link_generator():
+        for i in each:
+            print(i)
