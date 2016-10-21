@@ -14,19 +14,23 @@ class ParserInfo:
         page_indexav = parse_webpage('https://indexav.com/search?keyword=' + video_code)
         return_obj = {}
 
-        model_re = '<span class=\"video_actor\".*?>(.*)</span>'
-        model = re.search(model_re, page_indexav)
-        if model is None:
-            return_obj['model'] = None
-        else:
-            return_obj['model'] = re.sub('<.*?>', '', model.group())
+        if page_indexav:
+            model_re = '<span class=\"video_actor\".*?>(.*)</span>'
+            model = re.search(model_re, page_indexav)
+            if model is None:
+                return_obj['model'] = None
+            else:
+                return_obj['model'] = re.sub('<.*?>', '', model.group())
 
-        video_title_re = '<span class=\"video_title\".*?>(.*)</span>'
-        video_title = re.search(video_title_re, page_indexav)
-        if video_title is None:
-            return_obj['video_title'] = None
+            video_title_re = '<span class=\"video_title\".*?>(.*)</span>'
+            video_title = re.search(video_title_re, page_indexav)
+            if video_title is None:
+                return_obj['video_title'] = None
+            else:
+                return_obj['video_title'] = re.sub('<.*?>', '', video_title.group())
         else:
-            return_obj['video_title'] = re.sub('<.*?>', '', video_title.group())
+            return_obj['model'] = None
+            return_obj['video_title'] = None
 
         return return_obj
 

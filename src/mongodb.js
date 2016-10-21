@@ -1,12 +1,26 @@
 import { VideoCollection, NewVideoCollection, SubscribeIdCollection } from './models/schema';
 
+const removeSubscribeId = (senderID) => {
+  return new Promise(resolve => {
+    SubscribeIdCollection.remove({ senderID: senderID }, err => {
+      if (err) {
+        const str = '你尚未訂閱過喔';
+        resolve(str);
+      } else {
+        const str = '成功取消訂閱';
+        resolve(str);
+      }
+    });
+  });
+};
+
 const findSubscribeId = () => {
   return new Promise(resolve => {
-    let senderIDArr = [];
+    let senderIdArr = [];
     SubscribeIdCollection.find().forEach(data => {
-      senderIDArr.push(data);
+      senderIdArr.push(data);
     });
-    resolve(senderIDArr);
+    resolve(senderIdArr);
   });
 };
 
@@ -66,4 +80,4 @@ const findVideo = (key, value) => {
   });
 };
 
-export { findThreeVideos, findVideo, findThreeNewVideos, findSubscribeId };
+export { findThreeVideos, findVideo, findThreeNewVideos, findSubscribeId, removeSubscribeId };
