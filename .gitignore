@@ -39,5 +39,5 @@ jspm_packages
 # Ignore config.json
 config.json
 
-# Ignore data
-data
+# Ignore python/__pycache__/
+python/__pycache__/
