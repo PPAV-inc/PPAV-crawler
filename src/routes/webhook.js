@@ -1,9 +1,6 @@
 import Router from 'koa-router';
-import jsonfile from 'jsonfile';
-import path from 'path';
+import config from '../config';
 
-const jsonPath = path.join(__dirname, '..', 'config.json');
-const config = jsonfile.readFileSync(jsonPath);
 const VERIFY_TOKEN = config.VERIFY_TOKEN;
 
 const webhookRouter = new Router();
