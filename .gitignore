@@ -38,3 +38,6 @@ jspm_packages
 
 # Ignore config.json
 config.json
+
+# Ignore /lib
+lib
