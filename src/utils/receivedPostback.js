@@ -1,5 +1,6 @@
 import request from 'request';
 import config from '../config';
+import sendTextMessage from './sendTextMessage';
 
 const PAGE_TOKEN = config.PAGE_TOKEN;
 
