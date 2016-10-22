@@ -29,7 +29,7 @@ const videoSchema = new mongoose.Schema({
 });
 
 const logSchema = new mongoose.Schema({
-  successOrNot: String,
+  successOrNot: Boolean,
   senderID: String,
   messageText: String,
   result: String,
