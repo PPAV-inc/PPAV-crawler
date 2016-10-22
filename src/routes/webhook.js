@@ -1,7 +1,7 @@
 import Router from 'koa-router';
 import config from '../config';
 import receivedPostback from '../utils/receivedPostback';
-import receivedMessage from '../utils/receivedMessage';
+import { receivedMessage } from '../utils/receivedMessage';
 
 const VERIFY_TOKEN = config.VERIFY_TOKEN;
 
@@ -16,7 +16,7 @@ webhookRouter.get('/webhook/', (req, res) => {
 
 webhookRouter.post('/webhook', (req, res) => {
   const data = req.body;
-  // Make sure this is a page subscription
+
   if (data.object === 'page') {
     data.entry.forEach((pageEntry) => {
       pageEntry.messaging.forEach((messagingEvent) => {

@@ -1,5 +1,10 @@
 import sendGenericMessage from './sendGenericMessage';
 import sendTextMessage from './sendTextMessage';
+import findThreeVideos from '../models/findThreeVideos';
+import saveLogData from '../models/saveLogData';
+import saveSubscribeData from '../models/saveSubscribeData';
+import removeSubscribeId from '../models/removeSubscribeId';
+import findVideo from '../models/findVideo';
 
 const sendGenericMessageByArr = (senderID, returnArr) => {
   returnArr.forEach((value) => {
@@ -40,7 +45,7 @@ const receivedMessage = (event) => {
     saveSubscribeData(senderID).then(str => {
       sendTextMessage(senderID, str);
     });
-  } else if (messageText === 'NoGG' || messageText === 'NOGG' || messageText === 'nogg' || messageText === 'noGG') {
+  } else if (messageText === 'NoGG' || messageText === 'NOGG' || messageText === 'nogg' || messageText === 'noGG' || messageText === 'Nogg') {
     removeSubscribeId(senderID).then(str => {
       sendTextMessage(senderID, str);
     });
@@ -126,4 +131,4 @@ const receivedMessage = (event) => {
   }
 };
 
-export default receivedMessage;
+export { receivedMessage, sendGenericMessageByArr };
