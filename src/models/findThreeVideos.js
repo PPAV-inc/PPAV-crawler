@@ -1,5 +1,4 @@
-import { VideoCollection } from './models/schema';
-
+import { VideoCollection } from './schema';
 
 const findThreeVideos = () => {
   return new Promise(resolve => {

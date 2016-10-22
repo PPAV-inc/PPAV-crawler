@@ -1,4 +1,5 @@
-import { findThreeNewVideos, findSubscribeId } from '../mongodb';
+import findThreeNewVideos from '../models/findThreeNewVideos';
+import findSubscribeId from '../models/findSubscribeId';
 import { sendGenericMessageByArr } from './receivedMessage';
 
 findThreeNewVideos().then(returnArr => {
