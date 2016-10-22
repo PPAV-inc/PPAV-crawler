@@ -28,13 +28,8 @@ const videoSchema = new mongoose.Schema({
   img_url: String,
 });
 
-const errorLogSchema = new mongoose.Schema({
-  senderID: String,
-  messageText: String,
-  result: String,
-});
-
-const successLogSchema = new mongoose.Schema({
+const logSchema = new mongoose.Schema({
+  successOrNot: String,
   senderID: String,
   messageText: String,
   result: String,
@@ -46,6 +41,5 @@ const subscribeIdSchema = new mongoose.Schema({
 
 export const VideoCollection = mongoose.model('Video', videoSchema);
 export const NewVideoCollection = mongoose.model('NewVideo', newVideoSchema);
-export const ErrorLogCollection = mongoose.model('ErrorLog', errorLogSchema);
-export const SuccessLogCollection = mongoose.model('SuccessLog', successLogSchema);
+export const LogCollection = mongoose.model('Log', logSchema);
 export const SubscribeIdCollection = mongoose.model('SubscribeId', subscribeIdSchema);
