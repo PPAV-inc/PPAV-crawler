@@ -41,3 +41,10 @@ config.json
 
 # Ignore data
 data
+
+# analyze-video 
+# ignore ouptut video
+analyze-video/video/*
+# ignore installing dependency
+analyze-video/setup/*.zip
+analyze-video/setup/*.deb
