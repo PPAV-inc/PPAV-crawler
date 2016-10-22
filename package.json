@@ -11,11 +11,13 @@
   "dependencies": {
     "babel-polyfill": "^6.5.0",
     "babel-runtime": "^6.5.0",
-    "body-parser": "^1.14.2",
     "elasticsearchclient": "^0.5.3",
-    "express": "^4.13.4",
     "firebase": "^3.4.1",
     "jsonfile": "^2.4.0",
+    "koa": "^2.0.0",
+    "koa-bodyparser": "^3.0.0",
+    "koa-compress": "^2.0.0",
+    "koa-router": "^7.0.1",
     "mongoose": "^4.6.3",
     "path": "^0.12.7",
     "request": "^2.65.0"
