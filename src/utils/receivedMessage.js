@@ -9,8 +9,8 @@ import findVideo from '../models/findVideo';
 const sendGenericMessageByArr = (senderID, returnArr) => {
   returnArr.forEach((value) => {
     let date = new Date(value.update_date);
-    const dateFormat = `${date.getFullYear()}/${(date.getMonth()+1)}/${date.getDate()}`;
-    let str =
+    const dateFormat = `${date.getFullYear()}/${(date.getMonth() + 1)}/${date.getDate()}`;
+    const str =
       `點擊數：${value.count}
        番號：${value.code}
        女優：${value.models}

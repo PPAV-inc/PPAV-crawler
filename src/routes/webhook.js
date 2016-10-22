@@ -20,6 +20,7 @@ webhookRouter.get('/webhook', async ctx => {
 
 webhookRouter.post('/webhook', async ctx => {
   const data = ctx.request.body;
+  const res = ctx.response;
   
   if (data.object === 'page') {
     data.entry.forEach((pageEntry) => {
@@ -33,7 +34,7 @@ webhookRouter.post('/webhook', async ctx => {
         }
       });
     });
-    ctx.response.body = 200;
+    res.body = 200;
   }
 });
 
