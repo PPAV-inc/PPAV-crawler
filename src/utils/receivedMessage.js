@@ -1,92 +1,10 @@
-import jsonfile from 'jsonfile';
-import request from 'request';
-import path from 'path';
-import { findThreeVideos, findVideo, removeSubscribeId } from './mongodb';
-import saveLogData from './models/saveLogData';
-import saveSubscribeData from './models/saveSubscribeData';
-
-const jsonPath = path.join(__dirname, '..', 'config.json');
-const config = jsonfile.readFileSync(jsonPath);
-const PAGE_TOKEN = config.PAGE_TOKEN;
-
-const callSendAPI = (messageData) => {
-  request({
-    uri: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: { access_token: PAGE_TOKEN },
-    method: 'POST',
-    json: messageData,
-  }, (error, response, body) => {
-    if (!error && response.statusCode === 200) {
-      const recipientId = body.recipient_id,
-            messageId = body.message_id;
-
-      console.log(`Successfully sent generic message with id ${messageId} to recipient ${recipientId}`);
-    } else {
-      console.error('Unable to send message.');
-      // console.error(response);
-    }
-  });
-};
-
-const sendGenericMessage = (recipientId, title, str, url, imgUrl) => {
-  const messageData = {
-    recipient: {
-      id: recipientId,
-    },
-    message: {
-      attachment: {
-        type: 'template',
-        payload: {
-          template_type: 'generic',
-          elements: [{
-            title: title,
-            subtitle: str,
-            item_url: url,
-            image_url: imgUrl,
-            buttons: [{
-              type: 'web_url',
-              url: url,
-              title: '開啟網頁',
-            }],
-          }],
-        },
-      },
-    },
-  };
-
-  callSendAPI(messageData);
-};
-
-const sendTextMessage = (recipientId, messageText) => {
-  const messageData = {
-    recipient: {
-      id: recipientId,
-    },
-    message: {
-      text: messageText,
-    },
-  };
-  callSendAPI(messageData);
-};
-
-const startedConv = (recipientId) => {
-  let name = '';
-
-  request({
-    url: `https://graph.facebook.com/v2.6/${recipientId}?fields=first_name`,
-    qs: { access_token: PAGE_TOKEN },
-    method: 'GET',
-  }, (error, response, body) => {
-    if (error) {
-      console.log(`Error sending message: ${error}`);
-    } else if (response.body.error) {
-      console.log(`Error: ${response.body.error}`);
-    } else {
-      name = JSON.parse(body);
-      sendTextMessage(recipientId, `Hello ${name.first_name} do you have a pen?`);
-    }
-  });
-};
+import sendGenericMessage from './sendGenericMessage';
+import sendTextMessage from './sendTextMessage';
+import findThreeVideos from '../models/findThreeVideos';
+import saveLogData from '../models/saveLogData';
+import saveSubscribeData from '../models/saveSubscribeData';
+import removeSubscribeId from '../models/removeSubscribeId';
+import findVideo from '../models/findVideo';
 
 const sendGenericMessageByArr = (senderID, returnArr) => {
   returnArr.forEach((value) => {
@@ -98,7 +16,7 @@ const sendGenericMessageByArr = (senderID, returnArr) => {
   });
 };
 
-export const receivedMessage = (event) => {
+const receivedMessage = (event) => {
   const senderID = event.sender.id,
         recipientID = event.recipient.id,
         timeOfMessage = event.timestamp,
@@ -127,7 +45,7 @@ export const receivedMessage = (event) => {
     saveSubscribeData(senderID).then(str => {
       sendTextMessage(senderID, str);
     });
-  } else if (messageText === 'NoGG' || messageText === 'NOGG' || messageText === 'nogg' || messageText === 'noGG') {
+  } else if (messageText === 'NoGG' || messageText === 'NOGG' || messageText === 'nogg' || messageText === 'noGG' || messageText === 'Nogg') {
     removeSubscribeId(senderID).then(str => {
       sendTextMessage(senderID, str);
     });
@@ -213,15 +131,4 @@ export const receivedMessage = (event) => {
   }
 };
 
-export const receivedPostback = (event) => {
-  const senderID = event.sender.id,
-        recipientID = event.recipient.id,
-        timeOfPostback = event.timestamp,
-        payload = event.postback.payload;
-
-  console.log(`Received postback for user ${senderID} and page ${recipientID} with payload '${payload}' at ${timeOfPostback}`);
-
-  startedConv(senderID);
-};
-
-export { sendGenericMessageByArr };
+export { receivedMessage, sendGenericMessageByArr };
