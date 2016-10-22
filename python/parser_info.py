@@ -16,23 +16,19 @@ class ParserInfo:
         page_indexav = parse_webpage('https://indexav.com/search?keyword=' + video_code)
         return_obj = {}
 
-        if page_indexav:
-            model_re = '<span class=\"video_actor\".*?>(.*)</span>'
-            model = re.search(model_re, page_indexav)
-            if model is None:
-                return_obj['model'] = None
-            else:
-                return_obj['model'] = re.sub('<.*?>', '', model.group())
-
-            video_title_re = '<span class=\"video_title\".*?>(.*)</span>'
-            video_title = re.search(video_title_re, page_indexav)
-            if video_title is None:
-                return_obj['video_title'] = None
-            else:
-                return_obj['video_title'] = re.sub('<.*?>', '', video_title.group())
-        else:
+        model_re = '<span class=\"video_actor\".*?>(.*)</span>'
+        model = re.search(model_re, page_indexav)
+        if model is None:
             return_obj['model'] = None
+        else:
+            return_obj['model'] = re.sub('<.*?>', '', model.group())
+
+        video_title_re = '<span class=\"video_title\".*?>(.*)</span>'
+        video_title = re.search(video_title_re, page_indexav)
+        if video_title is None:
             return_obj['video_title'] = None
+        else:
+            return_obj['video_title'] = re.sub('<.*?>', '', video_title.group())
 
         return return_obj
 
@@ -118,7 +114,7 @@ class ParserInfo:
             url = url_json['url']
             print(idx, url)
             date_info = self.mongo.get_url_update_date(url)
-            diff_days = 1   # the days difference between today and last update_date
+            diff_days = 3   # the days difference between today and last update_date
 
             if date_info is not None \
                 and (datetime.date.today() - date_info['update_date'].date()).days <= diff_days:
@@ -131,8 +127,7 @@ class ParserInfo:
             else:
                 self.mongo.delete_url(url, collect_name)
 
-    def parse_info_start(self):
-        parser_link = ParserLink()
+    def parse_start(self):
         film_url_json_list = []
 
         # get unfinished urls and finished it
@@ -142,6 +137,7 @@ class ParserInfo:
         print("unfinished urls are done!")
 
         # update film information
+        parser_link = ParserLink()
         for url_list in parser_link.parse_link_generator():
             print("get films link size: {}".format(len(url_list)))
             film_url_json_list = [{'url': ''.join(url.split())} for url in url_list]
@@ -164,9 +160,9 @@ class ParserInfo:
 
 if __name__ == '__main__':
     MONGO_URI = 'mongodb://localhost:27017/test'
-    # with open('../config.json') as fp:
-    #    import json
-    #    MONGO_URI = json.load(fp)['MONGODB_PATH']
+    with open('../config.json') as fp:
+        import json
+        MONGO_URI = json.load(fp)['MONGODB_PATH']
 
     PARSER = ParserInfo(MONGO_URI)
-    PARSER.parse_info_start()
+    PARSER.parse_start()

@@ -13,7 +13,13 @@ class MongoOP:
     def update_json_list(self, json_list, collect_name=None):
         collect = self.get_collection(collect_name)
 
-        for json in json_list:
+        if collect_name == 'newVideos':
+            print("new Videos drop")
+            collect.drop()
+
+        for idx, json in enumerate(json_list):
+            if(idx % 100 == 1):
+                print("update into {} : {} / {}".format(collect_name, idx, len(json_list)-1))
             collect.update_one({'url': json['url']}, {'$set': json}, upsert=True)
 
     def delete_url(self, url, collect_name=None):
@@ -29,13 +35,13 @@ class MongoOP:
     def get_unfinished_url_list(self, collect_name=None):
         collect = self.get_collection(collect_name)
 
-        url_json_list = list(collect.find({'title': {'$exists': False}}, {'url':1, '_id':0}))
+        url_json_list = list(collect.find({'update_date': {'$exists': False}}, {'url':1, '_id':0}))
         return url_json_list
 
     def get_all_url_set(self, collect_name):
         collect = self.get_collection(collect_name)
 
-        url_set = set(each['url'] for each in collect.find({}, {'url':1, '_id':0}))
+        url_set = set(each['url'] for each in collect.find({'update_date': {'$exists':True}}, {'url':1, '_id':0}))
         return url_set
 
     def get_film_info_list(self, url_list, collect_name=None):

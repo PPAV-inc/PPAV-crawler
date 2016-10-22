@@ -26,12 +26,18 @@ class ParserLink:
             return False
 
         film_url_list += film_list
-        print("film_url_list size: {}".format(len(film_url_list)))
         return True
 
     def parse_link_generator(self):
         url = self.orig_url
         link_url_set = self.parse_film_link(url)   # get all link_type
+
+        ##################################
+        # only parse link_type is asia
+        link_url_set.clear()
+        link_url_set.add('/country/asia/')
+        ##################################
+
         for link_type in link_url_set:
             if self.orig_url not in link_type:
                 link_type = self.orig_url + link_type
@@ -55,12 +61,8 @@ def parse_webpage(url):
     path = parse.quote(path)
     url = parse.urlunsplit((scheme, netloc, path, query, fragment))
     req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla 7.0'})
-    try:
-        page = urllib.request.urlopen(req).read().decode('utf-8')
-        return page
-    except:
-        print("GG")
-        return None
+    page = urllib.request.urlopen(req).read().decode('utf-8')
+    return page
 
 if __name__ == '__main__':
     ORIG_URL = "http://xonline.vip"
