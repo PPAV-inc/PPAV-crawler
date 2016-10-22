@@ -1,3 +1,4 @@
+import 'babel-polyfill';
 import Router from 'koa-router';
 import config from '../config';
 import receivedPostback from '../utils/receivedPostback';
@@ -7,16 +8,19 @@ const VERIFY_TOKEN = config.VERIFY_TOKEN;
 
 const webhookRouter = new Router();
 
-webhookRouter.get('/webhook/', (req, res) => {
-  if (req.query['hub.verify_token'] === VERIFY_TOKEN) {
-    res.send(req.query['hub.challenge']);
-  }
-  res.send('Error, wrong validation token');
+webhookRouter.get('/webhook', async ctx => {
+    const req = ctx.request;
+    const res = ctx.response;
+    if (req.query['hub.verify_token'] === VERIFY_TOKEN) {
+      res.body = req.query['hub.challenge'];
+    } else {
+      res.body = 'Error, wrong validation token';
+    }
 });
 
-webhookRouter.post('/webhook', (req, res) => {
-  const data = req.body;
-
+webhookRouter.post('/webhook', async (ctx) => {
+  const data = ctx.request.body;
+  
   if (data.object === 'page') {
     data.entry.forEach((pageEntry) => {
       pageEntry.messaging.forEach((messagingEvent) => {
@@ -29,7 +33,8 @@ webhookRouter.post('/webhook', (req, res) => {
         }
       });
     });
-
-    res.sendStatus(200);
+    ctx.response.body = 200;
   }
 });
+
+export default webhookRouter;

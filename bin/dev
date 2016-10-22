@@ -37,6 +37,6 @@ try {
   console.error(e.message, e.stack);
 }
 
-process.once('SIGINT', function() {
+process.once('SIGINT',() => {
     process.exit(0);
 });
