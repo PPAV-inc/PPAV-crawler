@@ -18,7 +18,7 @@ webhookRouter.get('/webhook', async ctx => {
     }
 });
 
-webhookRouter.post('/webhook', async (ctx) => {
+webhookRouter.post('/webhook', async ctx => {
   const data = ctx.request.body;
   
   if (data.object === 'page') {

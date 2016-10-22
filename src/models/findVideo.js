@@ -1,6 +1,5 @@
 import { VideoCollection } from './schema';
 
-
 const escapeRegex = (text) => {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 };
