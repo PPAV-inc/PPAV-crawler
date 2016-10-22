@@ -13,7 +13,7 @@ const callSendAPI = (messageData) => {
     if (!error && response.statusCode === 200) {
       const recipientId = body.recipient_id,
             messageId = body.message_id;
-
+            
       console.log(`Successfully sent generic message with id ${messageId} to recipient ${recipientId}`);
     } else {
       console.error('Unable to send message.');

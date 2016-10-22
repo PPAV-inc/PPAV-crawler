@@ -15,7 +15,8 @@ const newVideoSchema = new mongoose.Schema({
   count: Number,
   url: String,
   img_url: String,
-});
+  update_date: Date,
+}, { collection: 'videos_new' });
 
 const videoSchema = new mongoose.Schema({
   id: Number,
@@ -26,20 +27,21 @@ const videoSchema = new mongoose.Schema({
   count: Number,
   url: String,
   img_url: String,
-});
+  update_date: Date,
+}, { collection: 'videos' });
 
 const logSchema = new mongoose.Schema({
   successOrNot: Boolean,
   senderID: String,
   messageText: String,
   result: String,
-});
+}, { collection: 'logs' });
 
 const subscribeIdSchema = new mongoose.Schema({
   senderID: String,
-});
+}, { collection: 'subscribeids' });
 
-export const VideoCollection = mongoose.model('Video', videoSchema);
-export const NewVideoCollection = mongoose.model('NewVideo', newVideoSchema);
-export const LogCollection = mongoose.model('Log', logSchema);
-export const SubscribeIdCollection = mongoose.model('SubscribeId', subscribeIdSchema);
+export const VideoCollection = mongoose.model('videos', videoSchema);
+export const NewVideoCollection = mongoose.model('videos_new', newVideoSchema);
+export const LogCollection = mongoose.model('logs', logSchema);
+export const SubscribeIdCollection = mongoose.model('subscribeids', subscribeIdSchema);
