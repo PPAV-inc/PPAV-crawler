@@ -13,6 +13,3 @@ wget http://chromedriver.storage.googleapis.com/2.24/chromedriver_linux64.zip
 unzip chromedriver_linux64.zip
 sudo mv chromedriver /usr/bin/
 sudo chmod a+x chromedriver
-
-# install opencv
-
