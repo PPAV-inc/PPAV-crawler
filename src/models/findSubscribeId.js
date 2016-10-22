@@ -6,6 +6,7 @@ const findSubscribeId = () => {
     SubscribeIdCollection.find().forEach(data => {
       senderIdArr.push(data);
     });
+    console.log(senderIdArr);
     resolve(senderIdArr);
   });
 };
