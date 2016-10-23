@@ -11,6 +11,7 @@
     "arrow-parens": "off",
     "import/prefer-default-export": "off",
     "indent": [0, "tab"],
+    "max-len": "off",
     "no-case-declarations": "off",
     "no-trailing-spaces": "off",
     "object-shorthand": "off",

@@ -14,14 +14,12 @@ postSubscribeRouter.post('/post-subscribe', async ctx => {
   if (data.verify_token === VERIFY_TOKEN) {
     try {
       postSubscribe();
-      res.body = `Post Subscribe Success`;
-    } 
-    catch(err) {
+      res.body = 'Post Subscribe Success';
+    } catch (err) {
       res.body = err;
     }
-    
   } else {
-    res.body = `Verify Token Error`;
+    res.body = 'Verify Token Error';
   }
 });
 
