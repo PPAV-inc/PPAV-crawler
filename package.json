@@ -9,6 +9,7 @@
     "url": "git+https://github.com/xxhomey19/PPAV.git"
   },
   "dependencies": {
+    "babel-polyfill": "^6.16.0",
     "elasticsearchclient": "^0.5.3",
     "firebase": "^3.4.1",
     "jsonfile": "^2.4.0",
@@ -27,7 +28,6 @@
     "babel-core": "^6.5.1",
     "babel-eslint": "^7.0.0",
     "babel-istanbul": "^0.11.0",
-    "babel-polyfill": "^6.16.0",
     "babel-preset-es2015": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.5.1",
