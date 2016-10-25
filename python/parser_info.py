@@ -154,7 +154,7 @@ class ParserInfo:
         print("old url set size: {}".format(len(old_url_set)))
         print("new url set size: {}".format(len(new_url_set)))
         info_json_list = self.mongo.get_film_info_list(list(new_url_set))
-        self.mongo.update_json_list(info_json_list, collect_name='newVideos')
+        self.mongo.update_json_list(info_json_list, collect_name='videos_new')
 
         print("create new collection finished!")
 

@@ -18,7 +18,7 @@ class MongoOP:
             collect.drop()
 
         for idx, json in enumerate(json_list):
-            if(idx % 100 == 1):
+            if idx % 100 == 1:
                 print("update into {} : {} / {}".format(collect_name, idx, len(json_list)-1))
             collect.update_one({'url': json['url']}, {'$set': json}, upsert=True)
 
@@ -41,7 +41,8 @@ class MongoOP:
     def get_all_url_set(self, collect_name):
         collect = self.get_collection(collect_name)
 
-        url_set = set(each['url'] for each in collect.find({'update_date': {'$exists':True}}, {'url':1, '_id':0}))
+        url_set = set(each['url'] for each \
+                     in collect.find({'update_date': {'$exists':True}}, {'url':1, '_id':0}))
         return url_set
 
     def get_film_info_list(self, url_list, collect_name=None):
@@ -61,3 +62,9 @@ class MongoOP:
 
         return collect.find_one({'url': url, 'update_date': {'$exists':True}}, \
                                 {'update_date':1, '_id':0})
+
+    def get_logs(self, collect_name='logs'):
+        collect = self.db[collect_name]
+
+        for each in collect.find():
+            print(each)
