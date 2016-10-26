@@ -44,7 +44,7 @@ const receivedMessage = (event) => {
         result: 'PPAV',
       });
     });
-  } else if (messageText === 'GGinin' || messageText === 'GGININ' || messageText === 'gginin') {
+  } else if (messageText === 'GGinin' || messageText === 'GGININ' || messageText === 'gginin' || messageText === 'Gginin') {
     saveSubscribeData(senderID).then(str => {
       sendTextMessage(senderID, str);
     });
@@ -127,7 +127,7 @@ const receivedMessage = (event) => {
         });
         break;
       default:
-        const str = '想看片請輸入 PPAV \n\n其他搜尋功能：\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"';
+        const str = '想看片請輸入 PPAV \n\n其他搜尋功能：\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"\n\n訂閱每日推播："GGININ"';
         sendTextMessage(senderID, str);
         break;
     }
