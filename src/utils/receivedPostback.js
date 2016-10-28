@@ -1,10 +1,11 @@
 import request from 'request';
 import config from '../config';
 import sendTextMessage from './sendTextMessage';
+import saveGetStartedData from '../models/saveGetStartedData';
 
 const PAGE_TOKEN = config.PAGE_TOKEN;
 
-const startedConv = (recipientId) => {
+const startedConv = (recipientId, timeOfPostback) => {
   let name = '';
 
   request({
@@ -19,6 +20,12 @@ const startedConv = (recipientId) => {
     } else {
       name = JSON.parse(body);
       sendTextMessage(recipientId, `Hello ${name.first_name} do you have a pen?`);
+      try {
+        saveGetStartedData(recipientId, name.first_name, timeOfPostback);
+      }
+      catch(err) {
+        console.log(err);
+      }
     }
   });
 };
@@ -31,7 +38,7 @@ const receivedPostback = (event) => {
 
   console.log(`Received postback for user ${senderID} and page ${recipientID} with payload '${payload}' at ${timeOfPostback}`);
 
-  startedConv(senderID);
+  startedConv(senderID, timeOfPostback);
 };
 
 export default receivedPostback;
