@@ -5,7 +5,7 @@ const findThreeNewVideos = () => {
   return new Promise(resolve => {
     NewVideoCollection.aggregate()
     .sort({ count: -1 })
-    .limit(20)
+    .limit(10)
     .sample(3)
     .exec((err, docs) => {
        resolve(docs);
