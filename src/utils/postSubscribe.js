@@ -8,7 +8,7 @@ const postSubscribe = () => {
   findThreeNewVideos().then(returnArr => {
     findSubscribeId().then(senderIDArr => {
       senderIDArr.forEach(returnSenderID => {
-        const str = '今日推薦';
+        const str = '今日新增';
         sendTextMessage(returnSenderID.senderID, str);
         sendGenericMessageByArr(returnSenderID.senderID, returnArr);
       });
