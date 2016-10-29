@@ -35,6 +35,7 @@ const logSchema = new mongoose.Schema({
   senderID: String,
   messageText: String,
   result: String,
+  timestamp: Date,
 }, { collection: 'logs' });
 
 const subscribeIdSchema = new mongoose.Schema({
