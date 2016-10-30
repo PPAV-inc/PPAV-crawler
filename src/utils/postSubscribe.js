@@ -7,7 +7,7 @@ import { sendGenericMessageByArr } from './receivedMessage';
 
 const loopfunc = (senderIDArr, returnArr, nowCnt, arrCnt) => {
   if (nowCnt < arrCnt) {
-    const str = '';
+    const str = '今日新增';
     sendTextMessage(senderIDArr[nowCnt].senderID, str)
       .then(delay(1000))
       .then(() => {
