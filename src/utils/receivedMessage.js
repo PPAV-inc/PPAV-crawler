@@ -78,20 +78,27 @@ const receivedMessage = (event) => {
           let str = '';
           if (returnObj.results.length === 0) {
             str = '搜尋不到此番號';
-            sendTextMessage(senderID, str);
-            saveLogData(false, {
-              senderID: senderID,
-              messageText: messageText,
-              result: str,
+            sendTextMessage(senderID, str).then(returnBool => {
+              if (returnBool) {
+                saveLogData(false, {
+                  senderID: senderID,
+                  messageText: messageText,
+                  result: str,
+                });
+              }
             });
           } else {
             str = `幫你搜尋：${returnObj.search_value}`;
-            sendTextMessage(senderID, str);
-            sendGenericMessageByArr(senderID, returnObj.results);
-            saveLogData(true, {
-              senderID: senderID,
-              messageText: messageText,
-              result: str,
+            sendTextMessage(senderID, str).then(() => {
+              sendGenericMessageByArr(senderID, returnObj.results).then(returnBool => {
+                if (returnBool) {
+                  saveLogData(true, {
+                    senderID: senderID,
+                    messageText: messageText,
+                    result: str,
+                  });
+                }
+              });
             });
           }
         });
@@ -104,7 +111,6 @@ const receivedMessage = (event) => {
             str = '搜尋不到此女優';
             sendTextMessage(senderID, str).then(returnBool => {
               if (returnBool) {
-                console.log(`女優：${returnBool}`);
                 saveLogData(false, {
                   senderID: senderID,
                   messageText: messageText,
@@ -114,12 +120,16 @@ const receivedMessage = (event) => {
             });
           } else {
             str = `幫你搜尋：${returnObj.search_value}`;
-            sendTextMessage(senderID, str);
-            sendGenericMessageByArr(senderID, returnObj.results);
-            saveLogData(true, {
-              senderID: senderID,
-              messageText: messageText,
-              result: str,
+            sendTextMessage(senderID, str).then(() => {
+              sendGenericMessageByArr(senderID, returnObj.results).then(returnBool => {
+                if (returnBool) {
+                  saveLogData(true, {
+                    senderID: senderID,
+                    messageText: messageText,
+                    result: str,
+                  });
+                }
+              });
             });
           }
         });
@@ -130,20 +140,27 @@ const receivedMessage = (event) => {
           let str = '';
           if (returnObj.results.length === 0) {
             str = '搜尋不到此片名';
-            sendTextMessage(senderID, str);
-            saveLogData(false, {
-              senderID: senderID,
-              messageText: messageText,
-              result: str,
+            sendTextMessage(senderID, str).then(returnBool => {
+              if (returnBool) {
+                saveLogData(false, {
+                  senderID: senderID,
+                  messageText: messageText,
+                  result: str,
+                });
+              }
             });
           } else {
             str = `幫你搜尋：${returnObj.search_value}`;
-            sendTextMessage(senderID, str);
-            sendGenericMessageByArr(senderID, returnObj.results);
-            saveLogData(true, {
-              senderID: senderID,
-              messageText: messageText,
-              result: str,
+            sendTextMessage(senderID, str).then(() => {
+              sendGenericMessageByArr(senderID, returnObj.results).then(returnBool => {
+                if (returnBool) {
+                  saveLogData(true, {
+                    senderID: senderID,
+                    messageText: messageText,
+                    result: str,
+                  });
+                }
+              });
             });
           }
         });
