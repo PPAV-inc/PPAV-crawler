@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-import schedule
 import time
 import datetime
+import schedule
 from parser_info import ParserInfo
 
 def job():
