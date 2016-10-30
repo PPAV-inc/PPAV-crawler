@@ -7,6 +7,8 @@ import removeSubscribeId from '../models/removeSubscribeId';
 import findVideo from '../models/findVideo';
 
 const sendGenericMessageByArr = (senderID, returnArr) => {
+  let elements = [];
+  
   returnArr.forEach((value) => {
     let date = new Date(value.update_date);
     const dateFormat = `${date.getFullYear()}/${(date.getMonth() + 1)}/${date.getDate()}`;
@@ -15,8 +17,20 @@ const sendGenericMessageByArr = (senderID, returnArr) => {
        番號：${value.code}
        女優：${value.models}
        更新日期：${dateFormat}`;
-    sendGenericMessage(senderID, value.title, str, value.url, value.img_url);
+       
+    elements.push({
+      title: value.title,
+      subtitle: str,
+      item_url: value.url,
+      image_url: value.img_url,
+      buttons: [{
+        type: 'web_url',
+        url: value.url,
+        title: '開啟網頁',
+      }],
+    });
   });
+  sendGenericMessage(senderID, elements);
 };
 
 const receivedMessage = (event) => {
@@ -88,11 +102,15 @@ const receivedMessage = (event) => {
           let str = '';
           if (returnObj.results.length === 0) {
             str = '搜尋不到此女優';
-            sendTextMessage(senderID, str);
-            saveLogData(false, {
-              senderID: senderID,
-              messageText: messageText,
-              result: str,
+            sendTextMessage(senderID, str).then(returnBool => {
+              if (returnBool) {
+                console.log(`女優：${returnBool}`);
+                saveLogData(false, {
+                  senderID: senderID,
+                  messageText: messageText,
+                  result: str,
+                });
+              }
             });
           } else {
             str = `幫你搜尋：${returnObj.search_value}`;
