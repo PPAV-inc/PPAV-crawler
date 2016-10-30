@@ -14,6 +14,9 @@ class ParserInfo:
     @classmethod
     def parse_indexav(cls, video_code):
         page_indexav = parse_webpage('https://indexav.com/search?keyword=' + video_code)
+        if page_indexav:
+            return None
+
         return_obj = {}
 
         model_re = '<span class=\"video_actor\".*?>(.*)</span>'
@@ -63,7 +66,7 @@ class ParserInfo:
 
         video_code_re = '(?<=watch-)(\\w+-){0,2}\\w*\\d+'
         video_code = re.search(video_code_re, url)
-        if video_code is None:
+        if video_code is None or page_film is None:
             return None
         video_code = video_code.group().upper()
         search_video_code = self.code_special_case(video_code)
@@ -148,7 +151,7 @@ class ParserInfo:
 
         # update new video in new collection
         old_url_set = self.mongo.get_all_url_set(collect_name='videos')
-        update_url_set = self.mongo.get_all_url_set(collect_name='video_updates')
+        update_url_set = self.mongo.get_all_url_set(collect_name='videos_update')
         new_url_set = update_url_set - old_url_set # get new film url set
         print("link url set size: {}".format(len(update_url_set)))
         print("old url set size: {}".format(len(old_url_set)))
@@ -157,6 +160,11 @@ class ParserInfo:
         self.mongo.update_json_list(info_json_list, collect_name='videos_new')
 
         print("create new collection finished!")
+
+        # rename collection
+        print("Rename collection name")
+        self.mongo.rename_collection(old_name='videos', new_name='videos_old', drop=True)
+        self.mongo.rename_collection(old_name='videos_update', new_name='videos')
 
 if __name__ == '__main__':
     MONGO_URI = 'mongodb://localhost:27017/test'

@@ -57,12 +57,16 @@ class ParserLink:
 
 # global function
 def parse_webpage(url):
-    scheme, netloc, path, query, fragment = parse.urlsplit(url)
-    path = parse.quote(path)
-    url = parse.urlunsplit((scheme, netloc, path, query, fragment))
-    req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla 7.0'})
-    page = urllib.request.urlopen(req).read().decode('utf-8')
-    return page
+    try:
+        scheme, netloc, path, query, fragment = parse.urlsplit(url)
+        path = parse.quote(path, encoding='utf-8')
+        url = parse.urlunsplit((scheme, netloc, path, query, fragment))
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla 7.0'})
+        page = urllib.request.urlopen(req).read().decode('utf-8')
+        return page
+    except:
+        print("raise error in webpage and except it!")
+        return None
 
 if __name__ == '__main__':
     ORIG_URL = "http://xonline.vip"
