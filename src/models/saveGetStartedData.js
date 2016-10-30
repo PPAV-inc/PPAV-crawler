@@ -7,7 +7,7 @@ const saveGetStartedData = (senderID, firstName, timeOfPostback) => {
         const getStartedId = new GetStartedIdCollection({
           senderID,
           firstName,
-          timeOfPostback
+          timeOfPostback,
         });
 
         // Save it to database

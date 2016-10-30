@@ -23,7 +23,7 @@ const startedConv = (recipientId, timeOfPostback) => {
       try {
         saveGetStartedData(recipientId, name.first_name, timeOfPostback);
       }
-      catch(err) {
+      catch (err) {
         console.log(err);
       }
     }

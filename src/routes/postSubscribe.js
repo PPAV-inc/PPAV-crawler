@@ -30,7 +30,6 @@ postSubscribeRouter.get('/post-subscribe', async ctx => {
   
   if (ctx.query.verify_token === VERIFY_TOKEN_HASH) {
     res.body = await postSubscribeTest().then(resultObj => {
-      console.log("done");
       return resultObj;
     });
   } else {

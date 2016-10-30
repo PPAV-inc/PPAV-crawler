@@ -14,7 +14,6 @@ const loopfunc = (senderIDArr, returnArr, nowCnt, arrCnt) => {
         if (returnBool) {
           sendGenericMessageByArr(senderIDArr[nowCnt].senderID, returnArr);
           nowCnt++;
-          console.log(nowCnt);
           loopfunc(senderIDArr, returnArr, nowCnt, arrCnt);
         }
     });
