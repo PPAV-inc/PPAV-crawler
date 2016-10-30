@@ -14,6 +14,9 @@ class ParserInfo:
     @classmethod
     def parse_indexav(cls, video_code):
         page_indexav = parse_webpage('https://indexav.com/search?keyword=' + video_code)
+        if page_indexav:
+            return None
+
         return_obj = {}
 
         model_re = '<span class=\"video_actor\".*?>(.*)</span>'
@@ -63,7 +66,7 @@ class ParserInfo:
 
         video_code_re = '(?<=watch-)(\\w+-){0,2}\\w*\\d+'
         video_code = re.search(video_code_re, url)
-        if video_code is None:
+        if video_code is None or page_film is None:
             return None
         video_code = video_code.group().upper()
         search_video_code = self.code_special_case(video_code)
