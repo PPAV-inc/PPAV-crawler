@@ -16,11 +16,11 @@ const callSendAPI = (messageData) => {
       .then(parsedBody => {
         const recipientId = parsedBody.recipient_id,
               messageId = parsedBody.message_id;
-              
         resolve(true);
         console.log(`Successfully sent generic message with id ${messageId} to recipient ${recipientId}`);
       })
       .catch(err => {
+        resolve(false);
         console.error(`Unable to send message. Error: ${err}`);
       });
   });

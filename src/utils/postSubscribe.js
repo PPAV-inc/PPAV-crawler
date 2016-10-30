@@ -7,15 +7,13 @@ import { sendGenericMessageByArr } from './receivedMessage';
 
 const loopfunc = (senderIDArr, returnArr, nowCnt, arrCnt) => {
   if (nowCnt < arrCnt) {
-    const str = '今日新增';
+    const str = '';
     sendTextMessage(senderIDArr[nowCnt].senderID, str)
       .then(delay(1000))
-      .then(returnBool => {
-        if (returnBool) {
-          sendGenericMessageByArr(senderIDArr[nowCnt].senderID, returnArr);
-          nowCnt++;
-          loopfunc(senderIDArr, returnArr, nowCnt, arrCnt);
-        }
+      .then(() => {
+        sendGenericMessageByArr(senderIDArr[nowCnt].senderID, returnArr);
+        nowCnt++;
+        loopfunc(senderIDArr, returnArr, nowCnt, arrCnt);
     });
   }
 };
