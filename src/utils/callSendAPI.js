@@ -1,25 +1,26 @@
-import request from 'request';
+import rp from 'request-promise';
 import config from '../config';
 
 const PAGE_TOKEN = config.PAGE_TOKEN;
 
 const callSendAPI = (messageData) => {
-  request({
+  const options = {
+    method: 'POST',
     uri: 'https://graph.facebook.com/v2.6/me/messages',
     qs: { access_token: PAGE_TOKEN },
-    method: 'POST',
     json: messageData,
-  }, (error, response, body) => {
-    if (!error && response.statusCode === 200) {
-      const recipientId = body.recipient_id,
-            messageId = body.message_id;
-            
+  };
+
+  rp(options)
+    .then(parsedBody => {
+      const recipientId = parsedBody.recipient_id,
+            messageId = parsedBody.message_id;
+      
       console.log(`Successfully sent generic message with id ${messageId} to recipient ${recipientId}`);
-    } else {
-      console.error('Unable to send message.');
-      // console.error(response);
-    }
-  });
+    })
+    .catch(err => {
+      console.error(`Unable to send message. Error: ${err}`);
+    });
 };
 
 export default callSendAPI;

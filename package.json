@@ -21,7 +21,8 @@
     "koa-router": "^7.0.1",
     "mongoose": "^4.6.3",
     "path": "^0.12.7",
-    "request": "^2.65.0"
+    "request": "^2.65.0",
+    "request-promise": "^4.1.1"
   },
   "devDependencies": {
     "babel-cli": "^6.5.1",
