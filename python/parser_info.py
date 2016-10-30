@@ -14,8 +14,6 @@ class ParserInfo:
     @classmethod
     def parse_indexav(cls, video_code):
         page_indexav = parse_webpage('https://indexav.com/search?keyword=' + video_code)
-        if page_indexav:
-            return None
 
         return_obj = {}
 
@@ -160,11 +158,6 @@ class ParserInfo:
         self.mongo.update_json_list(info_json_list, collect_name='videos_new')
 
         print("create new collection finished!")
-
-        # rename collection
-        print("Rename collection name")
-        self.mongo.rename_collection(old_name='videos', new_name='videos_old', drop=True)
-        self.mongo.rename_collection(old_name='videos_update', new_name='videos')
 
 if __name__ == '__main__':
     MONGO_URI = 'mongodb://localhost:27017/test'
