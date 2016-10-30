@@ -7,15 +7,38 @@ import removeSubscribeId from '../models/removeSubscribeId';
 import findVideo from '../models/findVideo';
 
 const sendGenericMessageByArr = (senderID, returnArr) => {
-  returnArr.forEach((value) => {
-    let date = new Date(value.update_date);
-    const dateFormat = `${date.getFullYear()}/${(date.getMonth() + 1)}/${date.getDate()}`;
-    const str =
-      `點擊數：${value.count}
-       番號：${value.code}
-       女優：${value.models}
-       更新日期：${dateFormat}`;
-    sendGenericMessage(senderID, value.title, str, value.url, value.img_url);
+  return new Promise(resolve => {
+    let elements = [];
+    
+    returnArr.forEach((value) => {
+      let date = new Date(value.update_date);
+      const dateFormat = `${date.getFullYear()}/${(date.getMonth() + 1)}/${date.getDate()}`;
+      const str =
+        `點擊數：${value.count}
+         番號：${value.code}
+         女優：${value.models}
+         更新日期：${dateFormat}`;
+         
+      elements.push({
+        title: value.title,
+        subtitle: str,
+        item_url: value.url,
+        image_url: value.img_url,
+        buttons: [{
+          type: 'web_url',
+          url: value.url,
+          title: '開啟網頁',
+        }],
+      });
+    });
+    
+    sendGenericMessage(senderID, elements).then(returnBool => {
+      if (returnBool) {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    });
   });
 };
 
@@ -37,11 +60,14 @@ const receivedMessage = (event) => {
 
   if (messageText === 'PPAV' || messageText === 'ppav' || messageText === 'Ppav') {
     findThreeVideos().then(returnArr => {
-      sendGenericMessageByArr(senderID, returnArr);
-      saveLogData(true, {
-        senderID: senderID,
-        messageText: messageText,
-        result: 'PPAV',
+      sendGenericMessageByArr(senderID, returnArr).then(returnBool => {
+        if (returnBool) {
+          saveLogData(true, {
+            senderID: senderID,
+            messageText: messageText,
+            result: 'PPAV',
+          });
+        }
       });
     });
   } else if (messageText === 'GGinin' || messageText === 'GGININ' || messageText === 'gginin' || messageText === 'Gginin') {
@@ -64,20 +90,27 @@ const receivedMessage = (event) => {
           let str = '';
           if (returnObj.results.length === 0) {
             str = '搜尋不到此番號';
-            sendTextMessage(senderID, str);
-            saveLogData(false, {
-              senderID: senderID,
-              messageText: messageText,
-              result: str,
+            sendTextMessage(senderID, str).then(returnBool => {
+              if (returnBool) {
+                saveLogData(false, {
+                  senderID: senderID,
+                  messageText: messageText,
+                  result: str,
+                });
+              }
             });
           } else {
             str = `幫你搜尋：${returnObj.search_value}`;
-            sendTextMessage(senderID, str);
-            sendGenericMessageByArr(senderID, returnObj.results);
-            saveLogData(true, {
-              senderID: senderID,
-              messageText: messageText,
-              result: str,
+            sendTextMessage(senderID, str).then(() => {
+              sendGenericMessageByArr(senderID, returnObj.results).then(returnBool => {
+                if (returnBool) {
+                  saveLogData(true, {
+                    senderID: senderID,
+                    messageText: messageText,
+                    result: str,
+                  });
+                }
+              });
             });
           }
         });
@@ -88,20 +121,27 @@ const receivedMessage = (event) => {
           let str = '';
           if (returnObj.results.length === 0) {
             str = '搜尋不到此女優';
-            sendTextMessage(senderID, str);
-            saveLogData(false, {
-              senderID: senderID,
-              messageText: messageText,
-              result: str,
+            sendTextMessage(senderID, str).then(returnBool => {
+              if (returnBool) {
+                saveLogData(false, {
+                  senderID: senderID,
+                  messageText: messageText,
+                  result: str,
+                });
+              }
             });
           } else {
             str = `幫你搜尋：${returnObj.search_value}`;
-            sendTextMessage(senderID, str);
-            sendGenericMessageByArr(senderID, returnObj.results);
-            saveLogData(true, {
-              senderID: senderID,
-              messageText: messageText,
-              result: str,
+            sendTextMessage(senderID, str).then(() => {
+              sendGenericMessageByArr(senderID, returnObj.results).then(returnBool => {
+                if (returnBool) {
+                  saveLogData(true, {
+                    senderID: senderID,
+                    messageText: messageText,
+                    result: str,
+                  });
+                }
+              });
             });
           }
         });
@@ -112,20 +152,27 @@ const receivedMessage = (event) => {
           let str = '';
           if (returnObj.results.length === 0) {
             str = '搜尋不到此片名';
-            sendTextMessage(senderID, str);
-            saveLogData(false, {
-              senderID: senderID,
-              messageText: messageText,
-              result: str,
+            sendTextMessage(senderID, str).then(returnBool => {
+              if (returnBool) {
+                saveLogData(false, {
+                  senderID: senderID,
+                  messageText: messageText,
+                  result: str,
+                });
+              }
             });
           } else {
             str = `幫你搜尋：${returnObj.search_value}`;
-            sendTextMessage(senderID, str);
-            sendGenericMessageByArr(senderID, returnObj.results);
-            saveLogData(true, {
-              senderID: senderID,
-              messageText: messageText,
-              result: str,
+            sendTextMessage(senderID, str).then(() => {
+              sendGenericMessageByArr(senderID, returnObj.results).then(returnBool => {
+                if (returnBool) {
+                  saveLogData(true, {
+                    senderID: senderID,
+                    messageText: messageText,
+                    result: str,
+                  });
+                }
+              });
             });
           }
         });

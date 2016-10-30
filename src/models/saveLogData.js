@@ -1,18 +1,17 @@
 import { LogCollection } from './schema';
 
 const saveLogData = (successOrNot, Obj) => {
-  let Log;
   const timestamp = new Date();
+  let Log;
   
   Log = new LogCollection({
     successOrNot,
     senderID: Obj.senderID,
     messageText: Obj.messageText,
     result: Obj.result,
-    timestamp
+    timestamp,
   });
     
-  // Save it to database
   Log.save((err) => {
     if (err) {
       console.log(err);

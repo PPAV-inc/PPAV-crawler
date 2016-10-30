@@ -8,15 +8,15 @@ const postSubscribeTest = () => {
       findSubscribeId().then(senderIDArr => {
         const senderIDArrLength = senderIDArr.length;
         let count = 0;
-        senderIDArr.forEach(returnSenderID => {
-          count ++;
+        senderIDArr.forEach(() => {
+          count++;
         });
         const returnObj = {
           returnArr,
           senderIDArr,
           senderIDArrLength,
           count,
-        }
+        };
         resolve(returnObj);
       });
     });
