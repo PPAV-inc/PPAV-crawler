@@ -22,6 +22,7 @@ def set_schedule():
     #schedule.every().week.do(job)
 
 if __name__ == '__main__':
+    job()
     set_schedule()
     while True:
         print("Time: {}".format(datetime.datetime.now()))
