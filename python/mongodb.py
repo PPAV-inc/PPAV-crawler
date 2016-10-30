@@ -5,7 +5,7 @@ from pymongo import MongoClient
 class MongoOP:
 
     def __init__(self, mongo_uri='mongodb://localhost:27017/test', \
-                collect_name='video_updates', old_collect_name='videos'):
+                collect_name='videos_update', old_collect_name='videos'):
         self.db = MongoClient(mongo_uri).get_default_database()
         self.collect_name = collect_name
         self.old_collect_name = old_collect_name
@@ -68,3 +68,12 @@ class MongoOP:
 
         for each in collect.find():
             print(each)
+
+    def rename_collection(self, old_name, new_name, drop=False):
+        if new_name in self.db.collection_names() and drop:
+            self.drop_collection(new_name)
+        old_collect = self.db[old_name]
+        old_collect.rename(new_name)
+
+    def drop_collection(self, collect_name):
+        self.db.drop_collection(collect_name)

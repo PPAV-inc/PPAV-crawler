@@ -148,7 +148,7 @@ class ParserInfo:
 
         # update new video in new collection
         old_url_set = self.mongo.get_all_url_set(collect_name='videos')
-        update_url_set = self.mongo.get_all_url_set(collect_name='video_updates')
+        update_url_set = self.mongo.get_all_url_set(collect_name='videos_update')
         new_url_set = update_url_set - old_url_set # get new film url set
         print("link url set size: {}".format(len(update_url_set)))
         print("old url set size: {}".format(len(old_url_set)))
@@ -157,6 +157,11 @@ class ParserInfo:
         self.mongo.update_json_list(info_json_list, collect_name='videos_new')
 
         print("create new collection finished!")
+
+        # rename collection
+        print("Rename collection name")
+        self.mongo.rename_collection(old_name='videos', new_name='videos_old', drop=True)
+        self.mongo.rename_collection(old_name='videos_update', new_name='videos')
 
 if __name__ == '__main__':
     MONGO_URI = 'mongodb://localhost:27017/test'
