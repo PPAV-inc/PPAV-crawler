@@ -1,4 +1,5 @@
 sudo pip install selenium
+sudo pip install pymongo
 sudo pip install beautifulsoup4
 sudo pip install wget
 sudo apt-get install xvfb

@@ -48,3 +48,4 @@ analyze-video/video/*
 # ignore installing dependency
 analyze-video/setup/*.zip
 analyze-video/setup/*.deb
+analyze-video/config*

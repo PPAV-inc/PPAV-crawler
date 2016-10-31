@@ -1,5 +1,5 @@
 # download video from website 
-* need to install a web browser, first try firefox, but there is some issue while trying to load website. So next try to install google-chrome
+> need to install a web browser, first try firefox, but there is some issue while trying to load website. So next try to install google-chrome
 > google chrome: 
 >> installing chrome browser
 >> sudo apt-get install gdebi
