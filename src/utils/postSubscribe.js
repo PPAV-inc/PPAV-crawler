@@ -2,8 +2,9 @@ import 'babel-polyfill';
 import delay from 'delay';
 import findThreeNewVideos from '../models/findThreeNewVideos';
 import findSubscribeId from '../models/findSubscribeId';
-import sendTextMessage from './sendTextMessage';
 import { sendGenericMessageByArr } from './receivedMessage';
+import sendTextMessage from './sendTextMessage';
+
 
 const loopfunc = (senderIDArr, returnArr, nowCnt, arrCnt) => {
   if (nowCnt < arrCnt) {

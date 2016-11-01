@@ -1,8 +1,10 @@
 import request from 'request';
 import config from '../config';
+import findThreeNewVideos from '../models/findThreeNewVideos';
 import { receivedMessage } from './receivedMessage';
-import sendTextMessage from './sendTextMessage';
+import { sendGenericMessageByArr } from './receivedMessage';
 import saveGetStartedData from '../models/saveGetStartedData';
+import sendTextMessage from './sendTextMessage';
 
 const PAGE_TOKEN = config.PAGE_TOKEN;
 
@@ -40,10 +42,13 @@ const receivedPostback = (event) => {
   console.log(`Received postback for user ${senderID} and page ${recipientID} with payload '${payload}' at ${timeOfPostback}`);
   
   if (payload === 'PPAV') {
-    console.log(event);
     event['message'] = { 'text': payload };
     receivedMessage(event);
-  } else {
+  } else if (payload === 'NEW') {
+    findThreeNewVideos().then(returnArr => {
+      sendGenericMessageByArr(senderID, returnArr);
+    });
+  }  else {
     startedConv(senderID, timeOfPostback);
   }
 };
