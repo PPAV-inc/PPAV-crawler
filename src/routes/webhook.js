@@ -27,7 +27,7 @@ webhookRouter.post('/webhook', async ctx => {
       pageEntry.messaging.forEach((messagingEvent) => {
         if (messagingEvent.message) {
           receivedMessage(messagingEvent);
-        } else if (messagingEvent.postback) { // first time
+        } else if (messagingEvent.postback) {
           receivedPostback(messagingEvent);
         } else {
           console.log(`Webhook received unknown messagingEvent: ${messagingEvent}`);

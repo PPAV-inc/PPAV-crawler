@@ -1,15 +1,18 @@
 import request from 'request';
 import config from '../config';
-import sendTextMessage from './sendTextMessage';
+import findThreeNewVideos from '../models/findThreeNewVideos';
+import { receivedMessage } from './receivedMessage';
+import { sendGenericMessageByArr } from './receivedMessage';
 import saveGetStartedData from '../models/saveGetStartedData';
+import sendTextMessage from './sendTextMessage';
 
 const PAGE_TOKEN = config.PAGE_TOKEN;
 
-const startedConv = (recipientId, timeOfPostback) => {
+const startedConv = (senderID, timeOfPostback) => {
   let name = '';
 
   request({
-    url: `https://graph.facebook.com/v2.6/${recipientId}?fields=first_name`,
+    url: `https://graph.facebook.com/v2.6/${senderID}?fields=first_name`,
     qs: { access_token: PAGE_TOKEN },
     method: 'GET',
   }, (error, response, body) => {
@@ -19,9 +22,9 @@ const startedConv = (recipientId, timeOfPostback) => {
       console.log(`Error: ${response.body.error}`);
     } else {
       name = JSON.parse(body);
-      sendTextMessage(recipientId, `Hello ${name.first_name} do you have a pen?`);
+      sendTextMessage(senderID, `Hello ${name.first_name} do you have a pen?`);
       try {
-        saveGetStartedData(recipientId, name.first_name, timeOfPostback);
+        saveGetStartedData(senderID, name.first_name, timeOfPostback);
       }
       catch (err) {
         console.log(err);
@@ -37,8 +40,17 @@ const receivedPostback = (event) => {
         payload = event.postback.payload;
 
   console.log(`Received postback for user ${senderID} and page ${recipientID} with payload '${payload}' at ${timeOfPostback}`);
-
-  startedConv(senderID, timeOfPostback);
+  
+  if (payload === 'PPAV') {
+    event['message'] = { 'text': payload };
+    receivedMessage(event);
+  } else if (payload === 'NEW') {
+    findThreeNewVideos().then(returnArr => {
+      sendGenericMessageByArr(senderID, returnArr);
+    });
+  }  else {
+    startedConv(senderID, timeOfPostback);
+  }
 };
 
 export default receivedPostback;

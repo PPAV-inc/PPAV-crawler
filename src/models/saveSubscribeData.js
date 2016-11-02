@@ -19,7 +19,7 @@ const saveSubscribeData = senderID => {
             console.log(`push ${senderID} finished`);
           }
         });
-        const str = '您已成功訂閱\n我們將在每天凌晨12點推播三部片給您 3:)\n敬請期待每日新片 :)\n\n取消訂閱請輸入"NOGG"';
+        const str = '您已成功訂閱\n我們將在每天凌晨12點至凌晨1點之間推播三部片給您 3:)\n敬請期待每日新片 :)\n\n取消訂閱請輸入"NOGG"';
         resolve(str);
       }
     });
