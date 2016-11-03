@@ -4,6 +4,7 @@ import findSubscribeId from '../models/findSubscribeId';
 import sendTextMessage from './sendTextMessage';
 import { sendGenericMessageByArr } from './receivedMessage';
 import config from '../config';
+
 const data = config.TEST_MESSAGE;
 const server = config.SERVER_ADDRESS;
 const testUserArr = config.TEST_ARRAY;
@@ -13,12 +14,12 @@ const sleep = (ms) => {
 }
 
 const sendFakeUserMessage = async () => {
-    
-  let [videoArr, senderIDArr] = await Promise.all([findThreeNewVideos(), findSubscribeId()]);
-  //senderIDArr = testUserArr;
-  const url = server+"/webhook";
 
-  for(let idx=0; idx < senderIDArr.length; ++idx) {
+  let [videoArr, senderIDArr] = await Promise.all([findThreeNewVideos(), findSubscribeId()]);
+  // senderIDArr = testUserArr;
+  const url = server + "/webhook";
+
+  for(let idx = 0; idx < senderIDArr.length; ++idx) {
     console.log(`Sending to user: ${senderIDArr[idx]}`);
     data.entry[0].messaging[0].sender.id = senderIDArr[idx];
 
@@ -29,4 +30,4 @@ const sendFakeUserMessage = async () => {
   }
 };
 
-sendFakeUserMessage();
+export default sendFakeUserMessage;

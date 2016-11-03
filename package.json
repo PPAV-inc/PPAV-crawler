@@ -52,8 +52,7 @@
     "start": "node ./bin/ppav-bot",
     "prepublish": "npm run build",
     "test": "mocha --compilers js:babel-core/register ./test/*",
-    "lint": "eslint src",
-    "sendMessage": "./node_modules/.bin/babel-node --presets es2015 src/utils/sendFakeUserMessage.js"
+    "lint": "eslint src"
   },
   "engines": {
     "node": "6.7.0",

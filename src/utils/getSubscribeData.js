@@ -1,8 +1,8 @@
 import 'babel-polyfill';
-import findThreeNewVideos from '../../models/findThreeNewVideos';
-import findSubscribeId from '../../models/findSubscribeId';
+import findThreeNewVideos from '../models/findThreeNewVideos';
+import findSubscribeId from '../models/findSubscribeId';
 
-const postSubscribeTest = () => {
+const getSubscribeData = () => {
   return new Promise(resolve => {
     findThreeNewVideos().then(returnArr => {
       findSubscribeId().then(senderIDArr => {
@@ -23,5 +23,4 @@ const postSubscribeTest = () => {
   });
 };
 
-export default postSubscribeTest;
-
+export default getSubscribeData;
