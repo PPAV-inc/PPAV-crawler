@@ -25,12 +25,12 @@ parser = BeautifulSoup(src,"lxml") # initialize the parser and parse the source 
 video_attr = {"class" : "jw-video jw-reset"} # A list of attributes that you want to check in a tag
 video_tag = parser.findAll('video',attrs=video_attr) # Get the video tag from the source
 print parser.find_all('img')[1]['src']
-wget.download(parser.find_all('img')[1]['src'])
+wget.download(parser.find_all('img')[1]['src'], out="./output/")
 
 
 n = 0 # Specify the index of video element in the web page
 url = video_tag[n]['src'] # get the src attribute of the video
-#wget.download(url, out="./video/tst_video") # download the video
+#wget.download(url, out="./output/tst_video") # download the video
 
 driver.close() # closes the driver
 display.stop()

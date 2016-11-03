@@ -17,3 +17,9 @@
 # analyze video 
 > try to use opencv python version
 >> install opencv [ref](http://milq.github.io/install-opencv-ubuntu-debian/)
+> use database here to train model 29(JAFFE), 20(Face Recognition Data, University of Essex), 23(FEI Face Database) [ref](https://www.kairos.com/blog/60-facial-recognition-databases)
+>> NMS (non maximum supression)
+>>> [paper](https://lirias.kuleuven.be/bitstream/123456789/506283/1/3924_postprint.pdf) for similar purpose 
+>>> [implement](http://www.pyimagesearch.com/2014/11/17/non-maximum-suppression-object-detection-python) NMS in python to calculate overlap ratio
+>> install PIL (Python Image Library) [ref](http://askubuntu.com/questions/507459/pil-install-in-ubuntu-14-04-1-lts)
+
