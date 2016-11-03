@@ -1,8 +1,6 @@
 import request from 'request-promise';
 import findThreeNewVideos from '../models/findThreeNewVideos';
 import findSubscribeId from '../models/findSubscribeId';
-import sendTextMessage from './sendTextMessage';
-import { sendGenericMessageByArr } from './receivedMessage';
 import config from '../config';
 
 const data = config.TEST_MESSAGE;
@@ -11,20 +9,19 @@ const testUserArr = config.TEST_ARRAY;
 
 const sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms));
-}
+};
 
 const sendFakeUserMessage = async () => {
-
   let [videoArr, senderIDArr] = await Promise.all([findThreeNewVideos(), findSubscribeId()]);
   // senderIDArr = testUserArr;
-  const url = server + "/webhook";
+  const url = server + '/webhook';
 
-  for(let idx = 0; idx < senderIDArr.length; ++idx) {
+  for (let idx = 0; idx < senderIDArr.length; ++idx) {
     console.log(`${idx} / ${senderIDArr} Sending to user: ${senderIDArr[idx].senderID}`);
     data.entry[0].messaging[0].sender.id = senderIDArr[idx].senderID;
 
-    await request.post({url: url, form: data}, function(err, httpRes, body) {
-      if(err) console.log(err);
+    await request.post({ url: url, form: data }, err => {
+      if (err) console.log(err);
     });
     await sleep(500); // sleep 0.5s
   }

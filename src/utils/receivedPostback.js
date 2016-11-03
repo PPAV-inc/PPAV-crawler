@@ -1,8 +1,7 @@
 import request from 'request';
 import config from '../config';
 import findThreeNewVideos from '../models/findThreeNewVideos';
-import { receivedMessage } from './receivedMessage';
-import { sendGenericMessageByArr } from './receivedMessage';
+import { receivedMessage, sendGenericMessageByArr } from './receivedMessage';
 import saveGetStartedData from '../models/saveGetStartedData';
 import sendTextMessage from './sendTextMessage';
 
@@ -40,7 +39,7 @@ const receivedPostback = (event) => {
         payload = event.postback.payload;
 
   console.log(`Received postback for user ${senderID} and page ${recipientID} with payload '${payload}' at ${timeOfPostback}`);
-  
+
   if (payload === 'PPAV') {
     event['message'] = { 'text': payload };
     receivedMessage(event);
