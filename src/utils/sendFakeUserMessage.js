@@ -20,13 +20,13 @@ const sendFakeUserMessage = async () => {
   const url = server + "/webhook";
 
   for(let idx = 0; idx < senderIDArr.length; ++idx) {
-    console.log(`Sending to user: ${senderIDArr[idx]}`);
-    data.entry[0].messaging[0].sender.id = senderIDArr[idx];
+    console.log(`${idx} / ${senderIDArr} Sending to user: ${senderIDArr[idx].senderID}`);
+    data.entry[0].messaging[0].sender.id = senderIDArr[idx].senderID;
 
     await request.post({url: url, form: data}, function(err, httpRes, body) {
       if(err) console.log(err);
     });
-    await sleep(1000);
+    await sleep(500); // sleep 0.5s
   }
 };
 
