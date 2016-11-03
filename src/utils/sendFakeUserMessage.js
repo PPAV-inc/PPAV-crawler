@@ -5,6 +5,8 @@ import sendTextMessage from './sendTextMessage';
 import { sendGenericMessageByArr } from './receivedMessage';
 import config from '../config';
 const data = config.TEST_MESSAGE;
+const server = config.SERVER_ADDRESS;
+const testUserArr = config.TEST_ARRAY;
 
 const sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -13,11 +15,9 @@ const sleep = (ms) => {
 const sendFakeUserMessage = async () => {
     
   let [videoArr, senderIDArr] = await Promise.all([findThreeNewVideos(), findSubscribeId()]);
-  senderIDArr = [];
-  senderIDArr = ["1319622658071351", "1352776404747642", "1084793478302481", "1316227151751281"];
-  let arrCnt = senderIDArr.length;
-  const url = "http://localhost:8080/webhook";
-  
+  //senderIDArr = testUserArr;
+  const url = server+"/webhook";
+
   for(let idx=0; idx < senderIDArr.length; ++idx) {
     console.log(`Sending to user: ${senderIDArr[idx]}`);
     data.entry[0].messaging[0].sender.id = senderIDArr[idx];
