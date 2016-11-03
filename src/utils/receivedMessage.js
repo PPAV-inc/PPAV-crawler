@@ -9,7 +9,7 @@ import findVideo from '../models/findVideo';
 const sendGenericMessageByArr = (senderID, returnArr) => {
   return new Promise(resolve => {
     let elements = [];
-    
+
     returnArr.forEach((value) => {
       let date = new Date(value.update_date);
       const dateFormat = `${date.getFullYear()}/${(date.getMonth() + 1)}/${date.getDate()}`;
@@ -18,7 +18,7 @@ const sendGenericMessageByArr = (senderID, returnArr) => {
          番號：${value.code}
          女優：${value.models}
          更新日期：${dateFormat}`;
-         
+
       elements.push({
         title: value.title,
         subtitle: str,
@@ -31,7 +31,7 @@ const sendGenericMessageByArr = (senderID, returnArr) => {
         }],
       });
     });
-    
+
     sendGenericMessage(senderID, elements).then(returnBool => {
       if (returnBool) {
         resolve(true);
@@ -42,7 +42,7 @@ const sendGenericMessageByArr = (senderID, returnArr) => {
   });
 };
 
-const receivedMessage = (event) => {
+const receivedMessage = async (event) => {
   const senderID = event.sender.id,
         recipientID = event.recipient.id,
         timeOfMessage = event.timestamp,
@@ -82,6 +82,13 @@ const receivedMessage = (event) => {
       const str2 = '想看片請輸入 PPAV \n\n其他搜尋功能：\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"\n\n訂閱每日推播："GGININ"';
       sendTextMessage(senderID, str2);
     });
+  } else if (messageText === 'ininder') {
+    const str = '今日新增';
+    const returnArr = await findThreeVideos();
+
+    await sendTextMessage(senderID, str);
+    await sendGenericMessageByArr(senderID, returnArr);
+
   } else {
     switch (firstStr) {
       case '＃':
