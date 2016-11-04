@@ -1,4 +1,5 @@
 import findThreeVideos from '../models/findThreeVideos';
+import findThreeNewVideos from '../models/findThreeNewVideos';
 import saveLogData from '../models/saveLogData';
 import saveSubscribeData from '../models/saveSubscribeData';
 import removeSubscribeId from '../models/removeSubscribeId';
@@ -49,11 +50,10 @@ const receivedMessage = async (event) => {
     });
   } else if (messageText === 'ininder') {
     const str = '今日新增';
-    const returnArr = await findThreeVideos();
+    const returnArr = await findThreeNewVideos();
 
     await fb.sendTextMessage(senderID, str);
     await fb.sendGenericMessageByArr(senderID, returnArr);
-
   } else {
     switch (firstStr) {
       case '＃':

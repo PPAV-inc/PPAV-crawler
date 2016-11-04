@@ -25,8 +25,7 @@ const startedConv = (senderID, timeOfPostback) => {
       fb.sendTextMessage(senderID, `Hello ${name.first_name} do you have a pen?`);
       try {
         saveGetStartedData(senderID, name.first_name, timeOfPostback);
-      }
-      catch (err) {
+      } catch (err) {
         console.log(err);
       }
     }
@@ -42,13 +41,13 @@ const receivedPostback = (event) => {
   console.log(`Received postback for user ${senderID} and page ${recipientID} with payload '${payload}' at ${timeOfPostback}`);
 
   if (payload === 'PPAV') {
-    event['message'] = { 'text': payload };
+    event.message = { text: payload };
     receivedMessage(event);
   } else if (payload === 'NEW') {
     findThreeNewVideos().then(returnArr => {
       fb.sendGenericMessageByArr(senderID, returnArr);
     });
-  }  else {
+  } else {
     startedConv(senderID, timeOfPostback);
   }
 };
