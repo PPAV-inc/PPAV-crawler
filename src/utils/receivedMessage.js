@@ -1,46 +1,12 @@
-import sendGenericMessage from './sendGenericMessage';
-import sendTextMessage from './sendTextMessage';
 import findThreeVideos from '../models/findThreeVideos';
+import findThreeNewVideos from '../models/findThreeNewVideos';
 import saveLogData from '../models/saveLogData';
 import saveSubscribeData from '../models/saveSubscribeData';
 import removeSubscribeId from '../models/removeSubscribeId';
 import findVideo from '../models/findVideo';
+import FacebookOP from './facebook';
 
-const sendGenericMessageByArr = (senderID, returnArr) => {
-  return new Promise(resolve => {
-    let elements = [];
-
-    returnArr.forEach((value) => {
-      let date = new Date(value.update_date);
-      const dateFormat = `${date.getFullYear()}/${(date.getMonth() + 1)}/${date.getDate()}`;
-      const str =
-        `點擊數：${value.count}
-         番號：${value.code}
-         女優：${value.models}
-         更新日期：${dateFormat}`;
-
-      elements.push({
-        title: value.title,
-        subtitle: str,
-        item_url: value.url,
-        image_url: value.img_url,
-        buttons: [{
-          type: 'web_url',
-          url: value.url,
-          title: '開啟網頁',
-        }],
-      });
-    });
-
-    sendGenericMessage(senderID, elements).then(returnBool => {
-      if (returnBool) {
-        resolve(true);
-      } else {
-        resolve(false);
-      }
-    });
-  });
-};
+const fb = new FacebookOP();
 
 const receivedMessage = async (event) => {
   const senderID = event.sender.id,
@@ -60,7 +26,7 @@ const receivedMessage = async (event) => {
 
   if (messageText === 'PPAV' || messageText === 'ppav' || messageText === 'Ppav') {
     findThreeVideos().then(returnArr => {
-      sendGenericMessageByArr(senderID, returnArr).then(returnBool => {
+      fb.sendGenericMessageByArr(senderID, returnArr).then(returnBool => {
         if (returnBool) {
           saveLogData(true, {
             senderID: senderID,
@@ -72,23 +38,22 @@ const receivedMessage = async (event) => {
     });
   } else if (messageText === 'GGinin' || messageText === 'GGININ' || messageText === 'gginin' || messageText === 'Gginin') {
     saveSubscribeData(senderID).then(str => {
-      sendTextMessage(senderID, str);
+      fb.sendTextMessage(senderID, str);
       const str2 = '想看片請輸入 PPAV \n\n其他搜尋功能：\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"';
-      sendTextMessage(senderID, str2);
+      fb.sendTextMessage(senderID, str2);
     });
   } else if (messageText === 'NoGG' || messageText === 'NOGG' || messageText === 'nogg' || messageText === 'noGG' || messageText === 'Nogg') {
     removeSubscribeId(senderID).then(str => {
-      sendTextMessage(senderID, str);
+      fb.sendTextMessage(senderID, str);
       const str2 = '想看片請輸入 PPAV \n\n其他搜尋功能：\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"\n\n訂閱每日推播："GGININ"';
-      sendTextMessage(senderID, str2);
+      fb.sendTextMessage(senderID, str2);
     });
   } else if (messageText === 'ininder') {
     const str = '今日新增';
-    const returnArr = await findThreeVideos();
+    const returnArr = await findThreeNewVideos();
 
-    await sendTextMessage(senderID, str);
-    await sendGenericMessageByArr(senderID, returnArr);
-
+    await fb.sendTextMessage(senderID, str);
+    await fb.sendGenericMessageByArr(senderID, returnArr);
   } else {
     switch (firstStr) {
       case '＃':
@@ -97,7 +62,7 @@ const receivedMessage = async (event) => {
           let str = '';
           if (returnObj.results.length === 0) {
             str = '搜尋不到此番號';
-            sendTextMessage(senderID, str).then(returnBool => {
+            fb.sendTextMessage(senderID, str).then(returnBool => {
               if (returnBool) {
                 saveLogData(false, {
                   senderID: senderID,
@@ -108,8 +73,8 @@ const receivedMessage = async (event) => {
             });
           } else {
             str = `幫你搜尋：${returnObj.search_value}`;
-            sendTextMessage(senderID, str).then(() => {
-              sendGenericMessageByArr(senderID, returnObj.results).then(returnBool => {
+            fb.sendTextMessage(senderID, str).then(() => {
+              fb.sendGenericMessageByArr(senderID, returnObj.results).then(returnBool => {
                 if (returnBool) {
                   saveLogData(true, {
                     senderID: senderID,
@@ -128,7 +93,7 @@ const receivedMessage = async (event) => {
           let str = '';
           if (returnObj.results.length === 0) {
             str = '搜尋不到此女優';
-            sendTextMessage(senderID, str).then(returnBool => {
+            fb.sendTextMessage(senderID, str).then(returnBool => {
               if (returnBool) {
                 saveLogData(false, {
                   senderID: senderID,
@@ -139,8 +104,8 @@ const receivedMessage = async (event) => {
             });
           } else {
             str = `幫你搜尋：${returnObj.search_value}`;
-            sendTextMessage(senderID, str).then(() => {
-              sendGenericMessageByArr(senderID, returnObj.results).then(returnBool => {
+            fb.sendTextMessage(senderID, str).then(() => {
+              fb.sendGenericMessageByArr(senderID, returnObj.results).then(returnBool => {
                 if (returnBool) {
                   saveLogData(true, {
                     senderID: senderID,
@@ -159,7 +124,7 @@ const receivedMessage = async (event) => {
           let str = '';
           if (returnObj.results.length === 0) {
             str = '搜尋不到此片名';
-            sendTextMessage(senderID, str).then(returnBool => {
+            fb.sendTextMessage(senderID, str).then(returnBool => {
               if (returnBool) {
                 saveLogData(false, {
                   senderID: senderID,
@@ -170,8 +135,8 @@ const receivedMessage = async (event) => {
             });
           } else {
             str = `幫你搜尋：${returnObj.search_value}`;
-            sendTextMessage(senderID, str).then(() => {
-              sendGenericMessageByArr(senderID, returnObj.results).then(returnBool => {
+            fb.sendTextMessage(senderID, str).then(() => {
+              fb.sendGenericMessageByArr(senderID, returnObj.results).then(returnBool => {
                 if (returnBool) {
                   saveLogData(true, {
                     senderID: senderID,
@@ -186,10 +151,10 @@ const receivedMessage = async (event) => {
         break;
       default:
         const str = '想看片請輸入 PPAV \n\n其他搜尋功能：\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"\n\n訂閱每日推播："GGININ"';
-        sendTextMessage(senderID, str);
+        fb.sendTextMessage(senderID, str);
         break;
     }
   }
 };
 
-export { receivedMessage, sendGenericMessageByArr };
+export default receivedMessage;

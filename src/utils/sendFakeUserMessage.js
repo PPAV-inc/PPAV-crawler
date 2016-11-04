@@ -1,5 +1,4 @@
 import request from 'request-promise';
-import findThreeNewVideos from '../models/findThreeNewVideos';
 import findSubscribeId from '../models/findSubscribeId';
 import config from '../config';
 
@@ -12,12 +11,12 @@ const sleep = (ms) => {
 };
 
 const sendFakeUserMessage = async () => {
-  let [videoArr, senderIDArr] = await Promise.all([findThreeNewVideos(), findSubscribeId()]);
-  // senderIDArr = testUserArr;
+  let senderIDArr = await findSubscribeId();
+  senderIDArr = testUserArr;
   const url = server + '/webhook';
 
   for (let idx = 0; idx < senderIDArr.length; ++idx) {
-    console.log(`${idx} / ${senderIDArr} Sending to user: ${senderIDArr[idx].senderID}`);
+    console.log(`${idx} / ${senderIDArr.length - 1} Sending to user: ${senderIDArr[idx].senderID}`);
     data.entry[0].messaging[0].sender.id = senderIDArr[idx].senderID;
 
     await request.post({ url: url, form: data }, err => {

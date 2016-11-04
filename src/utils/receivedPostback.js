@@ -1,11 +1,12 @@
 import request from 'request';
 import config from '../config';
 import findThreeNewVideos from '../models/findThreeNewVideos';
-import { receivedMessage, sendGenericMessageByArr } from './receivedMessage';
+import receivedMessage from './receivedMessage';
 import saveGetStartedData from '../models/saveGetStartedData';
-import sendTextMessage from './sendTextMessage';
+import FacebookOP from './facebook';
 
 const PAGE_TOKEN = config.PAGE_TOKEN;
+const fb = new FacebookOP();
 
 const startedConv = (senderID, timeOfPostback) => {
   let name = '';
@@ -21,11 +22,10 @@ const startedConv = (senderID, timeOfPostback) => {
       console.log(`Error: ${response.body.error}`);
     } else {
       name = JSON.parse(body);
-      sendTextMessage(senderID, `Hello ${name.first_name} do you have a pen?`);
+      fb.sendTextMessage(senderID, `Hello ${name.first_name} do you have a pen?`);
       try {
         saveGetStartedData(senderID, name.first_name, timeOfPostback);
-      }
-      catch (err) {
+      } catch (err) {
         console.log(err);
       }
     }
@@ -41,13 +41,13 @@ const receivedPostback = (event) => {
   console.log(`Received postback for user ${senderID} and page ${recipientID} with payload '${payload}' at ${timeOfPostback}`);
 
   if (payload === 'PPAV') {
-    event['message'] = { 'text': payload };
+    event.message = { text: payload };
     receivedMessage(event);
   } else if (payload === 'NEW') {
     findThreeNewVideos().then(returnArr => {
-      sendGenericMessageByArr(senderID, returnArr);
+      fb.sendGenericMessageByArr(senderID, returnArr);
     });
-  }  else {
+  } else {
     startedConv(senderID, timeOfPostback);
   }
 };
