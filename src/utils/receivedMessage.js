@@ -39,21 +39,21 @@ const receivedMessage = async (event) => {
   } else if (messageText === 'GGinin' || messageText === 'GGININ' || messageText === 'gginin' || messageText === 'Gginin') {
     saveSubscribeData(senderID).then(str => {
       fb.sendTextMessage(senderID, str);
-      const str2 = '想看片請輸入 PPAV \n\n其他搜尋功能：\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"';
+      const str2 = '想看片請輸入 "PPAV" 3:) \n\n其他搜尋功能🔥\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"';
       fb.sendTextMessage(senderID, str2);
     });
   } else if (messageText === 'NoGG' || messageText === 'NOGG' || messageText === 'nogg' || messageText === 'noGG' || messageText === 'Nogg') {
     removeSubscribeId(senderID).then(str => {
       fb.sendTextMessage(senderID, str);
-      const str2 = '想看片請輸入 PPAV \n\n其他搜尋功能：\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"\n\n訂閱每日推播："GGININ"';
+      const str2 = '想看片請輸入 "PPAV" 3:) \n\n其他搜尋功能🔥\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"\n\n訂閱每日推播："GGININ"';
       fb.sendTextMessage(senderID, str2);
     });
   } else if (messageText === 'ininder') {
     const str = '今日新增';
     const returnArr = await findThreeNewVideos();
 
-    await fb.sendTextMessage(senderID, str);
     await fb.sendGenericMessageByArr(senderID, returnArr);
+    await fb.sendTextMessage(senderID, str);
   } else {
     switch (firstStr) {
       case '＃':
@@ -150,7 +150,7 @@ const receivedMessage = async (event) => {
         });
         break;
       default:
-        const str = '想看片請輸入 PPAV \n\n其他搜尋功能：\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"\n\n訂閱每日推播："GGININ"';
+        const str = '想看片請輸入 "PPAV" 3:) \n\n其他搜尋功能🔥\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"\n\n訂閱每日推播："GGININ"';
         fb.sendTextMessage(senderID, str);
         break;
     }
