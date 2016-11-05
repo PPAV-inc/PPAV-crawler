@@ -1,5 +1,4 @@
 import findThreeVideos from '../models/findThreeVideos';
-import findThreeNewVideos from '../models/findThreeNewVideos';
 import saveLogData from '../models/saveLogData';
 import saveSubscribeData from '../models/saveSubscribeData';
 import removeSubscribeId from '../models/removeSubscribeId';
