@@ -1,7 +1,7 @@
 import 'babel-polyfill';
 import Router from 'koa-router';
 import config from '../config';
-import sendFakeUserMessage from '../utils/sendFakeUserMessage';
+import postSubscribe from '../utils/postSubscribe';
 import getSubscribeData from '../utils/getSubscribeData';
 
 const VERIFY_TOKEN = config.VERIFY_TOKEN;
@@ -15,7 +15,7 @@ postSubscribeRouter.post('/post-subscribe', async ctx => {
 
   if (data.verify_token === VERIFY_TOKEN) {
     try {
-      sendFakeUserMessage();
+      postSubscribe();
       res.body = 'Post Subscribe Success';
     } catch (err) {
       res.body = err;
