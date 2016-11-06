@@ -6,28 +6,15 @@ import FacebookOP from './facebook';
 
 const fb = new FacebookOP();
 
+const postSubscribe = async () => {
+  const returnArr = await findThreeNewVideos();
+  const senderIDArr = await findSubscribeId();
 
-const loopfunc = (senderIDArr, returnArr, nowCnt, arrCnt) => {
-  if (nowCnt < arrCnt) {
+  for (let idx = 0; idx < senderIDArr.length; ++idx) {
     const str = '今日新增';
-    fb.sendGenericMessageByArr(senderIDArr[nowCnt].senderID, returnArr)
-      .then(delay(500))
-      .then(() => {
-        fb.sendTextMessage(senderIDArr[nowCnt].senderID, str);
-        nowCnt++;
-        loopfunc(senderIDArr, returnArr, nowCnt, arrCnt);
-    });
+    await fb.sendGenericMessageByArr(senderIDArr[idx].senderID, returnArr).then(delay(500));
+    await fb.sendTextMessage(senderIDArr[idx].senderID, str);
   }
-};
-
-const postSubscribe = () => {
-  findThreeNewVideos().then(returnArr => {
-    findSubscribeId().then(senderIDArr => {
-      const arrCnt = senderIDArr.length;
-      let nowCnt = 0;
-      loopfunc(senderIDArr, returnArr, nowCnt, arrCnt);
-    });
-  });
 };
 
 export default postSubscribe;
