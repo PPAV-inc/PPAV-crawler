@@ -7,7 +7,7 @@ import FacebookOP from './facebook';
 
 const fb = new FacebookOP();
 
-const receivedMessage = event => {
+const receivedMessage = async (event) => {
   const senderID = event.sender.id,
         recipientID = event.recipient.id,
         timeOfMessage = event.timestamp,
@@ -24,17 +24,15 @@ const receivedMessage = event => {
   console.log(`Received message for user ${senderID} and page ${recipientID} at ${timeOfMessage} with message:`);
 
   if (messageText === 'PPAV' || messageText === 'ppav' || messageText === 'Ppav') {
-    findThreeVideos().then(returnArr => {
-      fb.sendGenericMessageByArr(senderID, returnArr).then(returnBool => {
-        if (returnBool) {
-          saveLogData(true, {
-            senderID: senderID,
-            messageText: messageText,
-            result: 'PPAV',
-          });
-        }
+    const returnArr = await findThreeVideos();
+    const sendSuccess = await fb.sendGenericMessageByArr(senderID, returnArr);
+    if (sendSuccess) {
+      saveLogData(true, {
+        senderID: senderID,
+        messageText: messageText,
+        result: 'PPAV',
       });
-    });
+    }
   } else if (messageText === 'GGinin' || messageText === 'GGININ' || messageText === 'gginin' || messageText === 'Gginin') {
     saveSubscribeData(senderID).then(str => {
       fb.sendTextMessage(senderID, str);
@@ -48,104 +46,65 @@ const receivedMessage = event => {
       fb.sendTextMessage(senderID, str2);
     });
   } else {
+    let returnObj,
+        str = '',
+        sendSuccess = false,
+        hasResult = false;
+
     switch (firstStr) {
       case '＃':
       case '#':
-        findVideo('code', messageText.split(firstStr)[1].toUpperCase()).then(returnObj => {
-          let str = '';
-          if (returnObj.results.length === 0) {
-            str = '搜尋不到此番號';
-            fb.sendTextMessage(senderID, str).then(returnBool => {
-              if (returnBool) {
-                saveLogData(false, {
-                  senderID: senderID,
-                  messageText: messageText,
-                  result: str,
-                });
-              }
-            });
-          } else {
-            str = `幫你搜尋：${returnObj.search_value}`;
-            fb.sendTextMessage(senderID, str).then(() => {
-              fb.sendGenericMessageByArr(senderID, returnObj.results).then(returnBool => {
-                if (returnBool) {
-                  saveLogData(true, {
-                    senderID: senderID,
-                    messageText: messageText,
-                    result: str,
-                  });
-                }
-              });
-            });
-          }
-        });
+        returnObj = await findVideo('code', messageText.split(firstStr)[1].toUpperCase());
+        if (returnObj.results.length === 0) {
+          str = '搜尋不到此番號';
+          sendSuccess = await fb.sendTextMessage(senderID, str);
+          hasResult = false;
+        } else {
+          str = `幫你搜尋番號：${returnObj.search_value}`;
+          await fb.sendTextMessage(senderID, str);
+          sendSuccess = await fb.sendGenericMessageByArr(senderID, returnObj.results);
+          hasResult = true;
+        }
         break;
       case '％':
       case '%':
-        findVideo('models', messageText.split(firstStr)[1]).then(returnObj => {
-          let str = '';
-          if (returnObj.results.length === 0) {
-            str = '搜尋不到此女優';
-            fb.sendTextMessage(senderID, str).then(returnBool => {
-              if (returnBool) {
-                saveLogData(false, {
-                  senderID: senderID,
-                  messageText: messageText,
-                  result: str,
-                });
-              }
-            });
-          } else {
-            str = `幫你搜尋：${returnObj.search_value}`;
-            fb.sendTextMessage(senderID, str).then(() => {
-              fb.sendGenericMessageByArr(senderID, returnObj.results).then(returnBool => {
-                if (returnBool) {
-                  saveLogData(true, {
-                    senderID: senderID,
-                    messageText: messageText,
-                    result: str,
-                  });
-                }
-              });
-            });
-          }
-        });
+        returnObj = await findVideo('models', messageText.split(firstStr)[1]);
+        if (returnObj.results.length === 0) {
+          str = '搜尋不到此女優';
+          sendSuccess = await fb.sendTextMessage(senderID, str);
+          hasResult = false;
+        } else {
+          str = `幫你搜尋女優：${returnObj.search_value}`;
+          await fb.sendTextMessage(senderID, str);
+          sendSuccess = await fb.sendGenericMessageByArr(senderID, returnObj.results);
+          hasResult = true;
+        }
         break;
       case '＠':
       case '@':
-        findVideo('title', messageText.split(firstStr)[1]).then(returnObj => {
-          let str = '';
-          if (returnObj.results.length === 0) {
-            str = '搜尋不到此片名';
-            fb.sendTextMessage(senderID, str).then(returnBool => {
-              if (returnBool) {
-                saveLogData(false, {
-                  senderID: senderID,
-                  messageText: messageText,
-                  result: str,
-                });
-              }
-            });
-          } else {
-            str = `幫你搜尋：${returnObj.search_value}`;
-            fb.sendTextMessage(senderID, str).then(() => {
-              fb.sendGenericMessageByArr(senderID, returnObj.results).then(returnBool => {
-                if (returnBool) {
-                  saveLogData(true, {
-                    senderID: senderID,
-                    messageText: messageText,
-                    result: str,
-                  });
-                }
-              });
-            });
-          }
-        });
+        returnObj = await findVideo('title', messageText.split(firstStr)[1]);
+        if (returnObj.results.length === 0) {
+          str = '搜尋不到此片名';
+          sendSuccess = await fb.sendTextMessage(senderID, str);
+          hasResult = false;
+        } else {
+          str = `幫你搜尋片名：${returnObj.search_value}`;
+          await fb.sendTextMessage(senderID, str);
+          sendSuccess = await fb.sendGenericMessageByArr(senderID, returnObj.results);
+          hasResult = true;
+        }
         break;
       default:
-        const str = '想看片請輸入 "PPAV" 3:) \n\n其他搜尋功能🔥\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"\n\n訂閱每日推播："GGININ"';
+        str = '想看片請輸入 "PPAV" 3:) \n\n其他搜尋功能🔥\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"\n\n訂閱每日推播："GGININ"';
         fb.sendTextMessage(senderID, str);
         break;
+    }
+    if (sendSuccess) {
+      saveLogData(hasResult, {
+        senderID: senderID,
+        messageText: messageText,
+        result: str,
+      });
     }
   }
 };
