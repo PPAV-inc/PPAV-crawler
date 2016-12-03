@@ -1,5 +1,6 @@
 import tensorflow as tf
 import numpy as np
+import cv2
 
 def conv2d(input_mx, filter_mx, bias_mx, activation="relu", strides=1):
     input_mx = tf.nn.conv2d(input_mx, filter_mx, [1, strides, strides, 1], padding='SAME')
@@ -84,7 +85,10 @@ def testing():
     training_sample = np.random.rand(50, 3, 12, 12)
     training_sample *= 255
     label = np.random.randint(2, size=(50, 2))
-    training(training_sample, label)
+    img = np.array(cv2.imread('./tst.image'))
+    resize_img = None
+    cv2.resize(img, resize_img, (12, 12), cv2.INTER_CUBIC)
+    #training(training_sample, label)
 
 
 if __name__ == "__main__":
