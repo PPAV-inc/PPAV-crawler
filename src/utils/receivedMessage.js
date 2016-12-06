@@ -51,6 +51,7 @@ const receivedMessage = async (event) => {
         sendSuccess = false,
         hasResult = false;
 
+    messageText = messageText.replace(new RegExp('\\+', 'g'), '');
     switch (firstStr) {
       case '＃':
       case '#':
