@@ -63,11 +63,9 @@ class MongoOP:
         return collect.find_one({'url': url, 'update_date': {'$exists':True}}, \
                                 {'update_date':1, '_id':0})
 
-    def get_logs(self, collect_name='logs'):
-        collect = self.db[collect_name]
-
-        for each in collect.find():
-            print(each)
+    def get_logs_collect(self):
+        collect_name='logs'
+        return self.db[collect_name]
 
     def rename_collection(self, old_name, new_name, drop=False):
         if new_name in self.db.collection_names() and drop:
