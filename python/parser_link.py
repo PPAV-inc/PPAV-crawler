@@ -64,7 +64,7 @@ def parse_webpage(url):
         req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla 7.0'})
         page = urllib.request.urlopen(req).read().decode('utf-8')
         return page
-    except:
+    except Exception:
         print("raise error in webpage and except it!")
         return None
 
