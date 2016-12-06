@@ -85,11 +85,19 @@ class ParserInfo:
         img_url_re = '<img itemprop=\"image\" src=\"(.*?)\" title=\"'
         img_url = re.search(img_url_re, page_film).group(1)
 
+        film_url_re = 'window.atob\\(\"(.*?)\"\\)'
+        film_url = re.search(film_url_re, page_film)
+        if film_url != None:
+            import base64
+            film_url = base64.b64decode(film_url.group(1)).decode('utf-8')
+        print("film_url is {}".format(film_url))
+
         if self.mongo.info_is_exists(url):
             info = {}
             info['url'] = url
             info['count'] = int(view_count_str)
             info['update_date'] = datetime.datetime.now()
+            info['film_url'] = film_url
             return info
         else:
             if search_video_code is not None:   # filter some films don't have code number
@@ -108,13 +116,14 @@ class ParserInfo:
             info['models'] = model
             info['title'] = title
             info['update_date'] = datetime.datetime.now()
+            info['film_url'] = film_url
             return info
 
     def parse_info_and_update(self, film_url_json_list, collect_name=None):
         for idx, url_json in enumerate(film_url_json_list):
             url = url_json['url']
             print(idx, url)
-            date_info = self.mongo.get_url_update_date(url)
+            date_info = self.mongo.get_url_update_date(url, collect_name)
             diff_days = 3   # the days difference between today and last update_date
 
             if date_info is not None \
@@ -123,6 +132,7 @@ class ParserInfo:
                 continue
 
             info = self.parse_film_info(url)
+
             if info:
                 self.mongo.update_json_list([info], collect_name)
             else:

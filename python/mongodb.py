@@ -18,8 +18,8 @@ class MongoOP:
             collect.drop()
 
         for idx, json in enumerate(json_list):
-            if idx % 100 == 1:
-                print("update into {} : {} / {}".format(collect_name, idx, len(json_list)-1))
+            if idx % 100 == 0 and idx > 0:
+                print("update into collect {} : {} / {}".format(collect_name, idx, len(json_list)))
             collect.update_one({'url': json['url']}, {'$set': json}, upsert=True)
 
     def delete_url(self, url, collect_name=None):
@@ -63,9 +63,11 @@ class MongoOP:
         return collect.find_one({'url': url, 'update_date': {'$exists':True}}, \
                                 {'update_date':1, '_id':0})
 
-    def get_logs_collect(self):
-        collect_name='logs'
-        return self.db[collect_name]
+    def get_logs(self, collect_name='logs'):
+        collect = self.db[collect_name]
+
+        for each in collect.find():
+            print(each)
 
     def rename_collection(self, old_name, new_name, drop=False):
         if new_name in self.db.collection_names() and drop:
