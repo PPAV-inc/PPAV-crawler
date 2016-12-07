@@ -45,6 +45,14 @@ const receivedMessage = async (event) => {
       const str2 = '想看片請輸入 "PPAV" 3:) \n\n其他搜尋功能🔥\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"\n\n訂閱每日推播："GGININ"';
       fb.sendTextMessage(senderID, str2);
     });
+  } else if (messageText === 'Donate' || messageText === 'donate' || messageText === 'DONATE' || messageText === '抖內') {
+    const str = '您的抖內將會運用在：\n1. 維護伺服器，提供更快、更穩定的PPAV\n2. 開發新功能\n3. 讓你照三餐尻🔥🔥🔥\n\n抖內連結請點按鈕～\n你的抖內是我們成長的動力 <3 <3 <3';
+    const buttons = [{
+            type: 'web_url',
+            url: 'https://p.allpay.com.tw/Xa5Bv',
+            title: '我要抖內',
+          }];
+    fb.sendButtonMessage(senderID, str, buttons);
   } else {
     let returnObj,
         str = '',

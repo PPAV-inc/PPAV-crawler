@@ -24,7 +24,7 @@ webhookRouter.post('/webhook', async ctx => {
   
   if (data.object === 'page') {
     data.entry.forEach((pageEntry) => {
-      pageEntry.messaging.forEach((messagingEvent) => {
+      pageEntry.messaging.forEach(messagingEvent => {
         if (messagingEvent.message) {
           receivedMessage(messagingEvent);
         } else if (messagingEvent.postback) {
