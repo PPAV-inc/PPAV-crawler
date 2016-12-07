@@ -112,6 +112,34 @@ class FacebookOP {
       });
     });
   }
+  
+  sendButtonMessage(recipientId, text, buttons) {
+    return new Promise(resolve => {
+      const messageData = {
+        recipient: {
+          id: recipientId,
+        },
+        message: {
+          attachment: {
+            type: 'template',
+            payload: {
+              template_type: 'button',
+              text,
+              buttons,
+            },
+          },
+        },
+      };
+    
+      this.callSendAPI(messageData).then(returnBool => {
+        if (returnBool) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      });
+    });
+  }
 }
 
 export default FacebookOP;

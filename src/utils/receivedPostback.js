@@ -47,6 +47,9 @@ const receivedPostback = (event) => {
     findThreeNewVideos().then(returnArr => {
       fb.sendGenericMessageByArr(senderID, returnArr);
     });
+  } else if (payload === 'DONATE') {
+    event.message = { text: payload };
+    receivedMessage(event);
   } else {
     startedConv(senderID, timeOfPostback);
   }
