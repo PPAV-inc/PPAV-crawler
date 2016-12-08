@@ -85,6 +85,14 @@ class ParserInfo:
         img_url_re = '<img itemprop=\"image\" src=\"(.*?)\" title=\"'
         img_url = re.search(img_url_re, page_film).group(1)
 
+        tag_re = '<li>Genre:\s*(.*?)</li>'
+        tag = re.search(tag_re, page_film).group(1)
+        tag_re = '<a.*?>(.*?)</a>'
+        tag = re.findall(tag_re, tag)
+        global tag_set
+        tag_set |= set(tag)
+        print(tag)
+
         if self.mongo.info_is_exists(url):
             info = {}
             info['url'] = url
@@ -133,7 +141,7 @@ class ParserInfo:
         film_url_json_list = []
 
         # get unfinished urls and finished it
-        collect_name = "videos_update"
+        collect_name = "videos_test"
         film_url_json_list = self.mongo.get_unfinished_url_list(collect_name)
         print("unfinished url list size: {}".format(len(film_url_json_list)))
         self.parse_info_and_update(film_url_json_list, collect_name)
@@ -149,6 +157,9 @@ class ParserInfo:
 
         print("update film info finished!")
 
+        global tag_set
+        print(tag_set)
+        return
         # update new video in new collection
         old_url_set = self.mongo.get_all_url_set(collect_name='videos')
         update_url_set = self.mongo.get_all_url_set(collect_name='videos_update')
@@ -161,11 +172,12 @@ class ParserInfo:
 
         print("create new collection finished!")
 
+tag_set = set()
 if __name__ == '__main__':
     MONGO_URI = 'mongodb://localhost:27017/test'
     with open('../config.json') as fp:
         import json
-        MONGO_URI = json.load(fp)['MONGODB_PATH']
+        #MONGO_URI = json.load(fp)['MONGODB_PATH']
 
     PARSER = ParserInfo(MONGO_URI)
     PARSER.parse_start()

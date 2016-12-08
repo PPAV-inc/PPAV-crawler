@@ -11,7 +11,7 @@ if __name__ == '__main__':
         mongo_uri = json.load(fp)['MONGODB_PATH']
 
     mongo = MongoOP(mongo_uri)
-    log_collect = mongo.get_logs_collect()
+    log_collect = mongo.get_logs()
 
     query = {}
     project = {'__v': 0, '_id': 0, 'timestamp': 0}
