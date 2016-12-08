@@ -34,11 +34,10 @@ const startedConv = (senderID, timeOfPostback) => {
 
 const receivedPostback = (event) => {
   const senderID = event.sender.id,
-        recipientID = event.recipient.id,
         timeOfPostback = event.timestamp,
         payload = event.postback.payload;
 
-  console.log(`Received postback for user ${senderID} and page ${recipientID} with payload '${payload}' at ${timeOfPostback}`);
+  console.log(`收到 postback：${payload}， from ${senderID} at ${timeOfPostback}`);
 
   if (payload === 'PPAV') {
     event.message = { text: payload };

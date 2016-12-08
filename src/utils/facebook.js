@@ -29,7 +29,7 @@ class FacebookOP {
         });
     });
   }
-  
+
   sendTextMessage(recipientId, messageText) {
     return new Promise(resolve => {
       const messageData = {
@@ -66,7 +66,7 @@ class FacebookOP {
           },
         },
       };
-    
+
       this.callSendAPI(messageData).then(returnBool => {
         if (returnBool) {
           resolve(true);
@@ -112,7 +112,7 @@ class FacebookOP {
       });
     });
   }
-  
+
   sendButtonMessage(recipientId, text, buttons) {
     return new Promise(resolve => {
       const messageData = {
@@ -130,7 +130,7 @@ class FacebookOP {
           },
         },
       };
-    
+
       this.callSendAPI(messageData).then(returnBool => {
         if (returnBool) {
           resolve(true);

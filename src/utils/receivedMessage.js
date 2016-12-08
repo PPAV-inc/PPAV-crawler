@@ -21,7 +21,7 @@ const receivedMessage = async (event) => {
     messageText = messageText.replace(/\s/g, '');
   }
 
-  console.log(`Received message for user ${senderID} and page ${recipientID} at ${timeOfMessage} with message:`);
+  console.log(`收到訊息：${messageText}，from ${senderID} at ${timeOfMessage}`);
 
   if (messageText === 'PPAV' || messageText === 'ppav' || messageText === 'Ppav') {
     const returnArr = await findThreeVideos();
