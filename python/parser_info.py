@@ -85,27 +85,11 @@ class ParserInfo:
         img_url_re = '<img itemprop=\"image\" src=\"(.*?)\" title=\"'
         img_url = re.search(img_url_re, page_film).group(1)
 
-        film_url = None
-        film_url_re = '{file: (.*?)}'
-        film_url_src = re.search(film_url_re, page_film)
-        if film_url_src != None:
-            if film_url_src.group(1).find('window') != -1:
-                import base64
-                film_url_re = 'window.atob\\(\"(.*?)\"\\)'
-                film_url = base64.b64decode(re.search(film_url_re, page_film).group(1)).decode('utf-8')
-            else:
-                film_url_re = '\"(.*?)\"'
-                film_url = re.search(film_url_re, film_url_src.group(1)).group(1)
-
-
-        print("film_url is {}".format(film_url))
-
         if self.mongo.info_is_exists(url):
             info = {}
             info['url'] = url
             info['count'] = int(view_count_str)
             info['update_date'] = datetime.datetime.now()
-            info['film_url'] = film_url
             return info
         else:
             if search_video_code is not None:   # filter some films don't have code number
@@ -124,7 +108,6 @@ class ParserInfo:
             info['models'] = model
             info['title'] = title
             info['update_date'] = datetime.datetime.now()
-            info['film_url'] = film_url
             return info
 
     def parse_info_and_update(self, film_url_json_list, collect_name=None):
