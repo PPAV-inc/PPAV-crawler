@@ -3,9 +3,11 @@ import delay from 'delay';
 import findThreeNewVideos from '../models/findThreeNewVideos';
 import findSubscribeId from '../models/findSubscribeId';
 import savePushNewVideoData from '../models/savePushNewVideoData';
+import updateSubscribeData from '../models/updateSubscribeData';
 import FacebookOP from './facebook';
 
 const fb = new FacebookOP();
+
 
 const postSubscribe = async () => {
   const returnArr = await findThreeNewVideos();
@@ -27,9 +29,13 @@ const postSubscribe = async () => {
       overOneDayNumber++;
     } else {
       failedNumber++;
+      updateSubscribeData(senderIDArr[idx].senderID, false);
     }
     console.log(`需要推播人數：${senderIDArrLength} ｜ 推播成功：${successNumber} ｜ 24小時內未回覆：${overOneDayNumber} ｜ 推播失敗：${failedNumber}`);
-    savePushNewVideoData(idx, senderIDArrLength, successNumber, overOneDayNumber, failedNumber);
+    
+    if ((idx + 1) === senderIDArrLength) {
+      savePushNewVideoData(idx + 1, senderIDArrLength, successNumber, overOneDayNumber, failedNumber);
+    }
   }
 };
 

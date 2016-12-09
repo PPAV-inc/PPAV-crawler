@@ -1,10 +1,10 @@
 import { SubscribeIdCollection } from './schema';
 
-const updateSubscribeData = (id) => {
+const updateSubscribeData = (id, isPushable) => {
   return new Promise(resolve => {
     SubscribeIdCollection.update(
       { senderID: id },
-      { $set: { isPushable: true } },
+      { $set: { isPushable } },
       { upsert: false },
       err => {
         if (err) {

@@ -16,13 +16,13 @@ const receivedMessage = async (event) => {
 
   let firstStr = '',
       messageText = message.text;
+      
+  fb.sendTyping(senderID, 'typing_on');
 
   if (messageText !== undefined) {
-    fb.sendTyping(senderID, 'typing_on');
-
     firstStr = messageText.split('')[0];
     messageText = messageText.replace(/\s/g, '');
-    const isUpdate = updateSubscribeData(senderID);
+    const isUpdate = updateSubscribeData(senderID, true);
     if (isUpdate) {
       console.log(`${senderID} 更新 isPushable 成功`);
     } else {
@@ -30,7 +30,7 @@ const receivedMessage = async (event) => {
     }
   }
 
-  console.log(`收到訊息：'${messageText}'，from ${senderID} at ${timeOfMessage}`);
+  console.log(`收到訊息：'${messageText}'，從 id '${senderID}' at ${timeOfMessage}`);
 
   if (messageText === 'PPAV' || messageText === 'ppav' || messageText === 'Ppav') {
     const returnArr = await findThreeVideos();
