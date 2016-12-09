@@ -103,6 +103,20 @@ const receivedMessage = async (event) => {
           hasResult = true;
         }
         break;
+      case '！':
+      case '!':
+        returnObj = await findVideo('tags', messageText.split(firstStr)[1]);
+        if (returnObj.results.length === 0) {
+          str = '搜尋不到此標籤';
+          sendSuccess = await fb.sendTextMessage(senderID, str);
+          hasResult = false;
+        } else {
+          str = `幫你搜尋標籤：${returnObj.search_value}`;
+          await fb.sendTextMessage(senderID, str);
+          sendSuccess = await fb.sendGenericMessageByArr(senderID, returnObj.results);
+          hasResult = true;
+        }
+        break;
       default:
         str = '想看片請輸入 "PPAV" 3:) \n\n其他搜尋功能🔥\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"\n\n訂閱每日推播："GGININ"';
         fb.sendTextMessage(senderID, str);

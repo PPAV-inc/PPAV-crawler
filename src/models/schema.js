@@ -16,6 +16,7 @@ const newVideoSchema = new mongoose.Schema({
   url: String,
   img_url: String,
   update_date: Date,
+  tags: [String],
 }, { collection: 'videos_new' });
 
 const videoSchema = new mongoose.Schema({
@@ -28,6 +29,7 @@ const videoSchema = new mongoose.Schema({
   url: String,
   img_url: String,
   update_date: Date,
+  tags: [String],
 }, { collection: 'videos' });
 
 const logSchema = new mongoose.Schema({
