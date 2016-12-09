@@ -18,6 +18,8 @@ const receivedMessage = async (event) => {
       messageText = message.text;
 
   if (messageText !== undefined) {
+    fb.sendTyping(senderID, 'typing_on');
+
     firstStr = messageText.split('')[0];
     messageText = messageText.replace(/\s/g, '');
     const isUpdate = updateSubscribeData(senderID);
@@ -28,7 +30,7 @@ const receivedMessage = async (event) => {
     }
   }
 
-  console.log(`收到訊息：${messageText}，from ${senderID} at ${timeOfMessage}`);
+  console.log(`收到訊息：'${messageText}'，from ${senderID} at ${timeOfMessage}`);
 
   if (messageText === 'PPAV' || messageText === 'ppav' || messageText === 'Ppav') {
     const returnArr = await findThreeVideos();
@@ -137,6 +139,8 @@ const receivedMessage = async (event) => {
       });
     }
   }
+  
+  fb.sendTyping(senderID, 'typing_off');
 };
 
 export default receivedMessage;

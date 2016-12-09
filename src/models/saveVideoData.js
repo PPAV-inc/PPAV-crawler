@@ -22,7 +22,7 @@ const saveVideoData = (obj) => {
       if (err) {
         console.log(err);
       } else {
-        console.log(`push ${value.code} finished`);
+        console.log(`儲存番號 '${value.code}' 成功`);
       }
     });
   });

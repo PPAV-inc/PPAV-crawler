@@ -16,7 +16,7 @@ const saveLogData = (successOrNot, Obj) => {
     if (err) {
       console.log(err);
     } else {
-      console.log(`push ${Obj.messageText} finished`);
+      console.log(`儲存訊息 '${Obj.messageText}' 成功`);
     }
   });
 };

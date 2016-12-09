@@ -1,4 +1,5 @@
 import rp from 'request-promise';
+import fetch from 'isomorphic-fetch';
 import config from '../config';
 
 class FacebookOP {
@@ -21,14 +22,29 @@ class FacebookOP {
           const recipientId = parsedBody.recipient_id,
                 messageId = parsedBody.message_id;
           resolve(true);
-          console.log(`Successfully sent generic message with id ${messageId} to recipient ${recipientId}`);
+          console.log(`成功送出 generic message 給 id '${recipientId}'`);
         })
         .catch(err => {
           resolve(false);
-          console.error(`Unable to send message. Error: ${err}`);
+          console.error(`無法送出訊息. Error: ${err}`);
         });
     });
   }
+  
+  sendTyping = (userId, option) => {
+    fetch(`https://graph.facebook.com/v2.6/me/messages?access_token=${this.PAGE_TOKEN}`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        recipient: {
+          id: userId,
+        },
+        sender_action: option,
+      }),
+    });
+  };
 
   sendTextMessage(recipientId, messageText) {
     return new Promise(resolve => {

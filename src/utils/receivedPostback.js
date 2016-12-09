@@ -37,7 +37,7 @@ const receivedPostback = (event) => {
         timeOfPostback = event.timestamp,
         payload = event.postback.payload;
 
-  console.log(`收到 postback：${payload}， from ${senderID} at ${timeOfPostback}`);
+  console.log(`收到 postback：${payload}，從 id '${senderID}' at timestamp ${timeOfPostback}`);
 
   if (payload === 'PPAV') {
     event.message = { text: payload };
