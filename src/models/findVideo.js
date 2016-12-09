@@ -15,16 +15,16 @@ const findVideo = (key, value) => {
         });
       } else {
         const limitNum = 5;
-        let set = new Set();
+        const set = new Set();
 
         // get random film
         while (found.length !== 0 && set.size < limitNum) {
-          let randNum = Math.floor(Math.random() * found.length);
+          const randNum = Math.floor(Math.random() * found.length);
           set.add(found[randNum]);
           found.splice([randNum], 1);
         }
 
-        let returnObj = {};
+        const returnObj = {};
         returnObj.search_value = value;
         returnObj.results = Array.from(set);
         resolve(returnObj);
