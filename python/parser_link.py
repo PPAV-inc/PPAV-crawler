@@ -49,7 +49,6 @@ class ParserLink:
             while self.parse_film_link(url, film_url_list):
                 subpage_num += 1
                 url = link_type + 'page-' + str(subpage_num) + '/'
-                break
 
             film_url_list = [self.orig_url + url for url in film_url_list]
             yield film_url_list

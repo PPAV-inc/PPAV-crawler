@@ -2,6 +2,7 @@
 
 import re
 import datetime
+import json
 from parser_link import ParserLink, parse_webpage
 from mongodb import MongoOP
 
@@ -10,6 +11,7 @@ class ParserInfo:
     def __init__(self, mongo_uri):
         self.film_infos = []
         self.mongo = MongoOP(mongo_uri)
+        self.tags_dict = None
 
     @classmethod
     def parse_indexav(cls, video_code):
@@ -59,6 +61,14 @@ class ParserInfo:
         else:
             return code
 
+    def switch_tag(self, tag_arr):
+        if self.tags_dict is None:
+            with open('tags.json') as tags_fp:
+                self.tags_dict = json.load(tags_fp)
+        tag_arr = [self.tags_dict[key] if key in self.tags_dict else key \
+                    for key in tag_arr]
+        return tag_arr
+
     def parse_film_info(self, url):
         page_film = parse_webpage(url)
 
@@ -85,10 +95,12 @@ class ParserInfo:
         img_url_re = '<img itemprop=\"image\" src=\"(.*?)\" title=\"'
         img_url = re.search(img_url_re, page_film).group(1)
 
-        tag_re = '<li>Genre:\s*(.*?)</li>'
+        tag_re = '<li>Genre:\\s*(.*?)</li>'
         tag = re.search(tag_re, page_film).group(1)
         tag_re = '<a.*?>(.*?)</a>'
         tag = re.findall(tag_re, tag)
+        tag = self.switch_tag(tag)
+        print(tag)
 
         if self.mongo.info_is_exists(url):
             info = {}
@@ -139,7 +151,7 @@ class ParserInfo:
         film_url_json_list = []
 
         # get unfinished urls and finished it
-        collect_name = "videos_test"
+        collect_name = "videos_update"
         film_url_json_list = self.mongo.get_unfinished_url_list(collect_name)
         print("unfinished url list size: {}".format(len(film_url_json_list)))
         self.parse_info_and_update(film_url_json_list, collect_name)
@@ -150,8 +162,10 @@ class ParserInfo:
         for url_list in parser_link.parse_link_generator():
             print("get films link size: {}".format(len(url_list)))
             film_url_json_list = [{'url': ''.join(url.split())} for url in url_list]
-            self.mongo.update_json_list(film_url_json_list, collect_name)  # update url first
-            self.parse_info_and_update(film_url_json_list, collect_name) # then parse and update url info.
+            # update url first
+            self.mongo.update_json_list(film_url_json_list, collect_name)
+            # then parse and update url info.
+            self.parse_info_and_update(film_url_json_list, collect_name)
 
         print("update film info finished!")
 
@@ -170,8 +184,7 @@ class ParserInfo:
 if __name__ == '__main__':
     MONGO_URI = 'mongodb://localhost:27017/test'
     with open('../config.json') as fp:
-        import json
-        #MONGO_URI = json.load(fp)['MONGODB_PATH']
+        MONGO_URI = json.load(fp)['MONGODB_PATH']
 
     PARSER = ParserInfo(MONGO_URI)
     PARSER.parse_start()
