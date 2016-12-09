@@ -89,9 +89,6 @@ class ParserInfo:
         tag = re.search(tag_re, page_film).group(1)
         tag_re = '<a.*?>(.*?)</a>'
         tag = re.findall(tag_re, tag)
-        global tag_set
-        tag_set |= set(tag)
-        print(tag)
 
         if self.mongo.info_is_exists(url):
             info = {}
@@ -116,6 +113,7 @@ class ParserInfo:
             info['models'] = model
             info['title'] = title
             info['update_date'] = datetime.datetime.now()
+            info['tags'] = tag
             return info
 
     def parse_info_and_update(self, film_url_json_list, collect_name=None):
@@ -157,9 +155,6 @@ class ParserInfo:
 
         print("update film info finished!")
 
-        global tag_set
-        print(tag_set)
-        return
         # update new video in new collection
         old_url_set = self.mongo.get_all_url_set(collect_name='videos')
         update_url_set = self.mongo.get_all_url_set(collect_name='videos_update')
@@ -172,7 +167,6 @@ class ParserInfo:
 
         print("create new collection finished!")
 
-tag_set = set()
 if __name__ == '__main__':
     MONGO_URI = 'mongodb://localhost:27017/test'
     with open('../config.json') as fp:
