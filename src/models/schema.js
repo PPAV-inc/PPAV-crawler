@@ -42,16 +42,26 @@ const logSchema = new mongoose.Schema({
 
 const subscribeIdSchema = new mongoose.Schema({
   senderID: String,
-}, { collection: 'subscribeids' });
+  isPushable: Boolean,
+}, { collection: 'subscribe_ids' });
 
 const getStartedIdSchema = new mongoose.Schema({
   senderID: String,
   firstName: String,
   timeOfPostback: Date,
-}, { collection: 'getstartedids' });
+}, { collection: 'getstarted_ids' });
+
+const pushNewVideoLogSchema = new mongoose.Schema({
+  totalNumber: Number,
+  successNumber: Number,
+  overOneDayNumber: Number,
+  failedNumber: Number,
+  timestamp: Date,
+}, { collection: 'push_new_video_logs' });
 
 export const VideoCollection = mongoose.model('videos', videoSchema);
 export const NewVideoCollection = mongoose.model('videos_new', newVideoSchema);
 export const LogCollection = mongoose.model('logs', logSchema);
-export const SubscribeIdCollection = mongoose.model('subscribeids', subscribeIdSchema);
-export const GetStartedIdCollection = mongoose.model('getstartedids', getStartedIdSchema);
+export const SubscribeIdCollection = mongoose.model('subscribe_ids', subscribeIdSchema);
+export const GetStartedIdCollection = mongoose.model('getstarted_ids', getStartedIdSchema);
+export const PushNewVideoLogCollection = mongoose.model('push_new_video_logs', pushNewVideoLogSchema);

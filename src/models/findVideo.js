@@ -14,7 +14,7 @@ const findVideo = (key, value) => {
           resolve(returnObj);
         });
       } else {
-        const limitNum = 5;
+        const limitNum = 10;
         const set = new Set();
 
         // get random film
