@@ -3,6 +3,7 @@ import saveLogData from '../models/saveLogData';
 import saveSubscribeData from '../models/saveSubscribeData';
 import removeSubscribeId from '../models/removeSubscribeId';
 import findVideo from '../models/findVideo';
+import updateSubscribeData from '../models/updateSubscribeData';
 import FacebookOP from './facebook';
 
 const fb = new FacebookOP();
@@ -19,6 +20,12 @@ const receivedMessage = async (event) => {
   if (messageText !== undefined) {
     firstStr = messageText.split('')[0];
     messageText = messageText.replace(/\s/g, '');
+    const isUpdate = updateSubscribeData(senderID);
+    if (isUpdate) {
+      console.log(`${senderID} 更新 isPushable 成功`);
+    } else {
+      console.log(`${senderID} 更新 isPushable 失敗`);
+    }
   }
 
   console.log(`收到訊息：${messageText}，from ${senderID} at ${timeOfMessage}`);
