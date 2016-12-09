@@ -7,10 +7,7 @@ const getSubscribeData = () => {
     findThreeNewVideos().then(returnArr => {
       findSubscribeId().then(senderIDArr => {
         const senderIDArrLength = senderIDArr.length;
-        let count = 0;
-        senderIDArr.forEach(() => {
-          count++;
-        });
+        const count = senderIDArr.length;
         const returnObj = {
           returnArr,
           senderIDArr,

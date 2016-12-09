@@ -28,9 +28,8 @@ const postSubscribe = async () => {
     } else {
       failedNumber++;
     }
-
-    console.log(`推播人數：${senderIDArrLength} ｜ 推播成功：${successNumber} ｜ 24小時內未回覆：${overOneDayNumber} ｜ 推播失敗：${failedNumber}`);
-    savePushNewVideoData(senderIDArrLength, successNumber, overOneDayNumber, failedNumber);
+    console.log(`需要推播人數：${senderIDArrLength} ｜ 推播成功：${successNumber} ｜ 24小時內未回覆：${overOneDayNumber} ｜ 推播失敗：${failedNumber}`);
+    savePushNewVideoData(idx, senderIDArrLength, successNumber, overOneDayNumber, failedNumber);
   }
 };
 

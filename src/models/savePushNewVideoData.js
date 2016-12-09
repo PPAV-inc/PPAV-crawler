@@ -1,10 +1,10 @@
-import { PushNewVideoCollection } from './schema';
+import { PushNewVideoLogCollection } from './schema';
 
-const savePushNewVideoData = (totalNumber, successNumber, overOneDayNumber, failedNumber) => {
+const savePushNewVideoData = (index, totalNumber, successNumber, overOneDayNumber, failedNumber) => {
   const timestamp = new Date();
-  let PushNewVideo;
+  let PushNewVideoLog;
 
-  PushNewVideo = new PushNewVideoCollection({
+  PushNewVideoLog = new PushNewVideoLogCollection({
     totalNumber,
     successNumber,
     overOneDayNumber,
@@ -12,11 +12,11 @@ const savePushNewVideoData = (totalNumber, successNumber, overOneDayNumber, fail
     timestamp,
   });
 
-  PushNewVideo.save((err) => {
+  PushNewVideoLog.save((err) => {
     if (err) {
       console.log(`儲存每日推播失敗：${err}`);
     } else {
-      console.log('儲存每日推播完成！');
+      console.log(`${index} / ${totalNumber} 儲存每日推播完成！`);
     }
   });
 };

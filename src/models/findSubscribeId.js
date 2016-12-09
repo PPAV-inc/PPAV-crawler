@@ -3,7 +3,7 @@ import { SubscribeIdCollection } from './schema';
 const findSubscribeId = () => {
   return new Promise(resolve => {
     let senderIdArr = [];
-    SubscribeIdCollection.find().exec((err, data) => {
+    SubscribeIdCollection.find({ isPushable: { $eq: true } }).exec((err, data) => {
       if (err) {
         console.log(err);
       } else {
