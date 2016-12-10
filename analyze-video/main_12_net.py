@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-import cv2
+from PIL import Image
 import glob
 
 def conv2d(input_mx, filter_mx, bias_mx, activation="relu", strides=1):
@@ -83,18 +83,17 @@ def training(training_sample, label):
     print ("Training Complete")
 
 def testing():
-    training_sample = np.random.rand(50, 3, 12, 12)
-    training_sample *= 255
-    label = np.random.randint(2, size=(50, 2))
-    negative_file = glob.glob("dataset/negative/Original/*") 
+    training_sample = []
+    label = []
+    negative_file = glob.glob("dataset/negative/*") 
+    print negative_file
     for f in negative_file:
-        img = cv2.imread(f)
-        print img.shape
-        resize_img = np.zeros((12, 12))
-        cv2.resize(img, (12, 12), resize_img, cv2.INTER_CUBIC)
-        print resize_img.shape
-    #cv2.imwrite('./output.jpg', resize_img)
-    #training(training_sample, label)
+        img = Image.open(f).resize((12, 12))
+        img_mx = np.array(img)
+        img_mx = np.reshape(img_mx, (3, 12, 12))
+        training_sample.append(img_mx.tolist())
+        label.append([0, 1])
+    training(training_sample, label)
 
 
 if __name__ == "__main__":
