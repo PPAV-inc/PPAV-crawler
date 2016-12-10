@@ -14,8 +14,8 @@ class MongoOP:
         collect = self.get_collection(collect_name)
 
         if collect_name == 'videos_new':
-            print("new Videos drop")
-            collect.drop()
+            print("remove all films in videos_new")
+            collect.remove({})
 
         for idx, json in enumerate(json_list):
             if idx % 100 == 0 and idx > 0:

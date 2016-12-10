@@ -107,6 +107,7 @@ class ParserInfo:
             info['url'] = url
             info['count'] = int(view_count_str)
             info['update_date'] = datetime.datetime.now()
+            info['tags'] = tag
             return info
         else:
             if search_video_code is not None:   # filter some films don't have code number
