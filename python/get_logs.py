@@ -2,7 +2,6 @@
 
 from mongodb import MongoOP
 import parser_info
-import urllib
 
 if __name__ == '__main__':
     mongo_uri = 'mongodb://localhost:27017/test'
@@ -11,7 +10,7 @@ if __name__ == '__main__':
         mongo_uri = json.load(fp)['MONGODB_PATH']
 
     mongo = MongoOP(mongo_uri)
-    log_collect = mongo.get_logs()
+    log_collect = mongo.get_collection('logs')
 
     query = {}
     project = {'__v': 0, '_id': 0, 'timestamp': 0}
