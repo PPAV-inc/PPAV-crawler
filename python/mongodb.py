@@ -13,7 +13,7 @@ class MongoOP:
     def update_json_list(self, json_list, collect_name=None):
         collect = self.get_collection(collect_name)
 
-        if collect_name == 'videos_new':
+        if collect_name == 'videos_new' and len(json_list) != 0:
             print("remove all films in videos_new")
             collect.remove({})
 
