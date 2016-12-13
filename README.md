@@ -2,9 +2,12 @@
 > 粉專連結：**[PPAV][1]**  
 歡迎大家來跟PPAV講話～  
 就知道 [PPAV][1] 在幹嘛了ＸＤ  
-
+  
+# 2016/12/13 最新資訊：  
+![被ban惹](https://cloud.githubusercontent.com/assets/12113222/21125169/8d2d1c3e-c11e-11e6-9869-1fa77ca13a30.png)  
+  
 **[PPAV][1]** 是個搜尋、推播 AV 的 Facebook Messenger BOT，  
-
+  
 目前資料庫片源網站：
  - [Xonline](http://xonline.tv)  
 
