@@ -1,10 +1,10 @@
 import 'babel-polyfill';
-import findThreeNewVideos from '../models/findThreeNewVideos';
+import findThreeVideos from '../models/findThreeVideos';
 import findSubscribeId from '../models/findSubscribeId';
 
 const getSubscribeData = () => {
   return new Promise(resolve => {
-    findThreeNewVideos().then(returnArr => {
+    findThreeVideos(isNew = true).then(returnArr => {
       findSubscribeId().then(senderIDArr => {
         const senderIDArrLength = senderIDArr.length;
         const count = senderIDArr.length;

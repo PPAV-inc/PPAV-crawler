@@ -41,3 +41,6 @@ config.json
 
 # Ignore /lib
 lib
+
+# Ignore python module
+python/__pycache__

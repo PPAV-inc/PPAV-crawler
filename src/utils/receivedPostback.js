@@ -1,6 +1,6 @@
 import request from 'request';
 import config from '../config';
-import findThreeNewVideos from '../models/findThreeNewVideos';
+import findThreeVideos from '../models/findThreeVideos';
 import receivedMessage from './receivedMessage';
 import saveGetStartedData from '../models/saveGetStartedData';
 import FacebookOP from './facebook';
@@ -44,7 +44,7 @@ const receivedPostback = (event) => {
     event.message = { text: payload };
     receivedMessage(event);
   } else if (payload === 'NEW') {
-    findThreeNewVideos().then(returnArr => {
+    findThreeVideos(isNew = true).then(returnArr => {
       fb.sendGenericMessageByArr(senderID, returnArr);
     });
   } else if (payload === 'DONATE') {

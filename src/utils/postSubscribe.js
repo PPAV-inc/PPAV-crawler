@@ -1,6 +1,6 @@
 import 'babel-polyfill';
 import delay from 'delay';
-import findThreeNewVideos from '../models/findThreeNewVideos';
+import findThreeVideos from '../models/findThreeVideos';
 import findSubscribeId from '../models/findSubscribeId';
 import savePushNewVideoData from '../models/savePushNewVideoData';
 import updateSubscribeData from '../models/updateSubscribeData';
@@ -10,7 +10,7 @@ const fb = new FacebookOP();
 
 
 const postSubscribe = async () => {
-  const returnArr = await findThreeNewVideos();
+  const returnArr = await findThreeVideos(isNew = true);
   const senderIDArr = await findSubscribeId();
   const senderIDArrLength = senderIDArr.length;
 
