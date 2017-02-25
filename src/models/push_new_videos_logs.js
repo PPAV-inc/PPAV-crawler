@@ -21,4 +21,4 @@ const savePushNewVideoData = (index, totalNumber, successNumber, overOneDayNumbe
   });
 };
 
-export default savePushNewVideoData;
+export { savePushNewVideoData };

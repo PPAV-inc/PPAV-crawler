@@ -1,8 +1,8 @@
 import 'babel-polyfill';
 import delay from 'delay';
-import findThreeVideos from '../models/findThreeVideos';
+import Videos_new from '../models/Videos_new';
+import Push_new_videos_logs from '../models/push_new_videos_logs';
 import findSubscribeId from '../models/findSubscribeId';
-import savePushNewVideoData from '../models/savePushNewVideoData';
 import updateSubscribeData from '../models/updateSubscribeData';
 import FacebookOP from './facebook';
 
@@ -10,7 +10,7 @@ const fb = new FacebookOP();
 
 
 const postSubscribe = async () => {
-  const returnArr = await findThreeVideos(isNew = true);
+  const returnArr = await Videos_new.getRandomThreeVideos();
   const senderIDArr = await findSubscribeId();
   const senderIDArrLength = senderIDArr.length;
 
@@ -34,7 +34,7 @@ const postSubscribe = async () => {
     console.log(`需要推播人數：${senderIDArrLength} ｜ 推播成功：${successNumber} ｜ 24小時內未回覆：${overOneDayNumber} ｜ 推播失敗：${failedNumber}`);
 
     if ((idx + 1) === senderIDArrLength) {
-      savePushNewVideoData(idx + 1, senderIDArrLength, successNumber, overOneDayNumber, failedNumber);
+      Push_new_videos_logs.savePushNewVideoData(idx + 1, senderIDArrLength, successNumber, overOneDayNumber, failedNumber);
     }
   }
 };
