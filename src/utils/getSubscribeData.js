@@ -1,5 +1,5 @@
 import 'babel-polyfill';
-import Videos_new from '../models/videos_new';
+import * as Videos_new from '../models/videos_new';
 import findSubscribeId from '../models/findSubscribeId';
 
 const getSubscribeData = () => {

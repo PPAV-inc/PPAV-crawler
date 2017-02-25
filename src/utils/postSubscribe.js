@@ -1,7 +1,7 @@
 import 'babel-polyfill';
 import delay from 'delay';
-import Videos_new from '../models/Videos_new';
-import Push_new_videos_logs from '../models/push_new_videos_logs';
+import * as Videos_new from '../models/Videos_new';
+import * as Push_new_videos_logs from '../models/push_new_videos_logs';
 import findSubscribeId from '../models/findSubscribeId';
 import updateSubscribeData from '../models/updateSubscribeData';
 import FacebookOP from './facebook';

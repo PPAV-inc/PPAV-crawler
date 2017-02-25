@@ -2,7 +2,7 @@ import saveLogData from '../models/saveLogData';
 import saveSubscribeData from '../models/saveSubscribeData';
 import removeSubscribeId from '../models/removeSubscribeId';
 import updateSubscribeData from '../models/updateSubscribeData';
-import Videos from '../models/videos';
+import * as Videos from '../models/videos';
 import FacebookOP from './facebook';
 
 const fb = new FacebookOP();

@@ -1,6 +1,6 @@
 import request from 'request';
 import config from '../config';
-import Videos_new from '../models/videos_new';
+import * as Videos_new from '../models/videos_new';
 import receivedMessage from './receivedMessage';
 import saveGetStartedData from '../models/saveGetStartedData';
 import FacebookOP from './facebook';
