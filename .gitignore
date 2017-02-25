@@ -44,3 +44,6 @@ lib
 
 # Ignore python module
 python/__pycache__
+
+# tmp file
+*.swp
