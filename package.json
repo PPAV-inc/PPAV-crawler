@@ -44,6 +44,7 @@
     "eslint-plugin-react": "^6.4.1",
     "gaze": "^1.1.2",
     "mocha": "^3.1.2",
+    "node-telegram-bot-api": "^0.27.0",
     "nodemon": "^1.8.1",
     "supertest": "^2.0.0"
   },
@@ -53,7 +54,9 @@
     "start": "node ./bin/ppav-bot",
     "prepublish": "npm run build",
     "test": "mocha --compilers js:babel-core/register ./test/*",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "t-start": "node ./bin/telegram-bot",
+    "t-dev": "npm run build && node bin/t-dev"
   },
   "engines": {
     "node": "6.7.0",
