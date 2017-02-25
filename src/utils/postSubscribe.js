@@ -2,8 +2,7 @@ import 'babel-polyfill';
 import delay from 'delay';
 import * as Videos_new from '../models/Videos_new';
 import * as Push_new_videos_logs from '../models/push_new_videos_logs';
-import findSubscribeId from '../models/findSubscribeId';
-import updateSubscribeData from '../models/updateSubscribeData';
+import * as Subscribe from '../models/subscribe';
 import FacebookOP from './facebook';
 
 const fb = new FacebookOP();
@@ -11,7 +10,7 @@ const fb = new FacebookOP();
 
 const postSubscribe = async () => {
   const returnArr = await Videos_new.getRandomThreeVideos();
-  const senderIDArr = await findSubscribeId();
+  const senderIDArr = await Subscribe.findSubscribeId();
   const senderIDArrLength = senderIDArr.length;
 
   let successNumber = 0;
@@ -29,7 +28,7 @@ const postSubscribe = async () => {
       overOneDayNumber++;
     } else {
       failedNumber++;
-      updateSubscribeData(senderIDArr[idx].senderID, false);
+      Subscribe.updateSubscribeData(senderIDArr[idx].senderID, false);
     }
     console.log(`需要推播人數：${senderIDArrLength} ｜ 推播成功：${successNumber} ｜ 24小時內未回覆：${overOneDayNumber} ｜ 推播失敗：${failedNumber}`);
 
