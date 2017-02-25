@@ -1,9 +1,8 @@
-import findThreeVideos from '../models/findThreeVideos';
 import saveLogData from '../models/saveLogData';
 import saveSubscribeData from '../models/saveSubscribeData';
 import removeSubscribeId from '../models/removeSubscribeId';
-import findVideo from '../models/findVideo';
 import updateSubscribeData from '../models/updateSubscribeData';
+import Videos from '../models/videos';
 import FacebookOP from './facebook';
 
 const fb = new FacebookOP();
@@ -33,7 +32,7 @@ const receivedMessage = async (event) => {
   console.log(`收到訊息：'${messageText}'，從 id '${senderID}' at ${timeOfMessage}`);
 
   if (messageText === 'PPAV' || messageText === 'ppav' || messageText === 'Ppav') {
-    const returnArr = await findThreeVideos();
+    const returnArr = await Videos.getRandomThreeVideos();
     const sendSuccess = await fb.sendGenericMessageByArr(senderID, returnArr);
     if (sendSuccess) {
       saveLogData(true, {
@@ -72,7 +71,7 @@ const receivedMessage = async (event) => {
     switch (firstStr) {
       case '＃':
       case '#':
-        returnObj = await findVideo('code', messageText.split(firstStr)[1].toUpperCase());
+        returnObj = await Videos.searchVideo('code', messageText.split(firstStr)[1].toUpperCase());
         if (returnObj.results.length === 0) {
           str = '搜尋不到此番號';
           sendSuccess = await fb.sendTextMessage(senderID, str);
@@ -86,7 +85,7 @@ const receivedMessage = async (event) => {
         break;
       case '％':
       case '%':
-        returnObj = await findVideo('models', messageText.split(firstStr)[1]);
+        returnObj = await Videos.searchVideo('models', messageText.split(firstStr)[1]);
         if (returnObj.results.length === 0) {
           str = '搜尋不到此女優';
           sendSuccess = await fb.sendTextMessage(senderID, str);
@@ -100,7 +99,7 @@ const receivedMessage = async (event) => {
         break;
       case '＠':
       case '@':
-        returnObj = await findVideo('title', messageText.split(firstStr)[1]);
+        returnObj = await Videos.searchVideo('title', messageText.split(firstStr)[1]);
         if (returnObj.results.length === 0) {
           str = '搜尋不到此片名';
           sendSuccess = await fb.sendTextMessage(senderID, str);
@@ -114,7 +113,7 @@ const receivedMessage = async (event) => {
         break;
       case '！':
       case '!':
-        returnObj = await findVideo('tags', messageText.split(firstStr)[1]);
+        returnObj = await Videos.searchVideo('tags', messageText.split(firstStr)[1]);
         if (returnObj.results.length === 0) {
           str = '搜尋不到此標籤';
           sendSuccess = await fb.sendTextMessage(senderID, str);
