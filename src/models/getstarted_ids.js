@@ -23,4 +23,4 @@ const saveGetStartedData = (senderID, firstName, timeOfPostback) => {
   });
 };
 
-export default saveGetStartedData;
+export { saveGetStartedData };
