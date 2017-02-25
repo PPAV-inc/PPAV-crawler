@@ -1,4 +1,4 @@
-import saveLogData from '../models/saveLogData';
+import * as Logs from '../models/logs';
 import * as Subscribe from '../models/subscribe';
 import * as Videos from '../models/videos';
 import FacebookOP from './facebook';
@@ -33,7 +33,7 @@ const receivedMessage = async (event) => {
     const returnArr = await Videos.getRandomThreeVideos();
     const sendSuccess = await fb.sendGenericMessageByArr(senderID, returnArr);
     if (sendSuccess) {
-      saveLogData(true, {
+      Logs.saveLogData(true, {
         senderID: senderID,
         messageText: messageText,
         result: 'PPAV',
@@ -129,7 +129,7 @@ const receivedMessage = async (event) => {
         break;
     }
     if (sendSuccess) {
-      saveLogData(hasResult, {
+      Logs.saveLogData(hasResult, {
         senderID: senderID,
         messageText: messageText,
         result: str,

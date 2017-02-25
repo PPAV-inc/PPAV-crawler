@@ -21,4 +21,4 @@ const saveLogData = (successOrNot, Obj) => {
   });
 };
 
-export default saveLogData;
+export { saveLogData };
