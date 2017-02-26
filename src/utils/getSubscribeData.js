@@ -5,7 +5,7 @@ import * as subscribe from '../models/subscribe';
 const getSubscribeData = () => {
   return new Promise(resolve => {
     Videos_new.getRandomThreeVideos().then(returnArr => {
-      Subscribe.findSubscribeId().then(senderIDArr => {
+      subscribe.getUsers().then(senderIDArr => {
         const senderIDArrLength = senderIDArr.length;
         const count = senderIDArr.length;
         const returnObj = {

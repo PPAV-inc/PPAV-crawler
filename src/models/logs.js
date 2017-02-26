@@ -1,6 +1,6 @@
 import { LogCollection } from './schema';
 
-const saveLogData = (successOrNot, Obj) => {
+const saveLog = (successOrNot, Obj) => {
   const timestamp = new Date();
   let Log;
   
@@ -21,4 +21,4 @@ const saveLogData = (successOrNot, Obj) => {
   });
 };
 
-export { saveLogData };
+export { saveLog };

@@ -1,6 +1,6 @@
 import { PushNewVideoLogCollection } from './schema';
 
-const savePushNewVideoData = (index, totalNumber, successNumber, overOneDayNumber, failedNumber) => {
+const saveNewVideos = (index, totalNumber, successNumber, overOneDayNumber, failedNumber) => {
   const timestamp = new Date();
   let PushNewVideoLog;
 
@@ -21,4 +21,4 @@ const savePushNewVideoData = (index, totalNumber, successNumber, overOneDayNumbe
   });
 };
 
-export { savePushNewVideoData };
+export { saveNewVideos };

@@ -1,6 +1,6 @@
 import { SubscribeIdCollection } from './schema';
 
-const removeSubscribeId = (senderID) => {
+const removeUser = (senderID) => {
   return new Promise(resolve => {
     SubscribeIdCollection.remove({ senderID: senderID }, err => {
       if (err) {
@@ -14,7 +14,7 @@ const removeSubscribeId = (senderID) => {
   }); 
 };
 
-const updateSubscribeData = (id, isPushable) => {
+const updateUser = (id, isPushable) => {
   return new Promise(resolve => {
     SubscribeIdCollection.update(
       { senderID: id },
@@ -31,7 +31,7 @@ const updateSubscribeData = (id, isPushable) => {
   }); 
 };
 
-const saveSubscribeData = senderID => {
+const saveUser = senderID => {
   return new Promise(resolve => {
     SubscribeIdCollection.count({ senderID: senderID }, (err, count) => {
       if (count > 0) {
@@ -58,7 +58,7 @@ const saveSubscribeData = senderID => {
   }); 
 };
 
-const findSubscribeId = () => {
+const getUsers = () => {
   return new Promise(resolve => {
     let senderIdArr = []; 
     SubscribeIdCollection.find({ isPushable: { $eq: true } }).exec((err, data) => {
@@ -74,5 +74,4 @@ const findSubscribeId = () => {
   }); 
 };
 
-export { removeSubscribeId, updateSubscribeData, saveSubscribeData, findSubscribeId };
-
+export { removeUser, updateUser, saveUser, getUsers };

@@ -4,13 +4,13 @@ const escapeRegex = (text) => {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 };
 
-const searchVideo = (key, value) => {
+const getVideo = (key, value) => {
   return new Promise(resolve => {
     const regex = new RegExp(escapeRegex(value), 'gi');
 
     VideoCollection.where(key, regex).exec((err, found) => {
       if (found.length === 0 && key === 'models' && value.length > 1) {
-        searchVideo(key, value.slice(0, -1)).then(returnObj => {
+        getVideo(key, value.slice(0, -1)).then(returnObj => {
           resolve(returnObj);
         });
       } else {
@@ -43,5 +43,6 @@ const getRandomThreeVideos = () => {
             resolve(docs);
          });
     });
-};               
-export { searchVideo, getRandomThreeVideos };
+};
+
+export { getVideo, getRandomThreeVideos };
