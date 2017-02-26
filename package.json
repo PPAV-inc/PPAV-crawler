@@ -22,6 +22,7 @@
     "koa-monitor": "^0.3.0",
     "koa-router": "^7.0.1",
     "mongoose": "^4.6.3",
+    "node-telegram-bot-api": "^0.27.0",
     "path": "^0.12.7",
     "request": "^2.65.0",
     "request-promise": "^4.1.1"
@@ -53,7 +54,9 @@
     "start": "node ./bin/ppav-bot",
     "prepublish": "npm run build",
     "test": "mocha --compilers js:babel-core/register ./test/*",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "t-start": "node ./bin/telegram-bot",
+    "t-dev": "npm run build && node bin/t-dev"
   },
   "engines": {
     "node": "6.7.0",
