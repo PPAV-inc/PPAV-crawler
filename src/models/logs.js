@@ -1,10 +1,9 @@
 import { LogCollection } from './schema';
 
-const saveLogData = (successOrNot, Obj) => {
+const saveLog = (successOrNot, Obj) => {
   const timestamp = new Date();
-  let Log;
   
-  Log = new LogCollection({
+  const Log = new LogCollection({
     successOrNot,
     senderID: Obj.senderID,
     messageText: Obj.messageText,
@@ -21,4 +20,4 @@ const saveLogData = (successOrNot, Obj) => {
   });
 };
 
-export default saveLogData;
+export { saveLog };

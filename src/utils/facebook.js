@@ -19,8 +19,7 @@ class FacebookOP {
 
       rp(options)
         .then(parsedBody => {
-          const recipientId = parsedBody.recipient_id,
-                messageId = parsedBody.message_id;
+          const recipientId = parsedBody.recipient_id;
           resolve(true);
           console.log(`成功送出 generic message 給 id '${recipientId}'`);
         })

@@ -1,6 +1,6 @@
 import { GetStartedIdCollection } from './schema';
 
-const saveGetStartedData = (senderID, firstName, timeOfPostback) => {
+const saveUserInfo = (senderID, firstName, timeOfPostback) => {
   return new Promise(() => {
     GetStartedIdCollection.count({ senderID: senderID }, (err, count) => {
       if (count === 0) {
@@ -23,4 +23,4 @@ const saveGetStartedData = (senderID, firstName, timeOfPostback) => {
   });
 };
 
-export default saveGetStartedData;
+export { saveUserInfo };
