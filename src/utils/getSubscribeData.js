@@ -1,6 +1,6 @@
 import 'babel-polyfill';
-import * as Videos_new from '../models/videos_new';
-import * as Subscribe from '../models/subscribe';
+import * as newVideos from '../models/newVideos';
+import * as subscribe from '../models/subscribe';
 
 const getSubscribeData = () => {
   return new Promise(resolve => {

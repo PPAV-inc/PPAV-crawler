@@ -1,6 +1,6 @@
-import * as Logs from '../models/logs';
-import * as Subscribe from '../models/subscribe';
-import * as Videos from '../models/videos';
+import * as logs from '../models/logs';
+import * as subscribe from '../models/subscribe';
+import * as videos from '../models/videos';
 import FacebookOP from './facebook';
 
 const fb = new FacebookOP();
@@ -19,7 +19,7 @@ const receivedMessage = async (event) => {
   if (messageText !== undefined) {
     firstStr = messageText.split('')[0];
     messageText = messageText.replace(/\s/g, '');
-    const isUpdate = Subscribe.updateSubscribeData(senderID, true);
+    const isUpdate = subscribe.updateSubscribeData(senderID, true);
     if (isUpdate) {
       console.log(`${senderID} 更新 isPushable 成功`);
     } else {
@@ -30,23 +30,23 @@ const receivedMessage = async (event) => {
   console.log(`收到訊息：'${messageText}'，從 id '${senderID}' at ${timeOfMessage}`);
 
   if (messageText === 'PPAV' || messageText === 'ppav' || messageText === 'Ppav') {
-    const returnArr = await Videos.getRandomThreeVideos();
+    const returnArr = await videos.getRandomThreeVideos();
     const sendSuccess = await fb.sendGenericMessageByArr(senderID, returnArr);
     if (sendSuccess) {
-      Logs.saveLogData(true, {
+      logs.saveLogData(true, {
         senderID: senderID,
         messageText: messageText,
         result: 'PPAV',
       });
     }
   } else if (messageText === 'GGinin' || messageText === 'GGININ' || messageText === 'gginin' || messageText === 'Gginin') {
-    Subscribe.saveSubscribeData(senderID).then(str => {
+    subscribe.saveSubscribeData(senderID).then(str => {
       fb.sendTextMessage(senderID, str);
       const str2 = '想看片請輸入 "PPAV" 3:) \n\n其他搜尋功能🔥\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"\n4. 搜尋標籤："! + 關鍵字"';
       fb.sendTextMessage(senderID, str2);
     });
   } else if (messageText === 'NoGG' || messageText === 'NOGG' || messageText === 'nogg' || messageText === 'noGG' || messageText === 'Nogg') {
-    Subscribe.removeSubscribeId(senderID).then(str => {
+    subscribe.removeSubscribeId(senderID).then(str => {
       fb.sendTextMessage(senderID, str);
       const str2 = '想看片請輸入 "PPAV" 3:) \n\n其他搜尋功能🔥\n1. 搜尋番號："# + 番號" \n2. 搜尋女優："% + 女優"\n3. 搜尋片名："@ + 關鍵字"\n4. 搜尋標籤："! + 關鍵字"\n\n訂閱每日推播："GGININ"';
       fb.sendTextMessage(senderID, str2);
@@ -69,7 +69,7 @@ const receivedMessage = async (event) => {
     switch (firstStr) {
       case '＃':
       case '#':
-        returnObj = await Videos.searchVideo('code', messageText.split(firstStr)[1].toUpperCase());
+        returnObj = await videos.searchVideo('code', messageText.split(firstStr)[1].toUpperCase());
         if (returnObj.results.length === 0) {
           str = '搜尋不到此番號';
           sendSuccess = await fb.sendTextMessage(senderID, str);
@@ -83,7 +83,7 @@ const receivedMessage = async (event) => {
         break;
       case '％':
       case '%':
-        returnObj = await Videos.searchVideo('models', messageText.split(firstStr)[1]);
+        returnObj = await videos.searchVideo('models', messageText.split(firstStr)[1]);
         if (returnObj.results.length === 0) {
           str = '搜尋不到此女優';
           sendSuccess = await fb.sendTextMessage(senderID, str);
@@ -97,7 +97,7 @@ const receivedMessage = async (event) => {
         break;
       case '＠':
       case '@':
-        returnObj = await Videos.searchVideo('title', messageText.split(firstStr)[1]);
+        returnObj = await videos.searchVideo('title', messageText.split(firstStr)[1]);
         if (returnObj.results.length === 0) {
           str = '搜尋不到此片名';
           sendSuccess = await fb.sendTextMessage(senderID, str);
@@ -111,7 +111,7 @@ const receivedMessage = async (event) => {
         break;
       case '！':
       case '!':
-        returnObj = await Videos.searchVideo('tags', messageText.split(firstStr)[1]);
+        returnObj = await videos.searchVideo('tags', messageText.split(firstStr)[1]);
         if (returnObj.results.length === 0) {
           str = '搜尋不到此標籤';
           sendSuccess = await fb.sendTextMessage(senderID, str);
@@ -129,7 +129,7 @@ const receivedMessage = async (event) => {
         break;
     }
     if (sendSuccess) {
-      Logs.saveLogData(hasResult, {
+      logs.saveLogData(hasResult, {
         senderID: senderID,
         messageText: messageText,
         result: str,
