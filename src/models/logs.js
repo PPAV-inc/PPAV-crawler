@@ -2,9 +2,8 @@ import { LogCollection } from './schema';
 
 const saveLog = (successOrNot, Obj) => {
   const timestamp = new Date();
-  let Log;
   
-  Log = new LogCollection({
+  const Log = new LogCollection({
     successOrNot,
     senderID: Obj.senderID,
     messageText: Obj.messageText,

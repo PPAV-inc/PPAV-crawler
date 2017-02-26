@@ -60,7 +60,7 @@ const saveUser = senderID => {
 
 const getUsers = () => {
   return new Promise(resolve => {
-    let senderIdArr = []; 
+    const senderIdArr = [];
     SubscribeIdCollection.find({ isPushable: { $eq: true } }).exec((err, data) => {
       if (err) {
         console.log(err);

@@ -7,7 +7,6 @@ const fb = new FacebookOP();
 
 const receivedMessage = async (event) => {
   const senderID = event.sender.id,
-        recipientID = event.recipient.id,
         timeOfMessage = event.timestamp,
         message = event.message;
 

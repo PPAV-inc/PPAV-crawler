@@ -2,9 +2,8 @@ import { PushNewVideoLogCollection } from './schema';
 
 const saveNewVideos = (index, totalNumber, successNumber, overOneDayNumber, failedNumber) => {
   const timestamp = new Date();
-  let PushNewVideoLog;
 
-  PushNewVideoLog = new PushNewVideoLogCollection({
+  const PushNewVideoLog = new PushNewVideoLogCollection({
     totalNumber,
     successNumber,
     overOneDayNumber,
