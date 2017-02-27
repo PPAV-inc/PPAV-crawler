@@ -29,7 +29,7 @@ gaze(['src/**/*'], (err, watcher) => {
 // Run and watch dist
 try {
   nodemon({
-    script: 'bin/ppav-bot',
+    script: `bin/${process.env.bot_env}`,
     ext: 'js json',
     watch: 'lib'
   });

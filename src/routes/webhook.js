@@ -1,8 +1,8 @@
 import 'babel-polyfill';
 import Router from 'koa-router';
 import config from '../config';
-import receivedPostback from '../utils/receivedPostback';
-import receivedMessage from '../utils/receivedMessage';
+import receivedPostback from '../utils/facebook/receivedPostback';
+import receivedMessage from '../utils/facebook/receivedMessage';
 
 const VERIFY_TOKEN = config.VERIFY_TOKEN;
 

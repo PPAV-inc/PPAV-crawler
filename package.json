@@ -49,14 +49,14 @@
     "supertest": "^2.0.0"
   },
   "scripts": {
-    "dev": "npm run build && node bin/dev",
+    "dev": "npm run build && bot_env=ppav-bot node bin/dev",
     "build": "./node_modules/.bin/babel src/ -d lib/",
     "start": "node ./bin/ppav-bot",
     "prepublish": "npm run build",
     "test": "mocha --compilers js:babel-core/register ./test/*",
     "lint": "eslint src",
     "t-start": "node ./bin/telegram-bot",
-    "t-dev": "npm run build && node bin/t-dev"
+    "t-dev": "npm run build && bot_env=telegram-bot node bin/dev"
   },
   "engines": {
     "node": "6.7.0",

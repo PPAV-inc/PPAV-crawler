@@ -1,6 +1,6 @@
-import * as logs from '../models/logs';
-import * as subscribe from '../models/subscribe';
-import * as videos from '../models/videos';
+import * as logs from '../../models/logs';
+import * as subscribe from '../../models/subscribe';
+import * as videos from '../../models/videos';
 import FacebookOP from './facebook';
 
 const fb = new FacebookOP();
