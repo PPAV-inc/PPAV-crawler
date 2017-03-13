@@ -4,7 +4,7 @@ from mongodb import MongoOP
 import parser_info
 
 if __name__ == '__main__':
-    mongo_uri = 'mongodb://localhost:27017/test'
+    mongo_uri = 'mongodb://localhost:27017/ppav'
     with open('../config.json') as fp:
         import json
         mongo_uri = json.load(fp)['MONGODB_PATH']
