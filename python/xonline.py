@@ -3,9 +3,9 @@
 import re
 import datetime
 import json
-from parser import parse_webpage, get_code_info                                                                                                 
+from parser import parse_webpage, get_code_info
 
-class Xonline:
+class Xonline(object):
 
     def __init__(self):
         self.orig_url = 'http://xonline.vip'
@@ -25,7 +25,9 @@ class Xonline:
         print(url)
         page_web = parse_webpage(url)
 
-        link_re = '(?<=href=\")(?:'+self.orig_url+')?/\\S+?/\\S+?/(?:page-\\d+/)?(?=\")'
+        link_re = '(?<=href=\")(?:' \
+                    + self.orig_url \
+                    + ')?/\\S+?/\\S+?/(?:page-\\d+/)?(?=\")'
         link_set = set(re.findall(link_re, page_web))
         return link_set
 
@@ -99,7 +101,7 @@ class Xonline:
     def get_film_info(self, url, info_is_exists):
         page_film = parse_webpage(url)
 
-        video_code_re = '(?<=watch/)(\w+-){0,2}\w*\d+'
+        video_code_re = '(?<=watch/)(\\w+-){0,2}\\w*\\d+'
         video_code = re.search(video_code_re, url)
         if video_code is None or page_film is None:
             return None
@@ -137,7 +139,8 @@ class Xonline:
             info['tags'] = tag
             return info
         else:
-            if search_video_code is not None:   # filter some films don't have code number
+            # filter some films don't have code number
+            if search_video_code is not None:
                 info_obj = get_code_info(search_video_code)
                 if info_obj['model'] is not None:
                     model = info_obj['model']
