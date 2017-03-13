@@ -3,16 +3,63 @@
 import re
 import datetime
 import json
-from parser_link import ParserLink
-from parser import parse_webpage, get_code_info
-from mongodb import MongoOP
+from parser import parse_webpage, get_code_info                                                                                                 
 
-class ParserInfo:
+class Xonline:
 
-    def __init__(self, mongo_uri):
+    def __init__(self):
+        self.orig_url = 'http://xonline.vip'
         self.film_infos = []
-        self.mongo = MongoOP(mongo_uri)
         self.tags_dict = None
+
+    def get_film_links(self, url):
+        print(url)
+        page_web = parse_webpage(url)
+
+        film_re = '(?<=href=\")/watch.*?.html(?=\")'
+        film_list = re.findall(film_re, page_web)
+
+        return film_list
+
+    def get_film_pages(self, url):
+        print(url)
+        page_web = parse_webpage(url)
+
+        link_re = '(?<=href=\")(?:'+self.orig_url+')?/\\S+?/\\S+?/(?:page-\\d+/)?(?=\")'
+        link_set = set(re.findall(link_re, page_web))
+        return link_set
+
+
+    def get_links_generator(self):
+        url = self.orig_url
+        # link_set = self.get_film_pages(url)   # get all link_type
+        link_set = set()
+
+        ##################################
+        # only parse link_type is asia
+        link_set.clear()
+        link_set.add('/country/asia/')
+        ##################################
+
+        for link_type in link_set:
+            if self.orig_url not in link_type:
+                link_type = self.orig_url + link_type
+
+            page_num = 2
+            url = link_type + 'page-' + str(page_num) + '/'
+            film_url_list = self.get_film_links(url)
+
+            while len(film_url_list) != 0:
+                film_url_list = [self.orig_url + url for url in film_url_list]
+                yield film_url_list
+
+                page_num += 1
+                url = link_type + 'page-' + str(page_num) + '/'
+                film_url_list = self.get_film_links(url)
+                break
+
+        return None
+
 
     @classmethod
     def code_special_case(cls, code):
@@ -40,6 +87,7 @@ class ParserInfo:
         else:
             return code
 
+
     def translate_tags(self, tag_arr):
         if self.tags_dict is None:
             with open('tags.json') as tags_fp:
@@ -48,10 +96,10 @@ class ParserInfo:
                     for key in tag_arr]
         return tag_arr
 
-    def get_film_info(self, url):
+    def get_film_info(self, url, info_is_exists):
         page_film = parse_webpage(url)
 
-        video_code_re = '(?<=watch-)(\\w+-){0,2}\\w*\\d+'
+        video_code_re = '(?<=watch/)(\w+-){0,2}\w*\d+'
         video_code = re.search(video_code_re, url)
         if video_code is None or page_film is None:
             return None
@@ -79,9 +127,8 @@ class ParserInfo:
         tag_re = '<a.*?>(.*?)</a>'
         tag = re.findall(tag_re, tag)
         tag = self.translate_tags(tag)
-        print(tag)
 
-        if self.mongo.info_is_exists(url):
+        if info_is_exists:
             info = {}
             info['from'] = 'xonline'
             info['url'] = url
@@ -91,7 +138,7 @@ class ParserInfo:
             return info
         else:
             if search_video_code is not None:   # filter some films don't have code number
-                info_obj = self.get_code_info(search_video_code)
+                info_obj = get_code_info(search_video_code)
                 if info_obj['model'] is not None:
                     model = info_obj['model']
                 if info_obj['video_title'] is not None:
@@ -110,21 +157,9 @@ class ParserInfo:
             info['tags'] = tag
             return info
 
-    def parse_info_and_update(self, film_url_json_list, collect_name=None):
-        for idx, url_json in enumerate(film_url_json_list):
-            url = url_json['url']
-            print(idx, url)
-            date_info = self.mongo.get_url_update_date(url, collect_name)
-            diff_days = 3   # the days difference between today and last update_date
 
-            if date_info is not None \
-                and (datetime.date.today() - date_info['update_date'].date()).days <= diff_days:
-                print("update_date is {}, skip it".format(date_info['update_date']))
-                continue
-
-            info = self.get_film_info(url)
-
-            if info:
-                self.mongo.update_json_list([info], collect_name)
-            else:
-                self.mongo.delete_url(url, collect_name)
+if __name__ == '__main__':
+    XONLINE = Xonline()
+    for each in XONLINE.get_links_generator():
+        for i in each:
+            print(i)
