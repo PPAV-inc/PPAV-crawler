@@ -47,7 +47,7 @@ class Xonline(object):
             if self.orig_url not in link_type:
                 link_type = self.orig_url + link_type
 
-            page_num = 2
+            page_num = 1
             url = link_type + 'page-' + str(page_num) + '/'
             film_url_list = self.get_film_links(url)
 

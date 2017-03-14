@@ -5,51 +5,58 @@ import datetime
 from xonline import Xonline
 from mongodb import MongoOP
 
-def update_url_info(film_url, old_collection, update_collection):
-    date_info = old_collection.find_one( \
-                    {'url': film_url, 'update_date': {'$exists':True}}, \
-                    {'update_date':1, '_id':0})
-
-    # the days difference between today and last update_date
-    diff_days = 3
-
-    if date_info is not None \
-        and (datetime.date.today() - \
-            date_info['update_date'].date()).days \
-            <= diff_days:
-        print("update_date is {}, skip it".format(date_info['update_date']))
-    else:
-        info_is_exists = bool(old_collect.find_one(
-                                {'url': film_url, 'title': {'$exists': True}}))
-        info = XONLINE.get_film_info(film_url, info_is_exists)
-
-        print(info)
-        if info_is_exists and info:
-            old_collection.update_one({'url': info['url']},
-                                    {'$set': info}, upsert=True)
-        if info:
-            update_collection.update_one({'url': info['url']},
-                                    {'$set': info}, upsert=True)
-
-MONGO_URI = 'mongodb://localhost:27017/ppav'
-with open('../config.json') as fp:
-    MONGO_URI = json.load(fp)['MONGODB_PATH']
-
-XONLINE = Xonline()
-MONGO = MongoOP()
-
-if __name__ == '__main__':
-    # insert film information
-    old_collect = MONGO.get_collection(collect_name='videos')
-    update_collect = MONGO.get_collection(collect_name='videos_update')
-
-    for url_list in XONLINE.get_links_generator():
+def update_url_info(old_collection, update_collection, film_source):
+    for url_list in film_source.get_links_generator():
         print("get films link size: {}".format(len(url_list)))
         # then parse and update url info.
         for idx, url in enumerate(url_list):
             print(idx, url)
-            update_url_info(url, old_collect, update_collect)
+            date_info = old_collection.find_one( \
+                            {'url': url, 'update_date': {'$exists':True}}, \
+                            {'update_date':1, '_id':0})
+
+            # the days difference between today and last update_date
+            diff_days = 3
+
+            if date_info is not None \
+                and (datetime.date.today() - \
+                    date_info['update_date'].date()).days \
+                    <= diff_days:
+                print("update_date is {}, skip it".format(date_info['update_date']))
+            else:
+                info_is_exists = bool(old_collect.find_one(
+                                        {'url': url, 'title': {'$exists': True}}))
+                info = film_source.get_film_info(url, info_is_exists)
+
+                print(info)
+                if info_is_exists and info:
+                    old_collection.update_one({'url': info['url']},
+                                            {'$set': info}, upsert=True)
+                if info:
+                    update_collection.update_one({'url': info['url']},
+                                            {'$set': info}, upsert=True)
+
     print("update film info finished!")
+
+
+if __name__ == '__main__':
+
+    MONGO_URI = 'mongodb://localhost:27017/ppav'
+    with open('../config.json') as fp:
+        MONGO_URI = json.load(fp)['MONGODB_PATH']
+
+    MONGO = MongoOP()
+
+    # insert film information
+    old_collect = MONGO.get_collection(collect_name='videos')
+    update_collect = MONGO.get_collection(collect_name='videos_update')
+
+    # update film from different web
+    web_list = [YouAV()]
+    for web in web_list:
+        update_url_info(old_collect, update_collect, web)
+
+    return None
 
     # find new videos
     old_url_set = set(each['url'] for each \
