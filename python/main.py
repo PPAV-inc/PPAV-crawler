@@ -2,15 +2,16 @@
 
 import json
 import datetime
-from xonline import Xonline
 from mongodb import MongoOP
+from xonline import Xonline
+from youav import YouAV
 
-def update_url_info(old_collection, update_collection, film_source):
+def update_films(old_collection, update_collection, film_source):
     for url_list in film_source.get_links_generator():
         print("get films link size: {}".format(len(url_list)))
         # then parse and update url info.
         for idx, url in enumerate(url_list):
-            print(idx, url)
+            print('\n', idx, url)
             date_info = old_collection.find_one( \
                             {'url': url, 'update_date': {'$exists':True}}, \
                             {'update_date':1, '_id':0})
@@ -54,9 +55,7 @@ if __name__ == '__main__':
     # update film from different web
     web_list = [YouAV()]
     for web in web_list:
-        update_url_info(old_collect, update_collect, web)
-
-    return None
+        update_films(old_collect, update_collect, web)
 
     # find new videos
     old_url_set = set(each['url'] for each \
@@ -86,4 +85,3 @@ if __name__ == '__main__':
                                 {'$set': json}, upsert=True)
 
     print("update new collection finished!")
-
