@@ -2,7 +2,6 @@
 
 import re
 import datetime
-import json
 from parser import parse_webpage, get_code_info
 
 class YouAV(object):
@@ -11,7 +10,8 @@ class YouAV(object):
         self.orig_url = 'https://www.youav.com'
         self.film_infos = []
 
-    def get_film_links(self, url):
+    @classmethod
+    def get_film_links(cls, url):
         print(url)
         page_web = parse_webpage(url)
 
@@ -38,7 +38,6 @@ class YouAV(object):
             film_url_list = self.get_film_links(url)
 
         return None
-
 
     @classmethod
     def code_special_case(cls, code):
@@ -101,7 +100,6 @@ class YouAV(object):
             return info
         else:
             return None
-
 
 if __name__ == '__main__':
     YOUAV = YouAV()

@@ -25,16 +25,16 @@ def update_films(old_collection, update_collection, film_source):
                     <= diff_days:
                 print("update_date is {}, skip it".format(date_info['update_date']))
             else:
-                info_is_exists = bool(old_collect.find_one(
+                info_is_exists = bool(old_collect.find_one( \
                                         {'url': url, 'title': {'$exists': True}}))
                 info = film_source.get_film_info(url, info_is_exists)
 
                 print(info)
                 if info_is_exists and info:
-                    old_collection.update_one({'url': info['url']},
+                    old_collection.update_one({'url': info['url']}, \
                                             {'$set': info}, upsert=True)
                 if info:
-                    update_collection.update_one({'url': info['url']},
+                    update_collection.update_one({'url': info['url']}, \
                                             {'$set': info}, upsert=True)
 
     print("update film info finished!")
@@ -53,16 +53,16 @@ if __name__ == '__main__':
     update_collect = MONGO.get_collection(collect_name='videos_update')
 
     # update film from different web
-    web_list = [YouAV()]
+    web_list = [Xonline(), YouAV()]
     for web in web_list:
         update_films(old_collect, update_collect, web)
 
     # find new videos
     old_url_set = set(each['url'] for each \
-                 in old_collect.find({'update_date': {'$exists':True}},
+                 in old_collect.find({'update_date': {'$exists':True}}, \
                                         {'url':1, '_id':0}))
     update_url_set = set(each['url'] for each \
-                 in update_collect.find({'update_date': {'$exists':True}},
+                 in update_collect.find({'update_date': {'$exists':True}}, \
                                         {'url':1, '_id':0}))
     new_url_set = update_url_set - old_url_set # get new film url set
     print("update url set size: {}".format(len(update_url_set)))
@@ -77,11 +77,11 @@ if __name__ == '__main__':
     info_list = list(update_collect.find({'url': {'$in': list(new_url_set)}}))
     for idx, json in enumerate(info_list):
         if idx % 100 == 0 and idx > 0:
-            print("update into collect {} : {} / {}".
+            print("update into collect {} : {} / {}". \
                     format('videos_new', idx, len(info_list)))
-        old_collect.update_one({'url': json['url']},
+        old_collect.update_one({'url': json['url']}, \
                                 {'$set': json}, upsert=True)
-        new_collect.update_one({'url': json['url']},
+        new_collect.update_one({'url': json['url']}, \
                                 {'$set': json}, upsert=True)
 
     print("update new collection finished!")
