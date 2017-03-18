@@ -58,7 +58,6 @@ class Xonline(object):
                 page_num += 1
                 url = link_type + 'page-' + str(page_num) + '/'
                 film_url_list = self.get_film_links(url)
-                break
 
         return None
 

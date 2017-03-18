@@ -13,8 +13,12 @@ def update_films(old_collection, update_collection, film_source):
         for idx, url in enumerate(url_list):
             print('\n', idx, url)
             date_info = old_collection.find_one( \
-                            {'url': url, 'update_date': {'$exists':True}}, \
+                            {'url': url, 'models': {'$ne': None}}, \
                             {'update_date':1, '_id':0})
+            if date_info is None:
+                date_info = update_collection.find_one( \
+                                {'url': url, 'models': {'$ne': None}}, \
+                                {'update_date':1, '_id':0})
 
             # the days difference between today and last update_date
             diff_days = 3
@@ -29,13 +33,16 @@ def update_films(old_collection, update_collection, film_source):
                                         {'url': url, 'title': {'$exists': True}}))
                 info = film_source.get_film_info(url, info_is_exists)
 
-                print(info)
                 if info_is_exists and info:
                     old_collection.update_one({'url': info['url']}, \
                                             {'$set': info}, upsert=True)
                 if info:
+                    print("search_code: ", info['search_code'])
+                    print("models: ", info['models'])
                     update_collection.update_one({'url': info['url']}, \
                                             {'$set': info}, upsert=True)
+                else:
+                    print(info)
 
     print("update film info finished!")
 
@@ -46,14 +53,14 @@ if __name__ == '__main__':
     with open('../config.json') as fp:
         MONGO_URI = json.load(fp)['MONGODB_PATH']
 
-    MONGO = MongoOP()
+    MONGO = MongoOP(MONGO_URI)
 
     # insert film information
     old_collect = MONGO.get_collection(collect_name='videos')
     update_collect = MONGO.get_collection(collect_name='videos_update')
 
     # update film from different web
-    web_list = [Xonline(), YouAV()]
+    web_list = [YouAV()]
     for web in web_list:
         update_films(old_collect, update_collect, web)
 

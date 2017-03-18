@@ -63,12 +63,18 @@ class YouAV(object):
                 code = code.group().replace('-', '_')
                 return code
         else:
-            return code
+            code_re = '^([0-9]+-[0-9]+)$'
+            tmp = re.search(code_re, code)
+            if tmp is not None:
+                code = tmp.group().replace('-', '_')
+                return code
+            else:
+                return code
 
     def get_film_info(self, url, info_is_exists):
         page_film = parse_webpage(url)
 
-        video_code_re = '(?<=video/\\d{4}/)((\\d+|\\w+)-(\\d+))'
+        video_code_re = '((?<=video/\\d{4}/)([A-z\\d]+-){0,2}[A-z]*\\d+(?=-))|((?<=-)([A-z\\d]+-){0,2}[A-z]*\\d+)$'
         video_code = re.search(video_code_re, url)
         if video_code is None or page_film is None:
             return None
