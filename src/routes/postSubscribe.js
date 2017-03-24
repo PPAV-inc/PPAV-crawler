@@ -1,7 +1,7 @@
 import 'babel-polyfill';
 import Router from 'koa-router';
 import config from '../config';
-import postSubscribe from '../utils/postSubscribe';
+import postSubscribe from '../utils/facebook/postSubscribe';
 import getSubscribeData from '../utils/getSubscribeData';
 
 const VERIFY_TOKEN = config.VERIFY_TOKEN;

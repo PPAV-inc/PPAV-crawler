@@ -1,7 +1,7 @@
 import request from 'request';
 import config from '../config';
-import * as newVideos from '../models/newVideos';
-import * as getStartedIds from '../models/getStartedIds';
+import * as newVideos from '../../models/newVideos';
+import * as getStartedIds from '../../models/getStartedIds';
 import receivedMessage from './receivedMessage';
 import FacebookOP from './facebook';
 
