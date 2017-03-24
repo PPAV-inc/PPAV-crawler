@@ -31,4 +31,11 @@ def get_code_info(video_code):
     else:
         return_obj['video_title'] = re.sub('<.*?>', '', video_title.group())
 
-    return return_obj          
+    img_re = '(?<=<span class=\"preview_btn\" rel=\").*(?=\" who=\".*?\")'
+    img = re.search(img_re, page_indexav)
+    if img is None:
+        return_obj['img'] = None
+    else:
+        return_obj['img'] = img.group()
+
+    return return_obj
