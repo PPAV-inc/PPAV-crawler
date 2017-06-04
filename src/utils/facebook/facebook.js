@@ -1,6 +1,6 @@
 import rp from 'request-promise';
 import fetch from 'isomorphic-fetch';
-import config from '../config';
+import config from '../../config';
 
 class FacebookOP {
 
@@ -29,9 +29,10 @@ class FacebookOP {
         });
     });
   }
-  
-  sendTyping = (userId, option) => {
-    fetch(`https://graph.facebook.com/v2.6/me/messages?access_token=${this.PAGE_TOKEN}`, {
+
+  sendTyping(userId, option) {
+    fetch(`https://graph.facebook.com/v2.6/me/messages?access_token=${this.PAGE_TOKEN}`,
+    {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
@@ -43,7 +44,7 @@ class FacebookOP {
         sender_action: option,
       }),
     });
-  };
+  }
 
   sendTextMessage(recipientId, messageText) {
     return new Promise(resolve => {

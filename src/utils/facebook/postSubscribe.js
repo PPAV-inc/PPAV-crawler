@@ -1,8 +1,8 @@
 import 'babel-polyfill';
 import delay from 'delay';
-import * as newVideos from '../models/newVideos';
-import * as pushNewVideosLogs from '../models/pushNewVideosLogs';
-import * as subscribe from '../models/subscribe';
+import * as newVideos from '../../models/newVideos';
+import * as pushNewVideosLogs from '../../models/pushNewVideosLogs';
+import * as subscribe from '../../models/subscribe';
 import FacebookOP from './facebook';
 
 const fb = new FacebookOP();
