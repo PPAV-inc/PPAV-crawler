@@ -1,1 +1,1 @@
-require("../lib/telegram_bot.js");
+require("../src/telegram_bot.js");

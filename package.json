@@ -9,7 +9,6 @@
     "url": "git+https://github.com/xxhomey19/PPAV.git"
   },
   "dependencies": {
-    "babel-polyfill": "^6.16.0",
     "delay": "^1.3.1",
     "elasticsearchclient": "^0.5.3",
     "firebase": "^3.4.1",
@@ -28,14 +27,9 @@
     "request-promise": "^4.1.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.5.1",
-    "babel-core": "^6.5.1",
+    "babel-cli": "^6.24.1",
     "babel-eslint": "^7.0.0",
-    "babel-istanbul": "^0.11.0",
-    "babel-preset-es2015": "^6.5.0",
-    "babel-preset-stage-0": "^6.5.0",
-    "babel-register": "^6.5.1",
-    "babel-runtime": "^6.5.0",
+    "babel-preset-env": "^1.5.1",
     "chai": "^3.5.0",
     "eslint": "^3.7.1",
     "eslint-config-airbnb": "^10.0.0",
@@ -45,21 +39,16 @@
     "eslint-plugin-react": "^6.4.1",
     "gaze": "^1.1.2",
     "mocha": "^3.1.2",
+    "node-telegram-bot-api": "^0.27.1",
     "nodemon": "^1.8.1",
     "supertest": "^2.0.0"
   },
   "scripts": {
-    "dev": "npm run build && bot_env=ppav-bot node bin/dev",
-    "build": "./node_modules/.bin/babel src/ -d lib/",
-    "start": "node ./bin/ppav-bot",
-    "prepublish": "npm run build",
+    "dev": "nodemon bin/ppav-bot --watch src --exec babel-node",
+    "start": "babel-node ./bin/ppav-bot",
     "test": "mocha --compilers js:babel-core/register ./test/*",
     "lint": "eslint src",
-    "t-start": "node ./bin/telegram-bot",
-    "t-dev": "npm run build && bot_env=telegram-bot node bin/dev"
-  },
-  "engines": {
-    "node": "6.7.0",
-    "npm": "3.10.8"
+    "t-start": "babel-node ./bin/telegram-bot",
+    "t-dev": "nodemon bin/telegram-bot --watch src --exec babel-node"
   }
 }
