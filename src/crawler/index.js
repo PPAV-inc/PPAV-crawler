@@ -5,12 +5,12 @@ import IndexAV from './indexav';
 
 const test = async () => {
   const youav = new YouAV();
-  const urls = await youav.getVideoUrls('彩乃');
+  const videos = await youav.getVideos('彩乃');
 
   const indexav = new IndexAV();
   const infos = [];
 
-  for (const each of urls) {
+  for (const each of videos) {
     const code = each.code;
     const info = await indexav.getCodeInfo(code);
 

@@ -6,36 +6,47 @@ export default class AV {
     throw new Error('need to implement getBaseURL');
   }
 
-	/* eslint-disable no-unused-vars*/
-  search = query => {
-    throw new Error('need to implement search');
+  /* eslint-disable no-unused-vars*/
+  getSearchUrls = query => {
+    throw new Error('need to implement getSearchUrls');
   };
-	/* eslint-enable no-unused-vars*/
+  /* eslint-enable no-unused-vars*/
 
-  getUrlCode = (url) => {
-    const re = new RegExp('(\\w+-){1,2}\\d+', 'g');
-    return re.exec(url);
+  getUrlsCode = urls => {
+    const re = new RegExp('(\\w+-){1,2}\\d+');
+    const urlsCode = [];
+
+    urls.forEach(url => {
+      let code = re.exec(url);
+
+      if (code !== null) {
+        code = code[0].toUpperCase();
+        const URL = url.indexOf(this.getBaseURL()) === -1 ? `${this.getBaseURL()}${url}` : url;
+        urlsCode.push({
+          code,
+          url: URL,
+        });
+      }
+    });
+
+    return urlsCode;
   };
 
-  getVideoUrls = async query => {
-		const { data } = await this.search(query);
-		const $ = getCheerio(data);
-		const urls = [];
+  getVideos = async query => {
+    const searchUrls = await this.getSearchUrls(query);
+    const videoUrls = [];
 
-		$('a').each((i, e) => {
-			const url = $(e).attr('href');
-			let code = this.getUrlCode(url);
+    for (const searchUrl of searchUrls) {
+      const { data } = await this.http.get(encodeURI(searchUrl));
+      const $ = getCheerio(data);
 
-			if (code !== null) {
-				code = code[0].toUpperCase();
-				urls.push({
-					code,
-					url: `${this.getBaseURL()}${url}`,
-				});
-			}
-		});
+      $('a').each((i, e) => {
+        const url = $(e).attr('href');
+        videoUrls.push(url);
+      });
+    }
 
-		return urls;
+    return this.getUrlsCode(videoUrls);
   };
 
 }
