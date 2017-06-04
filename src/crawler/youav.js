@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-import Web from './Web';
+import AV from './av';
 
-export default class YouAV extends Web {
+export default class YouAV extends AV {
 
   http;
   baseURL = 'https://www.youav.com';

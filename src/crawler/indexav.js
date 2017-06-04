@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import getCheerio from './getCheerio';
 
-export default class CodeInfo {
+export default class IndexAV {
 
   http;
   baseURL = 'https://indexav.com';

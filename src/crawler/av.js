@@ -1,6 +1,6 @@
 import getCheerio from './getCheerio';
 
-export default class Web {
+export default class AV {
 
   getBaseURL = () => {
     throw new Error('need to implement getBaseURL');
