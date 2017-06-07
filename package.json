@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "axios": "^0.16.1",
-    "babel-polyfill": "^6.16.0",
+    "babel-polyfill": "^6.23.0",
     "cheerio": "^0.22.0",
     "delay": "^1.3.1",
     "elasticsearchclient": "^0.5.3",
@@ -33,7 +33,9 @@
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-eslint": "^7.0.0",
-    "babel-preset-env": "^1.5.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-env": "^1.5.2",
     "chai": "^3.5.0",
     "eslint": "^3.7.1",
     "eslint-config-airbnb": "^10.0.0",
@@ -52,19 +54,9 @@
     "start": "babel-node ./bin/ppav-bot",
     "test": "mocha --compilers js:babel-core/register ./test/*",
     "lint": "eslint src",
-<<<<<<< c918f29730742446eeb3cb57b4133d671a9a0f93
     "t-start": "babel-node ./bin/telegram-bot",
-    "t-dev": "nodemon bin/telegram-bot --watch src --exec babel-node"
-=======
-    "t-start": "node ./bin/telegram-bot",
-    "t-dev": "npm run build && bot_env=telegram-bot node bin/dev",
-    "c-build": "./node_modules/.bin/babel src/crawler -d lib/crawler",
-    "crawler": "npm run c-build && node ./bin/crawler",
-    "c-dev": "npm run c-build && node bin/crawlerDev"
-  },
-  "engines": {
-    "node": "6.7.0",
-    "npm": "3.10.8"
->>>>>>> new crawler in js
+    "t-dev": "nodemon bin/telegram-bot --watch src --exec babel-node",
+    "crawler": "babel-node ./bin/crawler",
+    "c-dev": "nodemon bin/crawler --watch src/crawler --exec babel-node"
   }
 }

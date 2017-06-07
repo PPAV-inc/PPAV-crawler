@@ -1,5 +1,3 @@
-import 'babel-polyfill';
-
 import YouAV from './youav';
 import IndexAV from './indexav';
 
