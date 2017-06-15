@@ -21,10 +21,10 @@ export default class IndexAV {
 
     return {
       title: $('span.video_title').text(),
-      actor: $('span.video_actor').map((i, e) => {
+      models: $('span.video_actor').map((i, e) => {
         return $(e).text();
       }).get(),
-      img: $('span.preview_btn').attr('rel'),
+      img_url: $('span.preview_btn').attr('rel'),
     };
   };
 }
