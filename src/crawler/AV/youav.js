@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import AV from './av';
-import getCheerio from './getCheerio';
+import getCheerio from '../getCheerio';
 
 export default class YouAV extends AV {
 
@@ -14,8 +14,6 @@ export default class YouAV extends AV {
       baseURL: this.baseURL,
     });
   }
-
-  getBaseURL = () => this.baseURL;
 
   getSearchUrls = async query => {
     const encodeStr = encodeURI(query);
@@ -39,4 +37,5 @@ export default class YouAV extends AV {
     return re.test(url);
   };
 
+  getSource = () => 'youav';
 }

@@ -1,13 +1,15 @@
-import getCheerio from './getCheerio';
+import getCheerio from '../getCheerio';
 
 export default class AV {
 
-  getBaseURL = () => {
-    throw new Error('need to implement getBaseURL');
-  }
+  getBaseURL = () => this.baseURL;
 
   /* eslint-disable no-unused-vars*/
   getSearchUrls = query => {
+    throw new Error('need to implement getSearchUrls');
+  };
+
+  getSource = () => {
     throw new Error('need to implement getSearchUrls');
   };
   /* eslint-enable no-unused-vars*/
@@ -25,6 +27,7 @@ export default class AV {
         urlsCode.push({
           code,
           url: URL,
+          source: this.getSource(),
         });
       }
     });
