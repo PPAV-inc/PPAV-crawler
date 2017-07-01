@@ -29,9 +29,7 @@ postSubscribeRouter.get('/post-subscribe', async ctx => {
   const res = ctx.response;
 
   if (ctx.query.verify_token === VERIFY_TOKEN_HASH) {
-    res.body = await getSubscribeData().then(resultObj => {
-      return resultObj;
-    });
+    res.body = await getSubscribeData().then(resultObj => resultObj);
   } else {
     res.body = 'Verify Token Error';
   }

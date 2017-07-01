@@ -21,9 +21,7 @@ export default class IndexAV {
 
     return {
       title: $('span.video_title').text(),
-      models: $('span.video_actor').map((i, e) => {
-        return $(e).text();
-      }).get(),
+      models: $('span.video_actor').map((i, e) => $(e).text()).get(),
       img_url: $('span.preview_btn').attr('rel'),
     };
   };

@@ -31,7 +31,7 @@ const test = async () => {
       await Promise.all(
         infos.map(async info => {
           await db.collection('videos').updateOne({ url: info.url }, info, { upsert: true });
-        })
+        }),
       );
 
       console.log(`video url count: ${infos.length}`);
