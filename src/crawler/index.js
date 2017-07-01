@@ -2,9 +2,10 @@ import IndexAV from './indexav';
 import database from './mongodb';
 import YouAV from './AV/youav';
 import MyAVSuper from './AV/myavsuper';
+import Avgle from './AV/avgle';
 
 const test = async () => {
-  const avs = [new YouAV(), new MyAVSuper()];
+  const avs = [new YouAV(), new MyAVSuper(), new Avgle()];
 
   const db = await database();
   const searchs = await db.collection('search_keywords').find().sort({ count: -1 }).toArray();
@@ -31,7 +32,7 @@ const test = async () => {
       await Promise.all(
         infos.map(async info => {
           await db.collection('videos').updateOne({ url: info.url }, info, { upsert: true });
-        })
+        }),
       );
 
       console.log(`video url count: ${infos.length}`);
