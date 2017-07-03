@@ -2,7 +2,7 @@ import { LogCollection } from './schema';
 
 const saveLog = (successOrNot, Obj) => {
   const timestamp = new Date();
-  
+
   const Log = new LogCollection({
     successOrNot,
     senderID: Obj.senderID,
@@ -10,7 +10,7 @@ const saveLog = (successOrNot, Obj) => {
     result: Obj.result,
     timestamp,
   });
-    
+
   Log.save((err) => {
     if (err) {
       console.log(err);

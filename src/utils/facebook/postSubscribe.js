@@ -17,23 +17,30 @@ const postSubscribe = async () => {
   let overOneDayNumber = 0;
   let failedNumber = 0;
 
-  for (let idx = 0; idx < senderIDArrLength; ++idx) {
+  for (let idx = 0; idx < senderIDArrLength; idx += 1) {
     const str = '今日新增送到📢\n\n提醒您❗❗❗\n如果超過24小時未與PPAV互動，PPAV將無法推播給您❗❗❗\n建議您在收到推播後可以隨意回個一生平安喜樂\n以免明天無法收到推播喔💔💔💔';
-    const pushNewVideos = await fb.sendGenericMessageByArr(senderIDArr[idx].senderID, returnArr).then(delay(300));
+    const pushNewVideos = await fb
+      .sendGenericMessageByArr(senderIDArr[idx].senderID, returnArr)
+      .then(delay(300));
     const pushNewVideosText = await fb.sendTextMessage(senderIDArr[idx].senderID, str);
 
     if (pushNewVideos && pushNewVideosText) {
-      successNumber++;
+      successNumber += 1;
     } else if (pushNewVideos && !pushNewVideosText) {
-      overOneDayNumber++;
+      overOneDayNumber += 1;
     } else {
-      failedNumber++;
+      failedNumber += 1;
       subscribe.updateUser(senderIDArr[idx].senderID, false);
     }
     console.log(`需要推播人數：${senderIDArrLength} ｜ 推播成功：${successNumber} ｜ 24小時內未回覆：${overOneDayNumber} ｜ 推播失敗：${failedNumber}`);
 
     if ((idx + 1) === senderIDArrLength) {
-      pushNewVideosLogs.saveNewVideos(idx + 1, senderIDArrLength, successNumber, overOneDayNumber, failedNumber);
+      pushNewVideosLogs.saveNewVideos(
+        idx + 1, senderIDArrLength,
+        successNumber,
+        overOneDayNumber,
+        failedNumber,
+      );
     }
   }
 };

@@ -32,18 +32,18 @@ class FacebookOP {
 
   sendTyping(userId, option) {
     fetch(`https://graph.facebook.com/v2.6/me/messages?access_token=${this.PAGE_TOKEN}`,
-    {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        recipient: {
-          id: userId,
+      {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        sender_action: option,
-      }),
-    });
+        body: JSON.stringify({
+          recipient: {
+            id: userId,
+          },
+          sender_action: option,
+        }),
+      });
   }
 
   sendTextMessage(recipientId, messageText) {

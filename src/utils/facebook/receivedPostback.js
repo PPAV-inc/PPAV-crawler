@@ -34,9 +34,9 @@ const startedConv = (senderID, timeOfPostback) => {
 };
 
 const receivedPostback = (event) => {
-  const senderID = event.sender.id,
-        timeOfPostback = event.timestamp,
-        payload = event.postback.payload;
+  const senderID = event.sender.id;
+  const timeOfPostback = event.timestamp;
+  const payload = event.postback.payload;
 
   console.log(`收到 postback：${payload}，從 id '${senderID}' at timestamp ${timeOfPostback}`);
 

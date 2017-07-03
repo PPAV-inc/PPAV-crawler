@@ -1,23 +1,20 @@
 {
   "parser": "babel-eslint",
   "extends": [
+    "eslint:recommended",
     "airbnb"
   ],
   "env": {
     "node": true
   },
   "rules": {
-    "arrow-body-style": "off",
     "arrow-parens": "off",
     "import/prefer-default-export": "off",
-    "indent": [0, "tab"],
-    "max-len": "off",
+    "indent": ["error", 2],
     "no-case-declarations": "off",
-    "no-trailing-spaces": "off",
     "object-shorthand": "off",
-    "one-var": "off",
-    "prefer-template": "off",
-    "prefer-const": 1
+    "no-await-in-loop": "off",
+    "no-restricted-syntax": "off"
   },
   "plugins": [
     "babel"
