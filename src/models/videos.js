@@ -6,7 +6,7 @@ const getVideo = (key, value) => new Promise(resolve => {
   const regex = new RegExp(escapeRegex(value), 'gi');
 
   VideoCollection.where(key, regex).exec((err, found) => {
-    if (found.length === 0 && key === 'models' && value.length > 1) {
+    if (found.length === 0 && key === 'models' && value.length > 2) {
       getVideo(key, value.slice(0, -1)).then(returnObj => {
         resolve(returnObj);
       });
