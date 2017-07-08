@@ -2,13 +2,13 @@ import * as videos from '../models/videos';
 
 const receivedMessage = async (message, messageText, type) => {
   const chatId = message.chat.id;
-  const timeOfMessage = message.date;
+  const timeOfMessage = new Date(message.date);
 
   console.log(`收到訊息：'${messageText}'，從 id '${chatId}' at ${timeOfMessage}`);
 
   let returnObj;
-
   let typeStr;
+
   if (type === 'code') {
     returnObj = await videos.getVideo(type, messageText.toUpperCase());
     typeStr = '番號';
@@ -19,10 +19,10 @@ const receivedMessage = async (message, messageText, type) => {
     returnObj = await videos.getVideo(type, messageText);
     typeStr = '片名';
   } else {
-    const videoArr = await videos.getRandomThreeVideos();
+    returnObj = await videos.getRandomThreeVideos();
     let urlStr = '';
 
-    videoArr.forEach(video => {
+    returnObj.results.forEach(video => {
       urlStr += `${video.url}\n`;
     });
 
@@ -36,7 +36,7 @@ const receivedMessage = async (message, messageText, type) => {
     str = `搜尋不到此${typeStr}`;
     return [str];
   } else {
-    str = `幫你搜尋${typeStr}：${returnObj.search_value}`;
+    str = `幫你搜尋${typeStr}：${returnObj.searchValue}`;
 
     let urlStr = '';
     returnObj.results.forEach(video => {
