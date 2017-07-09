@@ -1,11 +1,18 @@
 import TelegramBot from 'node-telegram-bot-api';
 import config from './config';
 import receivedMessage from './utils/telegram_receivedMessage';
+import { saveUserInfo } from './models/users';
 
 const token = config.TELEGRAM_TOKEN;
 
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, { polling: true });
+
+bot.onText(/\/start/, async (message) => {
+  const chatId = message.chat.id;
+
+  await saveUserInfo(chatId);
+});
 
 bot.onText(/[#＃]\s*\+*\s*(\S+)/, async (message, match) => {
   const chatId = message.chat.id;

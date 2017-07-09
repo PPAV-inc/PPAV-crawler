@@ -2,27 +2,27 @@ import * as videos from '../models/videos';
 
 const receivedMessage = async (message, messageText, type) => {
   const chatId = message.chat.id;
-  const timeOfMessage = message.date;
+  const timeOfMessage = new Date(message.date);
 
   console.log(`收到訊息：'${messageText}'，從 id '${chatId}' at ${timeOfMessage}`);
 
-  let returnObj;
-
+  let videosObj;
   let typeStr;
+
   if (type === 'code') {
-    returnObj = await videos.getVideo(type, messageText.toUpperCase());
+    videosObj = await videos.getVideo(type, messageText.toUpperCase());
     typeStr = '番號';
   } else if (type === 'models') {
-    returnObj = await videos.getVideo(type, messageText);
+    videosObj = await videos.getVideo(type, messageText);
     typeStr = '女優';
   } else if (type === 'title') {
-    returnObj = await videos.getVideo(type, messageText);
+    videosObj = await videos.getVideo(type, messageText);
     typeStr = '片名';
   } else {
-    const videoArr = await videos.getRandomThreeVideos();
+    videosObj = await videos.getRandomThreeVideos();
     let urlStr = '';
 
-    videoArr.forEach(video => {
+    videosObj.results.forEach(video => {
       urlStr += `${video.url}\n`;
     });
 
@@ -32,18 +32,18 @@ const receivedMessage = async (message, messageText, type) => {
   }
 
   let str = '';
-  if (returnObj.results.length === 0) {
+  if (videosObj.results.length === 0) {
     str = `搜尋不到此${typeStr}`;
     return [str];
   } else {
-    str = `幫你搜尋${typeStr}：${returnObj.search_value}`;
+    str = `幫你搜尋${typeStr}：${videosObj.searchValue}`;
 
     let urlStr = '';
-    returnObj.results.forEach(video => {
+    videosObj.results.forEach(video => {
       urlStr += `${video.url}\n`;
     });
     console.log(urlStr);
-    const totalStr = `總共搜尋到：${returnObj.results.length} 個連結喔喔喔`;
+    const totalStr = `總共搜尋到：${videosObj.results.length} 個連結喔喔喔`;
 
     return [str, urlStr, totalStr];
   }
