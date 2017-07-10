@@ -2,6 +2,7 @@ import TelegramBot from 'node-telegram-bot-api';
 import config from './config';
 import receivedMessage from './utils/telegram_receivedMessage';
 import { saveUserInfo } from './models/users';
+import { saveSearchInfo } from './models/search_keywords';
 
 const token = config.TELEGRAM_TOKEN;
 
@@ -14,10 +15,12 @@ bot.onText(/\/start/, async (message) => {
   await saveUserInfo(chatId);
 });
 
+// 番號
 bot.onText(/[#＃]\s*\+*\s*(\S+)/, async (message, match) => {
   const chatId = message.chat.id;
   const messageText = match[1];
 
+  await saveSearchInfo(messageText, 'code');
   const strArr = await receivedMessage(message, messageText, 'code');
 
   for (const str of strArr) {
@@ -25,10 +28,12 @@ bot.onText(/[#＃]\s*\+*\s*(\S+)/, async (message, match) => {
   }
 });
 
+// 女優
 bot.onText(/[%％]\s*\+*\s*(\S+)/, async (message, match) => {
   const chatId = message.chat.id;
   const messageText = match[1];
 
+  await saveSearchInfo(messageText, 'models');
   const strArr = await receivedMessage(message, messageText, 'models');
 
   for (const str of strArr) {
@@ -36,10 +41,12 @@ bot.onText(/[%％]\s*\+*\s*(\S+)/, async (message, match) => {
   }
 });
 
+// 片名
 bot.onText(/[@＠]\s*\+*\s*(\S+)/, async (message, match) => {
   const chatId = message.chat.id;
   const messageText = match[1];
 
+  await saveSearchInfo(messageText, 'title');
   const strArr = await receivedMessage(message, messageText, 'title');
 
   for (const str of strArr) {
