@@ -2,7 +2,8 @@
   "parser": "babel-eslint",
   "extends": [
     "eslint:recommended",
-    "airbnb"
+    "airbnb",
+    "prettier"
   ],
   "env": {
     "node": true
@@ -15,9 +16,18 @@
     "object-shorthand": "off",
     "no-await-in-loop": "off",
     "no-restricted-syntax": "off",
-    "no-else-return": "off"
+    "no-else-return": "off",
+    "no-underscore-dangle": "off",
+    "prettier/prettier": [
+      "error",
+      {
+        trailingComma: 'es5',
+        singleQuote: true,
+      }
+    ]
   },
   "plugins": [
-    "babel"
+    "babel",
+    "prettier"
   ]
 }
