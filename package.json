@@ -6,7 +6,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xxhomey19/PPAV.git"
+    "url": "https://github.com/PPAV-inc/PPAV-crawler.git"
   },
   "dependencies": {
     "axios": "^0.16.1",
@@ -15,10 +15,8 @@
     "delay": "^2.0.0",
     "isomorphic-fetch": "^2.2.1",
     "jsonfile": "^3.0.0",
-    "koa-router": "^7.0.1",
     "mongodb": "^2.2.27",
     "mongoose": "^4.10.8",
-    "node-telegram-bot-api": "^0.27.1",
     "path": "^0.12.7",
     "request": "^2.65.0",
     "request-promise": "^4.1.1"
@@ -35,15 +33,9 @@
     "eslint-plugin-import": "^2.6.0",
     "eslint-plugin-jsx-a11y": "^5.0.1",
     "eslint-plugin-react": "^7.1.0",
-    "node-telegram-bot-api": "^0.27.1",
     "nodemon": "^1.8.1"
   },
   "scripts": {
-    "dev": "nodemon bin/ppav-bot --watch src --exec babel-node",
-    "start": "babel-node ./bin/ppav-bot",
-    "lint": "eslint src",
-    "t-start": "babel-node ./bin/telegram-bot",
-    "t-dev": "nodemon bin/telegram-bot --watch src --exec babel-node",
     "crawler": "babel-node ./bin/crawler",
     "c-dev": "nodemon bin/crawler --watch src/crawler --exec babel-node"
   }
