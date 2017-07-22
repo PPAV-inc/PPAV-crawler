@@ -12,14 +12,7 @@
     "axios": "^0.16.1",
     "babel-polyfill": "^6.23.0",
     "cheerio": "^0.22.0",
-    "delay": "^2.0.0",
-    "isomorphic-fetch": "^2.2.1",
-    "jsonfile": "^3.0.0",
-    "mongodb": "^2.2.27",
-    "mongoose": "^4.10.8",
-    "path": "^0.12.7",
-    "request": "^2.65.0",
-    "request-promise": "^4.1.1"
+    "mongodb": "^2.2.27"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
@@ -36,7 +29,8 @@
     "nodemon": "^1.8.1"
   },
   "scripts": {
+    "lint": "eslint src",
     "crawler": "babel-node ./bin/crawler",
-    "c-dev": "nodemon bin/crawler --watch src/crawler --exec babel-node"
+    "crawler:dev": "nodemon bin/crawler --watch src/crawler --exec babel-node"
   }
 }
