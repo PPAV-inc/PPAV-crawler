@@ -4,12 +4,10 @@ import AV from './av';
 import getCheerio from '../getCheerio';
 
 export default class Avgle extends AV {
-
-  http;
-  baseURL = 'https://avgle.com';
-
   constructor() {
     super();
+    this.source = 'avgle';
+    this.baseURL = 'https://avgle.com';
     this.http = axios.create({
       baseURL: this.baseURL,
     });
@@ -17,10 +15,14 @@ export default class Avgle extends AV {
 
   getSearchUrls = async query => {
     const encodeStr = encodeURI(query);
-    const { data } = await this.http.get(`/search/videos?search_query=${encodeStr}`);
+    const { data } = await this.http.get(
+      `/search/videos?search_query=${encodeStr}`
+    );
     const $ = getCheerio(data);
     const searchUrls = new Set();
-    searchUrls.add(`${this.getBaseURL()}/search/videos?search_query=${query}&page=1`);
+    searchUrls.add(
+      `${this.baseURL}/search/videos?search_query=${query}&page=1`
+    );
 
     $('a').each((i, e) => {
       const url = $(e).attr('href');
@@ -36,6 +38,4 @@ export default class Avgle extends AV {
     const re = new RegExp('search_query=.*&page=\\d+');
     return re.test(url);
   };
-
-  getSource = () => 'Avgle';
 }

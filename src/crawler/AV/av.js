@@ -1,35 +1,44 @@
 import getCheerio from '../getCheerio';
 
 export default class AV {
+  get source() {
+    return this._source;
+  }
 
-  getBaseURL = () => this.baseURL;
+  set source(source) {
+    this._source = source;
+  }
+
+  get baseURL() {
+    return this._baseURL;
+  }
+
+  set baseURL(url) {
+    this._baseURL = url;
+  }
 
   /* eslint-disable no-unused-vars*/
   getSearchUrls = query => {
     throw new Error('need to implement getSearchUrls');
   };
-
-  getSource = () => {
-    throw new Error('need to implement getSearchUrls');
-  };
   /* eslint-enable no-unused-vars*/
 
   getUrlsCode = urls => {
-    const re = new RegExp('(\\w+-){1,2}\\d+');
     const urlsCode = [];
 
     urls.forEach(url => {
-      let code = re.exec(url);
+      const URL = url.includes(this.baseURL) ? url : `${this.baseURL}${url}`;
+      const codeArr = []
+        .concat(url.match(/\w+-\d+/g), url.match(/\w+-\w+-\d+/g))
+        .filter(code => !!code);
 
-      if (code !== null) {
-        code = code[0].toUpperCase();
-        const URL = url.indexOf(this.getBaseURL()) === -1 ? `${this.getBaseURL()}${url}` : url;
+      codeArr.forEach(code => {
         urlsCode.push({
-          code,
+          code: code.toUpperCase(),
           url: URL,
-          source: this.getSource(),
+          source: this.source,
         });
-      }
+      });
     });
 
     return urlsCode;
@@ -44,12 +53,11 @@ export default class AV {
       const $ = getCheerio(data);
 
       $('a').each((i, e) => {
-        const url = $(e).attr('href');
+        const url = $(e).attr('href') || '';
         videoUrls.push(url);
       });
     }
 
     return this.getUrlsCode(videoUrls);
   };
-
 }

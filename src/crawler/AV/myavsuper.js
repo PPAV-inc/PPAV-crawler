@@ -4,12 +4,10 @@ import AV from './av';
 import getCheerio from '../getCheerio';
 
 export default class myAVSuper extends AV {
-
-  http;
-  baseURL = 'https://myavsuper.com';
-
   constructor() {
     super();
+    this.source = 'myavsuper';
+    this.baseURL = 'https://myavsuper.com';
     this.http = axios.create({
       baseURL: this.baseURL,
     });
@@ -20,7 +18,7 @@ export default class myAVSuper extends AV {
     const { data } = await this.http.get(`?s=${encodeStr}`);
     const $ = getCheerio(data);
     const searchUrls = new Set();
-    searchUrls.add(`${this.getBaseURL()}/page/1/?s=${query}`);
+    searchUrls.add(`${this.baseURL}/page/1/?s=${query}`);
 
     $('a').each((i, e) => {
       const url = $(e).attr('href');
@@ -36,6 +34,4 @@ export default class myAVSuper extends AV {
     const re = new RegExp('/page/\\d+/?s=.*');
     return re.test(url);
   };
-
-  getSource = () => 'myavsuper';
 }
