@@ -2,7 +2,10 @@ import { MongoClient } from 'mongodb';
 
 const config = require('../../config.json');
 
-const MONGO_URL = process.env.NODE_ENV ? config.MONGO_URL : 'mongodb://localhost:27017/ppav';
+const MONGO_URL =
+  process.env.NODE_ENV === 'production'
+    ? config.MONGO_URL
+    : 'mongodb://localhost:27017/ppav';
 
 let _db;
 const getDatabase = async () => {
