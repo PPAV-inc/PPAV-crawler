@@ -14,28 +14,38 @@ export default class Avgle extends AV {
   }
 
   getSearchUrls = async query => {
-    const encodeStr = encodeURI(query);
-    const { data } = await this.http.get(
-      `/search/videos?search_query=${encodeStr}`
-    );
-    const $ = getCheerio(data);
     const searchUrls = new Set();
     searchUrls.add(
       `${this.baseURL}/search/videos?search_query=${query}&page=1`
     );
 
-    $('a').each((i, e) => {
-      const url = $(e).attr('href');
-      if (this.hasPage(url)) {
-        searchUrls.add(url);
-      }
-    });
+    const encodeStr = encodeURI(query);
+    let pageNum = 1;
+    let hasNextPage;
+    do {
+      hasNextPage = false;
+      const { data } = await this.http.get(
+        `/search/videos?search_query=${encodeStr}&page=${pageNum}`
+      );
+      const $ = getCheerio(data);
+      pageNum += 1;
+
+      // eslint-disable-next-line no-loop-func
+      $('a').each((i, e) => {
+        const url = $(e).attr('href');
+        if (this.hasPage(url, pageNum)) {
+          searchUrls.add(url);
+          hasNextPage = true;
+        }
+      });
+    } while (hasNextPage);
+    console.log(`get page num: ${pageNum - 1}`);
 
     return searchUrls;
   };
 
-  hasPage = url => {
-    const re = new RegExp('search_query=.*&page=\\d+');
+  hasPage = (url, pageNum) => {
+    const re = new RegExp(`search_query=.*&page=${pageNum}`);
     return re.test(url);
   };
 }
