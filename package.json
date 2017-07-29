@@ -12,6 +12,7 @@
     "axios": "^0.16.1",
     "babel-polyfill": "^6.23.0",
     "cheerio": "^0.22.0",
+    "delay": "^2.0.0",
     "mongodb": "^2.2.27"
   },
   "devDependencies": {
@@ -40,6 +41,9 @@
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "*.js": ["eslint --fix", "git add"]
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
   }
 }

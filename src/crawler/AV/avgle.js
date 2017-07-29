@@ -1,4 +1,5 @@
 import axios from 'axios';
+import delay from 'delay';
 
 import AV from './av';
 import getCheerio from '../getCheerio';
@@ -24,9 +25,26 @@ export default class Avgle extends AV {
     let hasNextPage;
     do {
       hasNextPage = false;
-      const { data } = await this.http.get(
-        `/search/videos?search_query=${encodeStr}&page=${pageNum}`
-      );
+      let data;
+
+      let retryTime = 3;
+      while (retryTime > 0) {
+        try {
+          const response = await this.http.get(
+            `/search/videos?search_query=${encodeStr}&page=${pageNum}`
+          );
+          data = response.data;
+          break;
+        } catch (err) {
+          console.error(
+            `error when ${this.source}
+            axios.get query at page ${pageNum}, delay 1 s, retry ${retryTime} times`
+          );
+          retryTime -= 1;
+          await delay(1000);
+        }
+      }
+
       const $ = getCheerio(data);
       pageNum += 1;
 

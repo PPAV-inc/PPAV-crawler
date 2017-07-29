@@ -1,3 +1,5 @@
+import delay from 'delay';
+
 import getCheerio from '../getCheerio';
 
 export default class AV {
@@ -49,7 +51,23 @@ export default class AV {
     const videoUrls = [];
 
     for (const searchUrl of searchUrls) {
-      const { data } = await this.http.get(encodeURI(searchUrl));
+      let data;
+
+      let retryTime = 3;
+      while (retryTime > 0) {
+        try {
+          const response = await this.http.get(encodeURI(searchUrl));
+          data = response.data;
+          break;
+        } catch (err) {
+          console.error(
+            `error when ${this.source}
+              axios.get url ${searchUrl}, delay 1 s, retry ${retryTime} times`
+          );
+          retryTime -= 1;
+          await delay(1000);
+        }
+      }
       const $ = getCheerio(data);
 
       $('a').each((i, e) => {
