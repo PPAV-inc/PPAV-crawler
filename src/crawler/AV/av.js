@@ -1,3 +1,5 @@
+import delay from 'delay';
+
 import getCheerio from '../getCheerio';
 
 export default class AV {
@@ -26,16 +28,21 @@ export default class AV {
   getUrlsCode = urls => {
     const urlsCode = [];
 
-    urls.forEach(url => {
-      const URL = url.includes(this.baseURL) ? url : `${this.baseURL}${url}`;
+    // filter not video url
+    const filterUrls = urls.filter(url => !/(search_query|\/\?s=)/.test(url));
+
+    filterUrls.forEach(url => {
+      // eslint-disable-next-line no-param-reassign
+      url = url.includes(this.baseURL) ? url : `${this.baseURL}${url}`;
       const codeArr = []
         .concat(url.match(/\w+-\d+/g), url.match(/\w+-\w+-\d+/g))
+        // filter not match
         .filter(code => !!code);
 
       codeArr.forEach(code => {
         urlsCode.push({
           code: code.toUpperCase(),
-          url: URL,
+          url,
           source: this.source,
         });
       });
@@ -49,7 +56,24 @@ export default class AV {
     const videoUrls = [];
 
     for (const searchUrl of searchUrls) {
-      const { data } = await this.http.get(encodeURI(searchUrl));
+      let data;
+
+      let retryTime = 3;
+      while (retryTime > 0) {
+        try {
+          const response = await this.http.get(encodeURI(searchUrl));
+          data = response.data;
+          break;
+        } catch (err) {
+          console.error(
+            `error when ${this.source}
+              axios.get url ${searchUrl}, delay 1 s, retry ${retryTime} times`
+          );
+          retryTime -= 1;
+          await delay(1000);
+        }
+      }
+
       const $ = getCheerio(data);
 
       $('a').each((i, e) => {
