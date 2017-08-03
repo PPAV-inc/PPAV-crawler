@@ -56,30 +56,26 @@ export default class AV {
     const videoUrls = [];
 
     for (const searchUrl of searchUrls) {
-      let data;
-
-      let retryTime = 3;
+      let retryTime = 5;
       while (retryTime > 0) {
         try {
-          const response = await this.http.get(encodeURI(searchUrl));
-          data = response.data;
+          const { data } = await this.http.get(encodeURI(searchUrl));
+          const $ = getCheerio(data);
+
+          $('a').each((i, e) => {
+            const url = $(e).attr('href') || '';
+            videoUrls.push(url);
+          });
           break;
         } catch (err) {
           console.error(
-            `error when ${this.source}
-              axios.get url ${searchUrl}, delay 1 s, retry ${retryTime} times`
+            `error at ${this
+              .source} axios.get url ${searchUrl}, retry ${retryTime} times`
           );
           retryTime -= 1;
           await delay(1000);
         }
       }
-
-      const $ = getCheerio(data);
-
-      $('a').each((i, e) => {
-        const url = $(e).attr('href') || '';
-        videoUrls.push(url);
-      });
     }
 
     return this.getUrlsCode(videoUrls);

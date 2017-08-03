@@ -10,7 +10,7 @@ const main = async () => {
   const db = await database();
   const searchs = await db
     .collection('search_keywords')
-    .find({ count: { $gte: 100 } })
+    .find({ count: { $gte: 100, $lte: 340 } })
     .sort({ count: -1 })
     .toArray();
   const indexav = new IndexAV();

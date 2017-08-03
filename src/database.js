@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb';
 
-const config = require('../../config.json');
+const config = require('../config.json');
 
 const MONGO_URL =
   process.env.NODE_ENV === 'production'
