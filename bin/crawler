@@ -1,1 +1,5 @@
-require("../src/crawler/index.js");
+#!usr/bin/env node
+require('babel-register');
+const main = require("../src/");
+
+main().catch(console.error);
