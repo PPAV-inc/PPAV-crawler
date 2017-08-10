@@ -1,0 +1,88 @@
+version: 2
+
+# Reference variables.
+references:
+  docker_default: &docker_default
+    working_directory: /tmp/app
+    docker:
+      - image: node:8
+    environment:
+      TZ: "/usr/share/zoneinfo/Asia/Taipei"
+  move_to_workspace: &move_to_workspace
+    run:
+        name: Move to workspace
+        command: |
+          rm -rf .yarn-cache README.md
+          mkdir /tmp/workspace
+          mv /tmp/app /tmp/workspace
+  persist_to_workspace: &persist_to_workspace
+    persist_to_workspace:
+        root: /tmp/workspace
+        paths:
+          - app/*
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: /tmp/workspace
+  restore_from_workspace: &restore_from_workspace
+    run:
+      name: Restore app from workspace
+      command: |
+        rm -rf /tmp/app
+        mv /tmp/workspace/app /tmp
+
+jobs:
+  build:
+    <<: *docker_default
+    steps:
+      - checkout
+      - restore_cache:
+          key: ppav-crawler-cache-{{checksum "yarn.lock"}}
+      - run:
+          name: Install Dependencies
+          command: |
+            yarn config set cache-folder .yarn-cache
+            yarn
+      - run:
+          name: Copy config file
+          command: |
+            cp -r ./config.sample.json ./config.json
+      - save_cache:
+          key: ppav-crawler-cache-{{checksum "yarn.lock"}}
+          paths:
+            - .yarn-cache
+            - ./node_modules
+      - *move_to_workspace
+      - *persist_to_workspace
+
+  lint:
+    <<: *docker_default
+    steps:
+      - checkout
+      - *attach_workspace
+      - *restore_from_workspace
+      - run: npm run lint
+
+  test:
+    <<: *docker_default
+    steps:
+      - checkout
+      - *attach_workspace
+      - *restore_from_workspace
+      - run:
+          name: test
+          command: npm run testonly:cov
+      - store_artifacts:
+          path: coverage
+          prefix: coverage
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - lint:
+          requires:
+            - build
+      - test:
+          requires:
+            - build
