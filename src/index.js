@@ -1,8 +1,7 @@
-import IndexAV from './indexav';
+import IndexAV from './IndexAV';
 import database from './database';
-import YouAV from './AV/youav';
-import MyAVSuper from './AV/myavsuper';
-import Avgle from './AV/avgle';
+import { YouAV, MyAVSuper, Avgle } from './AV';
+import updateInfos from './utils/updateInfos';
 
 const main = async () => {
   const avs = [new YouAV(), new MyAVSuper(), new Avgle()];
@@ -20,6 +19,7 @@ const main = async () => {
     console.log(`search keyword: ${search.keyword}`);
     console.log(`search count: ${search.count}`);
 
+    // FIXME: concurrency
     for (const av of avs) {
       console.log(`search from av: ${av.source}`);
       const videos = await av.getVideos(search.keyword);
@@ -27,61 +27,24 @@ const main = async () => {
       const foundInfos = [];
       const skipInfos = [];
 
-      for (const each of videos) {
-        const info = await indexav.getCodeInfo(each.code);
+      for (const video of videos) {
+        const info = await indexav.getCodeInfo(video.code);
 
         if (info && info.title !== '') {
-          foundInfos.push({ ...info, ...each, updated_at: now });
-          console.log(`find url: ${each.url}, code: ${each.code}`);
+          foundInfos.push({ ...info, ...video, updated_at: now });
+          console.log(`find url: ${video.url}, code: ${video.code}`);
         } else if (
-          !foundInfos.some(foundInfo => foundInfo.url === each.url) &&
-          !skipInfos.some(skipInfo => skipInfo.url === each.url)
+          !foundInfos.some(foundInfo => foundInfo.url === video.url) &&
+          !skipInfos.some(skipInfo => skipInfo.url === video.url)
         ) {
-          skipInfos.push({ ...each, updated_at: now });
-          console.log(`skip url: ${each.url}, code: ${each.code}`);
+          skipInfos.push({ ...video, updated_at: now });
+          console.log(`skip url: ${video.url}, code: ${video.code}`);
         } else {
-          console.log(`same url, different code: ${each.code}`);
+          console.log(`same url, different code: ${video.code}`);
         }
       }
 
-      await Promise.all(
-        foundInfos.map(async info => {
-          const result = await db
-            .collection('videos')
-            .findOne({ code: info.code, 'videos.source': info.source });
-
-          if (!result) {
-            await db.collection('videos').updateOne(
-              { code: info.code },
-              {
-                $setOnInsert: {
-                  title: info.title,
-                  models: info.models,
-                  img_url: info.img_url,
-                  code: info.code,
-                  total_view_count: 0,
-                },
-                $push: {
-                  videos: {
-                    source: info.source,
-                    url: info.url,
-                    view_count: 0,
-                  },
-                },
-                $set: {
-                  updated_at: info.updated_at,
-                },
-              },
-              { upsert: true }
-            );
-          }
-        }),
-        skipInfos.map(async info => {
-          await db
-            .collection('skip_videos')
-            .updateOne({ url: info.url }, info, { upsert: true });
-        })
-      );
+      await updateInfos(db, foundInfos, skipInfos);
 
       console.log('================================');
       console.log(`search keyword: ${search.keyword}, from: ${av.source}`);
