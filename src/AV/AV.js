@@ -20,12 +20,12 @@ export default class AV {
   }
 
   /* eslint-disable no-unused-vars*/
-  getSearchUrls = query => {
-    throw new Error('need to implement getSearchUrls');
+  _getAllPagesUrls = query => {
+    throw new Error('need to implement getAllPagesUrls');
   };
   /* eslint-enable no-unused-vars*/
 
-  getUrlsCode = urls => {
+  _getUrlsCode = urls => {
     const urlsCode = [];
 
     // filter not video url
@@ -51,33 +51,39 @@ export default class AV {
     return urlsCode;
   };
 
-  getVideos = async query => {
-    const searchUrls = await this.getSearchUrls(query);
+  _getVideoUrls = async pageUrls => {
     const videoUrls = [];
 
-    for (const searchUrl of searchUrls) {
-      let retryTime = 5;
-      while (retryTime > 0) {
+    for (const pageUrl of pageUrls) {
+      for (let retryTime = 0; retryTime < 5; retryTime += 1) {
         try {
-          const { data } = await this.http.get(encodeURI(searchUrl));
+          const { data } = await this.http.get(encodeURI(pageUrl));
           const $ = getCheerio(data);
 
           $('a').each((i, e) => {
             const url = $(e).attr('href') || '';
             videoUrls.push(url);
           });
+
           break;
         } catch (err) {
           console.error(
             `error at ${this
-              .source} axios.get url ${searchUrl}, retry ${retryTime} times`
+              .source} axios.get url ${pageUrl}, retry ${retryTime} times`
           );
-          retryTime -= 1;
           await delay(1000);
         }
       }
     }
 
-    return this.getUrlsCode(videoUrls);
+    return videoUrls;
+  };
+
+  getVideos = async query => {
+    const pageUrls = await this._getAllPagesUrls(query);
+    const videoUrls = await this._getVideoUrls(pageUrls);
+    const videos = this._getUrlsCode(videoUrls);
+
+    return videos;
   };
 }

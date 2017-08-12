@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import AV from './av';
+import AV from './AV';
 import getCheerio from '../getCheerio';
 
 export default class YouAV extends AV {
@@ -13,7 +13,7 @@ export default class YouAV extends AV {
     });
   }
 
-  getSearchUrls = async query => {
+  _getAllPagesUrls = async query => {
     const searchUrls = new Set();
     searchUrls.add(
       `${this.baseURL}/search/videos?search_query=${query}&page=1`
@@ -33,7 +33,7 @@ export default class YouAV extends AV {
       // eslint-disable-next-line no-loop-func
       $('a').each((i, e) => {
         const url = $(e).attr('href');
-        if (this.hasPage(url, pageNum)) {
+        if (this._hasPage(url, pageNum)) {
           searchUrls.add(url);
           hasNextPage = true;
         }
@@ -44,7 +44,7 @@ export default class YouAV extends AV {
     return searchUrls;
   };
 
-  hasPage = (url, pageNum) => {
+  _hasPage = (url, pageNum) => {
     const re = new RegExp(`search_query=.*&page=${pageNum}`);
     return re.test(url);
   };

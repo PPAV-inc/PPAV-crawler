@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-import AV from './av';
+import AV from './AV';
 import getCheerio from '../getCheerio';
 
-export default class myAVSuper extends AV {
+export default class MyAVSuper extends AV {
   constructor() {
     super();
     this.source = 'myavsuper';
@@ -13,7 +13,7 @@ export default class myAVSuper extends AV {
     });
   }
 
-  getSearchUrls = async query => {
+  _getAllPagesUrls = async query => {
     const searchUrls = new Set();
     searchUrls.add(`${this.baseURL}/page/1/?s=${query}`);
 
@@ -29,7 +29,7 @@ export default class myAVSuper extends AV {
       // eslint-disable-next-line no-loop-func
       $('a').each((i, e) => {
         const url = $(e).attr('href');
-        if (this.hasPage(url, pageNum)) {
+        if (this._hasPage(url, pageNum)) {
           searchUrls.add(url);
           hasNextPage = true;
         }
@@ -40,7 +40,7 @@ export default class myAVSuper extends AV {
     return searchUrls;
   };
 
-  hasPage = (url, pageNum) => {
+  _hasPage = (url, pageNum) => {
     const re = new RegExp(`/page/${pageNum}/?s=.*`);
     return re.test(url);
   };
