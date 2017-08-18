@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import getCheerio from './getCheerio';
+import getCheerio from '../getCheerio';
 
 export default class IndexAV {
   constructor() {
