@@ -1,4 +1,4 @@
-import IndexAV from './IndexAV';
+import IndexAV from './videoLib/IndexAV';
 import database from './database';
 import { YouAV, MyAVSuper, Avgle } from './AV';
 import updateInfos from './utils/updateInfos';
