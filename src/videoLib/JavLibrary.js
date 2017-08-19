@@ -20,17 +20,17 @@ export default class JavLibrary {
       .find('a')
       .attr('href');
 
-    return url;
+    return url.slice(1);
   };
 
   _getCodePage = async code => {
     const { data } = await this.http.get(`/vl_searchbyid.php?keyword=${code}`);
-    let $ = getCheerio(data);
 
     if (!this._hasResult(data)) {
       throw new Error(`code: ${code}, video not found`);
     }
 
+    let $ = getCheerio(data);
     if (this._isSearchPage(data)) {
       const url = this._getVideoUrl(code, $);
       const response = await this.http.get(url);
@@ -41,7 +41,7 @@ export default class JavLibrary {
     return $;
   };
 
-  getCodeInfo = async code => {
+  getCodeInfos = async code => {
     const $ = await this._getCodePage(code);
 
     const id = $('#video_id td.text').text();

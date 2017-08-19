@@ -13,9 +13,9 @@ async function main() {
 
   for (const video of videos) {
     try {
-      const videoInfo = await jav.getCodeInfo(video.code);
-      console.log(videoInfo);
-      await updateVideosInfosFromJav(db, videoInfo);
+      const videoInfos = await jav.getCodeInfos(video.code);
+      console.log(videoInfos);
+      await updateVideosInfosFromJav(db, videoInfos);
     } catch (err) {
       console.error(err.message);
     }
@@ -24,4 +24,4 @@ async function main() {
   db.close();
 }
 
-module.exports = main;
+export default main;
