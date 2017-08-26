@@ -8,13 +8,18 @@ async function main() {
 
   const videos = await db
     .collection('videos')
-    .find({ code: { $exists: true } }, { code: 1 })
+    .find({ code: { $exists: true }, tags: null }, { code: 1 })
     .toArray();
 
   for (const video of videos) {
     try {
       const videoInfos = await jav.getCodeInfos(video.code);
-      console.log(videoInfos);
+      console.log(
+        `code: ${videoInfos.id},`,
+        `length: ${videoInfos.length},`,
+        `tags: ${videoInfos.tags}`
+      );
+
       await updateVideosInfosFromJav(db, videoInfos);
     } catch (err) {
       console.error(err.message);

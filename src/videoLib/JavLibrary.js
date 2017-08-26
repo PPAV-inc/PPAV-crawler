@@ -51,7 +51,7 @@ export default class JavLibrary {
     }
 
     const publishedAt = new Date($('#video_date td.text').text());
-    const length = $('#video_length td').eq(1).text();
+    const length = Number($('#video_length span.text').text());
     const score = Number($('#video_review span.score').text().slice(1, -1));
     const tags = [];
     $('#video_genres span.genre').each((i, elem) => {

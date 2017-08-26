@@ -115,7 +115,7 @@ describe('#getCodeInfo', () => {
     expect(infos).toHaveProperty('publishedAt');
     expect(infos.publishedAt).toBeInstanceOf(Date);
     expect(infos).toHaveProperty('length');
-    expect(typeof infos.length).toBe('string');
+    expect(typeof infos.length).toBe('number');
     expect(infos).toHaveProperty('score');
     expect(typeof infos.score).toBe('number');
     expect(infos).toHaveProperty('tags');
