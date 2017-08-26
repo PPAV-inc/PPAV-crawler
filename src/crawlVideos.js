@@ -1,3 +1,5 @@
+import pMap from 'p-map';
+
 import IndexAV from './videoLib/IndexAV';
 import database from './database';
 import { YouAV, MyAVSuper, Avgle } from './AV';
@@ -27,22 +29,26 @@ const main = async () => {
       const foundInfos = [];
       const skipInfos = [];
 
-      for (const video of videos) {
-        const info = await indexav.getCodeInfo(video.code);
+      await pMap(
+        videos,
+        async video => {
+          const info = await indexav.getCodeInfo(video.code);
 
-        if (info && info.title !== '') {
-          foundInfos.push({ ...info, ...video, updated_at: now });
-          console.log(`find url: ${video.url}, code: ${video.code}`);
-        } else if (
-          !foundInfos.some(foundInfo => foundInfo.url === video.url) &&
-          !skipInfos.some(skipInfo => skipInfo.url === video.url)
-        ) {
-          skipInfos.push({ ...video, updated_at: now });
-          console.log(`skip url: ${video.url}, code: ${video.code}`);
-        } else {
-          console.log(`same url, different code: ${video.code}`);
-        }
-      }
+          if (info && info.title !== '') {
+            foundInfos.push({ ...info, ...video, updated_at: now });
+            console.log(`find url: ${video.url}, code: ${video.code}`);
+          } else if (
+            !foundInfos.some(foundInfo => foundInfo.url === video.url) &&
+            !skipInfos.some(skipInfo => skipInfo.url === video.url)
+          ) {
+            skipInfos.push({ ...video, updated_at: now });
+            console.log(`skip url: ${video.url}, code: ${video.code}`);
+          } else {
+            console.log(`same url, different code: ${video.code}`);
+          }
+        },
+        { concurrency: 5 }
+      );
 
       await updateInfos(db, foundInfos, skipInfos);
 
