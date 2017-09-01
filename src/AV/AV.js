@@ -1,6 +1,5 @@
-import delay from 'delay';
-
 import getCheerio from '../getCheerio';
+import retryAxios from '../utils/retryAxios';
 
 export default class AV {
   get source() {
@@ -55,24 +54,19 @@ export default class AV {
     const videoUrls = [];
 
     for (const pageUrl of pageUrls) {
-      for (let retryTime = 0; retryTime < 5; retryTime += 1) {
-        try {
-          const { data } = await this.http.get(encodeURI(pageUrl));
-          const $ = getCheerio(data);
+      try {
+        const { data } = await retryAxios(() =>
+          this.http.get(encodeURI(pageUrl))
+        );
+        const $ = getCheerio(data);
 
-          $('a').each((i, e) => {
-            const url = $(e).attr('href') || '';
-            videoUrls.push(url);
-          });
-
-          break;
-        } catch (err) {
-          console.error(
-            `error at ${this
-              .source} axios.get url ${pageUrl}, retry ${retryTime} times`
-          );
-          await delay(1000);
-        }
+        $('a').each((i, e) => {
+          const url = $(e).attr('href') || '';
+          videoUrls.push(url);
+        });
+      } catch (err) {
+        console.error(`error message: ${err.message}`);
+        console.error(`error at ${this.source} axios.get url ${pageUrl}`);
       }
     }
 

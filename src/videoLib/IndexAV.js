@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import getCheerio from '../getCheerio';
+import retryAxios from '../utils/retryAxios';
 
 export default class IndexAV {
   constructor() {
@@ -10,7 +11,8 @@ export default class IndexAV {
     });
   }
 
-  searchCode = code => this.http.get(`/search?keyword=${code}`);
+  searchCode = code =>
+    retryAxios(() => this.http.get(`/search?keyword=${code}`));
 
   getCodeInfo = async code => {
     const { data } = await this.searchCode(code);
