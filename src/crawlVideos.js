@@ -10,10 +10,27 @@ const main = async () => {
 
   const db = await database();
   const searchs = await db
-    .collection('search_keywords')
-    .find({ count: { $gte: 100, $lte: 340 } })
-    .sort({ count: -1 })
+    .collection('hot_search_keywords')
+    .aggregate([
+      {
+        $group: {
+          _id: '$keyword',
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $match: {
+          count: { $gte: 100 },
+        },
+      },
+      {
+        $sort: {
+          count: -1,
+        },
+      },
+    ])
     .toArray();
+
   const indexav = new IndexAV();
   const now = new Date();
 
