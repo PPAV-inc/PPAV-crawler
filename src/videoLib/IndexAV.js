@@ -15,8 +15,16 @@ export default class IndexAV {
     retryAxios(() => this.http.get(`/search?keyword=${code}`));
 
   getCodeInfo = async code => {
-    const { data } = await this.searchCode(code);
-    const $ = getCheerio(data);
+    let $;
+    try {
+      const { data } = await this.searchCode(code);
+      $ = getCheerio(data);
+    } catch (err) {
+      console.error(`err message: ${err.message}`);
+      console.error(`error at indexav axios.get code info`);
+      return undefined;
+    }
+
     let title = '';
     let models = [];
     let imgUrl = '';

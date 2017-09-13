@@ -10,6 +10,7 @@ export default class MyAVSuper extends AV {
     this.baseURL = 'https://myavsuper.com';
     this.http = axios.create({
       baseURL: this.baseURL,
+      timeout: 10000,
     });
   }
 
