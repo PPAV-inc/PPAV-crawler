@@ -2,6 +2,7 @@ import axios from 'axios';
 
 import AV from './AV';
 import getCheerio from '../getCheerio';
+import retryAxios from '../utils/retryAxios';
 
 export default class YouAV extends AV {
   constructor() {
@@ -10,6 +11,7 @@ export default class YouAV extends AV {
     this.baseURL = 'https://www.youav.com';
     this.http = axios.create({
       baseURL: this.baseURL,
+      timeout: 10000,
     });
   }
 
@@ -24,20 +26,29 @@ export default class YouAV extends AV {
     let hasNextPage;
     do {
       hasNextPage = false;
-      const { data } = await this.http.get(
-        `/search/videos?search_query=${encodeStr}&page=${pageNum}`
-      );
-      const $ = getCheerio(data);
-      pageNum += 1;
 
-      // eslint-disable-next-line no-loop-func
-      $('a').each((i, e) => {
-        const url = $(e).attr('href');
-        if (this._hasPage(url, pageNum)) {
-          searchUrls.add(url);
-          hasNextPage = true;
-        }
-      });
+      try {
+        /* eslint-disable no-loop-func */
+        const { data } = await retryAxios(() =>
+          this.http.get(
+            `/search/videos?search_query=${encodeStr}&page=${pageNum}`
+          )
+        );
+        const $ = getCheerio(data);
+        pageNum += 1;
+
+        // eslint-disable-next-line no-loop-func
+        $('a').each((i, e) => {
+          const url = $(e).attr('href');
+          if (this._hasPage(url, pageNum)) {
+            searchUrls.add(url);
+            hasNextPage = true;
+          }
+        });
+      } catch (err) {
+        console.error(`err message: ${err.message}`);
+        console.error(`error at ${this.source} axios.get page ${pageNum}`);
+      }
     } while (hasNextPage);
     console.log(`get page num: ${pageNum - 1}`);
 

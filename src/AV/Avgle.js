@@ -11,6 +11,7 @@ export default class Avgle extends AV {
     this.baseURL = 'https://avgle.com';
     this.http = axios.create({
       baseURL: this.baseURL,
+      timeout: 10000,
     });
   }
 

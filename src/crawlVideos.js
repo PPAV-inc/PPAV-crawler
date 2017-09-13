@@ -15,6 +15,7 @@ const main = async () => {
       {
         $group: {
           _id: '$keyword',
+          keyword: { $first: '$keyword' },
           count: { $sum: 1 },
         },
       },
