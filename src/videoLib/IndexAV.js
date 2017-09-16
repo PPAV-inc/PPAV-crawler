@@ -29,7 +29,7 @@ export default class IndexAV {
     let models = [];
     let imgUrl = '';
 
-    $('div.bs-callout.bs-callout-odd')
+    $('div.bs-callout')
       .children()
       .filter(
         (i, elem) =>
