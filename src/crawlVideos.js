@@ -21,7 +21,7 @@ const main = async () => {
       },
       {
         $match: {
-          count: { $gte: 100 },
+          count: { $gte: process.env.COUNT || 100 },
         },
       },
       {
@@ -39,10 +39,17 @@ const main = async () => {
     console.log(`search keyword: ${search.keyword}`);
     console.log(`search count: ${search.count}`);
 
+    const existedVideos = await db.collection('sources').find().toArray();
+    const existedVideosSet = new Set(existedVideos.map(video => video.url));
+
     // FIXME: concurrency
     for (const av of avs) {
       console.log(`search from av: ${av.source}`);
-      const videos = await av.getVideos(search.keyword);
+      let videos = await av.getVideos(search.keyword);
+
+      videos = videos.filter(
+        video => video.source === av.source && !existedVideosSet.has(video.url)
+      );
 
       const foundInfos = [];
       const skipInfos = [];
