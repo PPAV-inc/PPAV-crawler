@@ -13,6 +13,7 @@
     "babel-polyfill": "^6.23.0",
     "babel-register": "^6.26.0",
     "cheerio": "^0.22.0",
+    "date-fns": "^1.28.5",
     "delay": "^2.0.0",
     "mongodb": "^2.2.27",
     "p-map": "^1.1.1"

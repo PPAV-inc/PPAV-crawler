@@ -28,30 +28,6 @@ const updateInfos = (db, foundInfos, skipInfos) => {
         },
         { upsert: true }
       );
-
-      await db.collection('new_videos').updateOne(
-        { code: info.code },
-        {
-          $setOnInsert: {
-            title: info.title,
-            models: info.models,
-            img_url: info.img_url,
-            code: info.code,
-            total_view_count: 0,
-          },
-          $push: {
-            videos: {
-              source: info.source,
-              url: info.url,
-              view_count: 0,
-            },
-          },
-          $set: {
-            updated_at: info.updated_at,
-          },
-        },
-        { upsert: true }
-      );
     }
   });
 

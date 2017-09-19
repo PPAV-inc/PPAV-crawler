@@ -1,11 +1,44 @@
 import pMap from 'p-map';
+import differenceInMinutes from 'date-fns/difference_in_minutes';
 
 import IndexAV from './videoLib/IndexAV';
 import database from './database';
-import { YouAV, MyAVSuper, Avgle } from './AV';
+import { YouAV, MyAVSuper, Avgle, JavMost } from './AV';
 import updateInfos from './utils/updateInfos';
 
+async function getVideosInfos(videos) {
+  const indexav = new IndexAV();
+  const now = new Date();
+  const foundInfos = [];
+  const skipInfos = [];
+
+  await pMap(
+    videos,
+    async video => {
+      const info = await indexav.getCodeInfo(video.code);
+
+      if (info && info.title !== '') {
+        foundInfos.push({ ...info, ...video, updated_at: now });
+        console.log(`find url: ${video.url}, code: ${video.code}`);
+      } else if (
+        !foundInfos.some(foundInfo => foundInfo.url === video.url) &&
+        !skipInfos.some(skipInfo => skipInfo.url === video.url)
+      ) {
+        skipInfos.push({ ...video, updated_at: now });
+        console.log(`skip url: ${video.url}, code: ${video.code}`);
+      } else {
+        console.log(`same url, different code: ${video.code}`);
+      }
+    },
+    { concurrency: 5 }
+  );
+  return { foundInfos, skipInfos };
+}
+
 const main = async () => {
+  const start = new Date();
+  console.log(`crawler start at ${start}`);
+
   const avs = [new YouAV(), new MyAVSuper(), new Avgle()];
 
   const db = await database();
@@ -32,15 +65,12 @@ const main = async () => {
     ])
     .toArray();
 
-  const indexav = new IndexAV();
-  const now = new Date();
+  const existedVideos = await db.collection('sources').find().toArray();
+  const existedVideosSet = new Set(existedVideos.map(video => video.url));
 
   for (const search of searchs) {
     console.log(`search keyword: ${search.keyword}`);
     console.log(`search count: ${search.count}`);
-
-    const existedVideos = await db.collection('sources').find().toArray();
-    const existedVideosSet = new Set(existedVideos.map(video => video.url));
 
     // FIXME: concurrency
     for (const av of avs) {
@@ -50,30 +80,9 @@ const main = async () => {
       videos = videos.filter(
         video => video.source === av.source && !existedVideosSet.has(video.url)
       );
+      console.log(`videos length: ${videos.length}`);
 
-      const foundInfos = [];
-      const skipInfos = [];
-
-      await pMap(
-        videos,
-        async video => {
-          const info = await indexav.getCodeInfo(video.code);
-
-          if (info && info.title !== '') {
-            foundInfos.push({ ...info, ...video, updated_at: now });
-            console.log(`find url: ${video.url}, code: ${video.code}`);
-          } else if (
-            !foundInfos.some(foundInfo => foundInfo.url === video.url) &&
-            !skipInfos.some(skipInfo => skipInfo.url === video.url)
-          ) {
-            skipInfos.push({ ...video, updated_at: now });
-            console.log(`skip url: ${video.url}, code: ${video.code}`);
-          } else {
-            console.log(`same url, different code: ${video.code}`);
-          }
-        },
-        { concurrency: 5 }
-      );
+      const { foundInfos, skipInfos } = await getVideosInfos(videos);
 
       await updateInfos(db, foundInfos, skipInfos);
 
@@ -84,6 +93,32 @@ const main = async () => {
       console.log('================================');
     }
   }
+
+  /* different crawler */
+  const newAVSources = [new JavMost()];
+
+  for (const av of newAVSources) {
+    let videos = await av.getVideos();
+
+    videos = videos.filter(
+      video => video.source === av.source && !existedVideosSet.has(video.url)
+    );
+    console.log(`videos length: ${videos.length}`);
+
+    const { foundInfos, skipInfos } = await getVideosInfos(videos);
+
+    await updateInfos(db, foundInfos, skipInfos);
+
+    console.log('================================');
+    console.log(`from: ${av.source}`);
+    console.log(`find video url count: ${foundInfos.length}`);
+    console.log(`skip video url count: ${skipInfos.length}`);
+    console.log('================================');
+  }
+
+  const done = new Date();
+  console.log(`crawler done at ${done}`);
+  console.log(`take ${differenceInMinutes(done, start)} mins`);
 
   db.close();
 };
