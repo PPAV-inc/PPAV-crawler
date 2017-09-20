@@ -28,7 +28,9 @@ export default class AV {
     const urlsCode = [];
 
     // filter not video url
-    const filterUrls = urls.filter(url => !/(search_query|\/\?s=)/.test(url));
+    let filterUrls = urls.filter(url => !/(search_query|\/\?s=)/.test(url));
+    // remove duplicate url
+    filterUrls = Array.from(new Set(filterUrls));
 
     filterUrls.forEach(url => {
       // eslint-disable-next-line no-param-reassign
