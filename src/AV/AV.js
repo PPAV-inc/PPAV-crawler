@@ -24,13 +24,11 @@ export default class AV {
   };
   /* eslint-enable no-unused-vars*/
 
-  _getUrlsCode = urls => {
-    const urlsCode = [];
+  _getVideosCode = async urls => {
+    const videosCode = [];
 
     // filter not video url
-    let filterUrls = urls.filter(url => !/(search_query|\/\?s=)/.test(url));
-    // remove duplicate url
-    filterUrls = Array.from(new Set(filterUrls));
+    const filterUrls = urls.filter(url => !/(search_query|\/\?s=)/.test(url));
 
     filterUrls.forEach(url => {
       // eslint-disable-next-line no-param-reassign
@@ -41,7 +39,7 @@ export default class AV {
         .filter(code => !!code);
 
       codeArr.forEach(code => {
-        urlsCode.push({
+        videosCode.push({
           code: code.toUpperCase(),
           url,
           source: this.source,
@@ -49,7 +47,7 @@ export default class AV {
       });
     });
 
-    return urlsCode;
+    return videosCode;
   };
 
   _getVideoUrls = async pageUrls => {
@@ -78,7 +76,10 @@ export default class AV {
   getVideos = async query => {
     const pageUrls = await this._getAllPagesUrls(query);
     const videoUrls = await this._getVideoUrls(pageUrls);
-    const videos = this._getUrlsCode(videoUrls);
+
+    // remove duplicate url
+    const filterUrls = Array.from(new Set(videoUrls));
+    const videos = await this._getVideosCode(filterUrls);
 
     return videos;
   };
