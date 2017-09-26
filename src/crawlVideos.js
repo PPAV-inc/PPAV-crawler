@@ -3,7 +3,7 @@ import differenceInMinutes from 'date-fns/difference_in_minutes';
 
 import IndexAV from './videoLib/IndexAV';
 import database from './database';
-import { YouAV, MyAVSuper, Avgle, JavMost } from './AV';
+import { YouAV, MyAVSuper, Avgle, JavMost, Iavtv } from './AV';
 import updateInfos from './utils/updateInfos';
 
 async function getVideosInfos(videos) {
@@ -95,7 +95,7 @@ const main = async () => {
   }
 
   /* different crawler */
-  const newAVSources = [new JavMost()];
+  const newAVSources = [new JavMost(), new Iavtv()];
 
   for (const av of newAVSources) {
     let videos = await av.getVideos();
