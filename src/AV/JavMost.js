@@ -20,23 +20,21 @@ export default class JavMost extends AV {
     let maxPageNum = 1;
 
     try {
-      const { data: { status, page } } = await retryAxios(() =>
-        this.http.get(`/frontpage/showPage/${maxPageNum}/all/update`)
+      const { data } = await retryAxios(() =>
+        this.http.get(`/category/all/page/${maxPageNum}`)
       );
 
-      if (status.toLowerCase() !== 'success')
-        throw new Error(`status is ${status}`);
-      const $ = getCheerio(page);
+      const $ = getCheerio(data);
 
       // eslint-disable-next-line no-loop-func
       $('a').each((i, e) => {
-        const url = $(e).attr('href');
-        const match = url.match(/javascript:change_page.*'(\d+)'.*/);
+        const url = $(e).attr('href') || '';
+        const match = url.match(/.*\/category\/all\/page\/(\d+)/);
         if (match && +match[1] > maxPageNum) maxPageNum = +match[1];
       });
 
       for (let i = 1, len = maxPageNum; i <= len; i += 1) {
-        searchUrls.add(`/frontpage/showPage/${i}/all/update`);
+        searchUrls.add(`/category/all/page/${i}`);
       }
     } catch (err) {
       console.error(`err message: ${err.message}`);
@@ -47,33 +45,9 @@ export default class JavMost extends AV {
     return searchUrls;
   };
 
-  _getVideoUrls = async pageUrls => {
-    const videoUrls = [];
-    let pageNum = 0;
-    for (const pageUrl of pageUrls) {
-      pageNum += 1;
-      if (pageNum % 100 === 0) {
-        console.log(`current pageNum: ${pageNum}`);
-      }
-
-      try {
-        const { data: { status, data } } = await retryAxios(() =>
-          this.http.get(pageUrl)
-        );
-        if (status.toLowerCase() !== 'success')
-          throw new Error(`status is ${status}`);
-        const $ = getCheerio(data);
-
-        $('a').each((i, e) => {
-          const url = $(e).attr('href') || '';
-          videoUrls.push(url);
-        });
-      } catch (err) {
-        console.error(`error message: ${err.message}`);
-        console.error(`error at ${this.source} axios.get url ${pageUrl}`);
-      }
-    }
-
-    return videoUrls;
+  _filterVideoUrls = urls => {
+    // filter not video url
+    const filterUrls = urls.filter(url => !/tag/.test(url));
+    return filterUrls;
   };
 }
