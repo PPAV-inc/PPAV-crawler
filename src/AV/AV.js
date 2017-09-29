@@ -27,10 +27,7 @@ export default class AV {
   _getVideosCode = async urls => {
     const videosCode = [];
 
-    // filter not video url
-    const filterUrls = urls.filter(url => !/(search_query|\/\?s=)/.test(url));
-
-    filterUrls.forEach(url => {
+    urls.forEach(url => {
       // eslint-disable-next-line no-param-reassign
       url = url.includes(this.baseURL) ? url : `${this.baseURL}${url}`;
       const codeArr = []
@@ -78,9 +75,16 @@ export default class AV {
     const videoUrls = await this._getVideoUrls(pageUrls);
 
     // remove duplicate url
-    const filterUrls = Array.from(new Set(videoUrls));
+    let filterUrls = Array.from(new Set(videoUrls));
+    filterUrls = this._filterVideoUrls(filterUrls);
     const videos = await this._getVideosCode(filterUrls);
 
     return videos;
+  };
+
+  _filterVideoUrls = urls => {
+    // filter not video url
+    const filterUrls = urls.filter(url => !/(search_query|\/\?s=)/.test(url));
+    return filterUrls;
   };
 }
