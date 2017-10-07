@@ -1,3 +1,5 @@
+import pMap from 'p-map';
+
 import getCheerio from '../getCheerio';
 import retryAxios from '../utils/retryAxios';
 
@@ -50,22 +52,26 @@ export default class AV {
   _getVideoUrls = async pageUrls => {
     const videoUrls = [];
 
-    for (const pageUrl of pageUrls) {
-      try {
-        const { data } = await retryAxios(() =>
-          this.http.get(encodeURI(pageUrl))
-        );
-        const $ = getCheerio(data);
+    await pMap(
+      pageUrls,
+      async pageUrl => {
+        try {
+          const { data } = await retryAxios(() =>
+            this.http.get(encodeURI(pageUrl))
+          );
+          const $ = getCheerio(data);
 
-        $('a').each((i, e) => {
-          const url = $(e).attr('href') || '';
-          videoUrls.push(url);
-        });
-      } catch (err) {
-        console.error(`error message: ${err.message}`);
-        console.error(`error at ${this.source} axios.get url ${pageUrl}`);
-      }
-    }
+          $('a').each((i, e) => {
+            const url = $(e).attr('href') || '';
+            videoUrls.push(url);
+          });
+        } catch (err) {
+          console.error(`error message: ${err.message}`);
+          console.error(`error at ${this.source} axios.get url ${pageUrl}`);
+        }
+      },
+      { concurrency: 20 }
+    );
 
     return videoUrls;
   };
