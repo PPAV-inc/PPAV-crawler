@@ -61,6 +61,22 @@ const updateInfos = async (db, foundInfos, skipInfos) => {
         ),
     { concurrency: 5 }
   );
+
+  await pMap(
+    skipInfos,
+    info =>
+      db.collection('sources').updateOne(
+        { url: info.url },
+        {
+          source: info.source,
+          url: info.url,
+          updatedAt: new Date(),
+          skippedAt: new Date(),
+        },
+        { upsert: true }
+      ),
+    { concurrency: 5 }
+  );
 };
 
 export default updateInfos;

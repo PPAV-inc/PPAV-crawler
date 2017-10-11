@@ -30,7 +30,7 @@ async function getVideosInfos(videos) {
         console.log(`same url, different code: ${video.code}`);
       }
     },
-    { concurrency: 5 }
+    { concurrency: 20 }
   );
   return { foundInfos, skipInfos };
 }
@@ -98,6 +98,7 @@ const main = async () => {
   const newAVSources = [new JavMost(), new Iavtv()];
 
   for (const av of newAVSources) {
+    console.log(`search from av: ${av.source}`);
     let videos = await av.getVideos();
 
     videos = videos.filter(
