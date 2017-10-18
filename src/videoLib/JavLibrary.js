@@ -20,6 +20,10 @@ export default class JavLibrary {
       .find('a')
       .attr('href');
 
+    if (!url) {
+      throw new Error(`code: ${code}, not found same video url`);
+    }
+
     return url.slice(1);
   };
 
@@ -46,10 +50,13 @@ export default class JavLibrary {
 
     const id = $('#video_id td.text').text();
 
-    if (id !== code) {
-      throw new Error(`code: ${code}, is not same as ${id}`);
-    }
-
+    const title = $('#video_title h3.post-title.text').text();
+    const models = [];
+    $('#video_cast span.cast').each((i, elem) => {
+      const arr = $(elem).text().split(' ').filter(e => e);
+      models.push(...arr);
+    });
+    const imgUrl = $('link[rel=image_src]').attr('href');
     const publishedAt = new Date($('#video_date td.text').text());
     const length = Number($('#video_length span.text').text());
     const score = Number($('#video_review span.score').text().slice(1, -1));
@@ -60,6 +67,9 @@ export default class JavLibrary {
 
     return {
       id,
+      title,
+      models,
+      imgUrl,
       publishedAt,
       length,
       score,
