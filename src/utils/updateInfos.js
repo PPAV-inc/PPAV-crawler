@@ -14,10 +14,14 @@ const updateInfos = async (db, foundInfos, skipInfos) => {
           { code: info.code },
           {
             $setOnInsert: {
+              code: info.code,
               title: info.title,
               models: info.models,
               img_url: info.img_url,
-              code: info.code,
+              publishedAt: info.publishedAt,
+              length: info.length,
+              score: info.score,
+              tags: info.tags,
               total_view_count: 0,
             },
             $push: {

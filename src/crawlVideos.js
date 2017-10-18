@@ -1,13 +1,15 @@
 import pMap from 'p-map';
 import differenceInMinutes from 'date-fns/difference_in_minutes';
 
-import IndexAV from './videoLib/IndexAV';
+// import IndexAV from './videoLib/IndexAV';
+import JavLib from './videoLib/JavLibrary';
 import database from './database';
 import { YouAV, MyAVSuper, Avgle, JavMost, Iavtv } from './AV';
 import updateInfos from './utils/updateInfos';
 
 async function getVideosInfos(videos) {
-  const indexav = new IndexAV();
+  // const indexav = new IndexAV();
+  const jav = new JavLib();
   const now = new Date();
   const foundInfos = [];
   const skipInfos = [];
@@ -15,7 +17,13 @@ async function getVideosInfos(videos) {
   await pMap(
     videos,
     async video => {
-      const info = await indexav.getCodeInfo(video.code);
+      // const info = await indexav.getCodeInfo(video.code);
+      let info;
+      try {
+        info = await jav.getCodeInfos(video.code);
+      } catch (err) {
+        console.error(err.message);
+      }
 
       if (info && info.title !== '') {
         foundInfos.push({ ...info, ...video, updated_at: now });
@@ -54,7 +62,7 @@ const main = async () => {
       },
       {
         $match: {
-          count: { $gte: process.env.COUNT || 100 },
+          count: { $gte: process.env.COUNT || 30 },
         },
       },
       {
@@ -74,23 +82,28 @@ const main = async () => {
 
     // FIXME: concurrency
     for (const av of avs) {
-      console.log(`search from av: ${av.source}`);
-      let videos = await av.getVideos(search.keyword);
+      try {
+        console.log(`search from av: ${av.source}`);
+        let videos = await av.getVideos(search.keyword);
 
-      videos = videos.filter(
-        video => video.source === av.source && !existedVideosSet.has(video.url)
-      );
-      console.log(`videos length: ${videos.length}`);
+        videos = videos.filter(
+          video =>
+            video.source === av.source && !existedVideosSet.has(video.url)
+        );
+        console.log(`videos length: ${videos.length}`);
 
-      const { foundInfos, skipInfos } = await getVideosInfos(videos);
+        const { foundInfos, skipInfos } = await getVideosInfos(videos);
 
-      await updateInfos(db, foundInfos, skipInfos);
+        await updateInfos(db, foundInfos, skipInfos);
 
-      console.log('================================');
-      console.log(`search keyword: ${search.keyword}, from: ${av.source}`);
-      console.log(`find video url count: ${foundInfos.length}`);
-      console.log(`skip video url count: ${skipInfos.length}`);
-      console.log('================================');
+        console.log('================================');
+        console.log(`search keyword: ${search.keyword}, from: ${av.source}`);
+        console.log(`find video url count: ${foundInfos.length}`);
+        console.log(`skip video url count: ${skipInfos.length}`);
+        console.log('================================');
+      } catch (err) {
+        console.error(err);
+      }
     }
   }
 
