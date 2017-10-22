@@ -50,68 +50,18 @@ const main = async () => {
   const start = new Date();
   console.log(`crawler start at ${start}`);
 
-  const avs = [new MyAVSuper()];
-
   const db = await database();
-  const searchs = await db
-    .collection('hot_search_keywords')
-    .aggregate([
-      {
-        $group: {
-          _id: '$keyword',
-          keyword: { $first: '$keyword' },
-          count: { $sum: 1 },
-        },
-      },
-      {
-        $match: {
-          count: { $gte: process.env.COUNT || 30 },
-        },
-      },
-      {
-        $sort: {
-          count: -1,
-        },
-      },
-    ])
-    .toArray();
 
   const existedVideos = await db.collection('sources').find().toArray();
   const existedVideosSet = new Set(existedVideos.map(video => video.url));
 
-  for (const search of searchs) {
-    console.log(`search keyword: ${search.keyword}`);
-    console.log(`search count: ${search.count}`);
-
-    // FIXME: concurrency
-    for (const av of avs) {
-      try {
-        console.log(`search from av: ${av.source}`);
-        let videos = await av.getVideos(search.keyword);
-
-        videos = videos.filter(
-          video =>
-            video.source === av.source && !existedVideosSet.has(video.url)
-        );
-        console.log(`videos length: ${videos.length}`);
-
-        const { foundInfos, skipInfos } = await getVideosInfos(videos);
-
-        await updateInfos(db, foundInfos, skipInfos);
-
-        console.log('================================');
-        console.log(`search keyword: ${search.keyword}, from: ${av.source}`);
-        console.log(`find video url count: ${foundInfos.length}`);
-        console.log(`skip video url count: ${skipInfos.length}`);
-        console.log('================================');
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  }
-
-  /* different crawler */
-  const newAVSources = [new YouAV(), new Avgle(), new JavMost(), new Iavtv()];
+  const newAVSources = [
+    new YouAV(),
+    new MyAVSuper(),
+    new Avgle(),
+    new JavMost(),
+    new Iavtv(),
+  ];
 
   for (const av of newAVSources) {
     console.log(`search from av: ${av.source}`);

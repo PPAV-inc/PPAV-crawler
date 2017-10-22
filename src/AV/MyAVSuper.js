@@ -14,35 +14,29 @@ export default class MyAVSuper extends AV {
     });
   }
 
-  _getAllPagesUrls = async query => {
+  _getAllPagesUrls = async () => {
     const searchUrls = new Set();
-    searchUrls.add(`${this.baseURL}/page/1/?s=${query}`);
+    let maxPageNum = 1;
 
-    const encodeStr = encodeURI(query);
-    let pageNum = 1;
-    let hasNextPage;
-    do {
-      hasNextPage = false;
-      const { data } = await this.http.get(`/page/1/?s=${encodeStr}`);
+    try {
+      const { data } = await this.http.get(`/page/1/?filter=date`);
       const $ = getCheerio(data);
-      pageNum += 1;
 
-      // eslint-disable-next-line no-loop-func
       $('a').each((i, e) => {
-        const url = $(e).attr('href');
-        if (this._hasPage(url, pageNum)) {
-          searchUrls.add(url);
-          hasNextPage = true;
-        }
+        const url = $(e).attr('href') || '';
+        const match = url.match(/.*\/page\/(\d+)\/\?filter=date/);
+        if (match && +match[1] > maxPageNum) maxPageNum = +match[1];
       });
-    } while (hasNextPage);
-    console.log(`get page num: ${pageNum - 1}`);
+
+      for (let i = 1, len = maxPageNum; i <= len; i += 1) {
+        searchUrls.add(`/page/${i}/?filter=date`);
+      }
+    } catch (err) {
+      console.error(`err message: ${err.message}`);
+      console.error(`error at ${this.source} axios.get page ${maxPageNum}`);
+    }
+    console.log(`get page num: ${maxPageNum}`);
 
     return searchUrls;
-  };
-
-  _hasPage = (url, pageNum) => {
-    const re = new RegExp(`/page/${pageNum}/?s=.*`);
-    return re.test(url);
   };
 }
