@@ -50,7 +50,7 @@ const main = async () => {
   const start = new Date();
   console.log(`crawler start at ${start}`);
 
-  const avs = [new YouAV(), new MyAVSuper()];
+  const avs = [new MyAVSuper()];
 
   const db = await database();
   const searchs = await db
@@ -111,7 +111,7 @@ const main = async () => {
   }
 
   /* different crawler */
-  const newAVSources = [new Avgle(), new JavMost(), new Iavtv()];
+  const newAVSources = [new YouAV(), new Avgle(), new JavMost(), new Iavtv()];
 
   for (const av of newAVSources) {
     console.log(`search from av: ${av.source}`);
