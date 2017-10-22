@@ -1,11 +1,14 @@
 import pMap from 'p-map';
 import differenceInMinutes from 'date-fns/difference_in_minutes';
+import _debug from 'debug';
 
 // import IndexAV from './videoLib/IndexAV';
 import JavLib from './videoLib/JavLibrary';
 import database from './database';
 import { YouAV, MyAVSuper, Avgle, JavMost, Iavtv } from './AV';
 import updateInfos from './utils/updateInfos';
+
+const debug = _debug('crawler');
 
 async function getVideosInfos(videos) {
   // const indexav = new IndexAV();
@@ -27,15 +30,15 @@ async function getVideosInfos(videos) {
 
       if (info && info.title !== '') {
         foundInfos.push({ ...info, ...video, updated_at: now });
-        console.log(`find url: ${video.url}, code: ${video.code}`);
+        debug(`find url: ${video.url}, code: ${video.code}`);
       } else if (
         !foundInfos.some(foundInfo => foundInfo.url === video.url) &&
         !skipInfos.some(skipInfo => skipInfo.url === video.url)
       ) {
         skipInfos.push({ ...video, updated_at: now });
-        console.log(`skip url: ${video.url}, code: ${video.code}`);
+        debug(`skip url: ${video.url}, code: ${video.code}`);
       } else {
-        console.log(`same url, different code: ${video.code}`);
+        debug(`same url, different code: ${video.code}`);
       }
     },
     { concurrency: 20 }
@@ -47,7 +50,7 @@ const main = async () => {
   const start = new Date();
   console.log(`crawler start at ${start}`);
 
-  const avs = [new YouAV(), new MyAVSuper(), new Avgle()];
+  const avs = [new YouAV(), new MyAVSuper()];
 
   const db = await database();
   const searchs = await db
@@ -108,7 +111,7 @@ const main = async () => {
   }
 
   /* different crawler */
-  const newAVSources = [new JavMost(), new Iavtv()];
+  const newAVSources = [new Avgle(), new JavMost(), new Iavtv()];
 
   for (const av of newAVSources) {
     console.log(`search from av: ${av.source}`);
