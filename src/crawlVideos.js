@@ -21,24 +21,23 @@ async function getVideosInfos(videos) {
     videos,
     async video => {
       // const info = await indexav.getCodeInfo(video.code);
-      let info;
       try {
-        info = await jav.getCodeInfos(video.code);
-      } catch (err) {
-        console.error(err.message);
-      }
+        const info = await jav.getCodeInfos(video.code);
 
-      if (info && info.title !== '') {
-        foundInfos.push({ ...info, ...video, updated_at: now });
-        debug(`find url: ${video.url}, code: ${video.code}`);
-      } else if (
-        !foundInfos.some(foundInfo => foundInfo.url === video.url) &&
-        !skipInfos.some(skipInfo => skipInfo.url === video.url)
-      ) {
-        skipInfos.push({ ...video, updated_at: now });
-        debug(`skip url: ${video.url}, code: ${video.code}`);
-      } else {
-        debug(`same url, different code: ${video.code}`);
+        if (info && info.title !== '') {
+          foundInfos.push({ ...info, ...video, updated_at: now });
+          debug(`find url: ${video.url}, code: ${video.code}`);
+        } else if (
+          !foundInfos.some(foundInfo => foundInfo.url === video.url) &&
+          !skipInfos.some(skipInfo => skipInfo.url === video.url)
+        ) {
+          skipInfos.push({ ...video, updated_at: now });
+          debug(`skip url: ${video.url}, code: ${video.code}`);
+        } else {
+          debug(`same url, different code: ${video.code}`);
+        }
+      } catch (err) {
+        debug(err.message);
       }
     },
     { concurrency: 20 }

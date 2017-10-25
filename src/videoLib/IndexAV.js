@@ -59,7 +59,7 @@ export default class IndexAV {
     return {
       title,
       models,
-      img_url: imgUrl,
+      imgUrl,
     };
   };
 }
