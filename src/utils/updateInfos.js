@@ -42,16 +42,6 @@ const updateInfos = async (db, foundInfos, skipInfos) => {
     { concurrency: 5 }
   );
 
-  // updateSkipVideos
-  await pMap(
-    skipInfos,
-    info =>
-      db
-        .collection('skip_videos')
-        .updateOne({ url: info.url }, info, { upsert: true }),
-    { concurrency: 5 }
-  );
-
   // updateSources
   await pMap(
     foundInfos,

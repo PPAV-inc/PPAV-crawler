@@ -2,7 +2,6 @@ import pMap from 'p-map';
 import differenceInMinutes from 'date-fns/difference_in_minutes';
 import _debug from 'debug';
 
-// import IndexAV from './videoLib/IndexAV';
 import JavLib from './videoLib/JavLibrary';
 import database from './database';
 import { YouAV, MyAVSuper, Avgle, JavMost, Iavtv } from './AV';
@@ -11,7 +10,6 @@ import updateInfos from './utils/updateInfos';
 const debug = _debug('crawler');
 
 async function getVideosInfos(videos) {
-  // const indexav = new IndexAV();
   const jav = new JavLib();
   const now = new Date();
   const foundInfos = [];
@@ -20,23 +18,14 @@ async function getVideosInfos(videos) {
   await pMap(
     videos,
     async video => {
-      // const info = await indexav.getCodeInfo(video.code);
       try {
         const info = await jav.getCodeInfos(video.code);
 
-        if (info && info.title !== '') {
-          foundInfos.push({ ...info, ...video, updated_at: now });
-          debug(`find url: ${video.url}, code: ${video.code}`);
-        } else if (
-          !foundInfos.some(foundInfo => foundInfo.url === video.url) &&
-          !skipInfos.some(skipInfo => skipInfo.url === video.url)
-        ) {
-          skipInfos.push({ ...video, updated_at: now });
-          debug(`skip url: ${video.url}, code: ${video.code}`);
-        } else {
-          debug(`same url, different code: ${video.code}`);
-        }
+        foundInfos.push({ ...info, ...video, updated_at: now });
+        debug(`find url: ${video.url}, code: ${video.code}`);
       } catch (err) {
+        // will get error if code not found
+        skipInfos.push({ ...video, updated_at: now });
         debug(err.message);
       }
     },
@@ -66,9 +55,7 @@ const main = async () => {
     console.log(`search from av: ${av.source}`);
     let videos = await av.getVideos();
 
-    videos = videos.filter(
-      video => video.source === av.source && !existedVideosSet.has(video.url)
-    );
+    videos = videos.filter(video => !existedVideosSet.has(video.url));
     console.log(`videos length: ${videos.length}`);
 
     const { foundInfos, skipInfos } = await getVideosInfos(videos);
