@@ -17,7 +17,7 @@ const updateInfos = async (db, foundInfos, skipInfos) => {
               code: info.code,
               title: info.title,
               models: info.models,
-              img_url: info.img_url,
+              img_url: info.imgUrl,
               publishedAt: info.publishedAt,
               length: info.length,
               score: info.score,
@@ -39,16 +39,6 @@ const updateInfos = async (db, foundInfos, skipInfos) => {
         );
       }
     },
-    { concurrency: 5 }
-  );
-
-  // updateSkipVideos
-  await pMap(
-    skipInfos,
-    info =>
-      db
-        .collection('skip_videos')
-        .updateOne({ url: info.url }, info, { upsert: true }),
     { concurrency: 5 }
   );
 

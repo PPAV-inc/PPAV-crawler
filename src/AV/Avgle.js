@@ -15,50 +15,32 @@ export default class Avgle extends AV {
     });
   }
 
-  _getAllPagesUrls = async query => {
+  _getAllPagesUrls = async () => {
     const searchUrls = new Set();
-    searchUrls.add(
-      `${this.baseURL}/search/videos?search_query=${query}&page=1`
-    );
+    let maxPageNum = 1;
 
-    const encodeStr = encodeURI(query);
-    let pageNum = 1;
-    let hasNextPage;
-    do {
-      hasNextPage = false;
+    try {
+      const { data } = await retryAxios(() =>
+        this.http.get(`/videos?o=mr&page=${maxPageNum}`)
+      );
 
-      try {
-        /* eslint-disable no-loop-func */
-        const { data } = await retryAxios(() =>
-          this.http.get(
-            `/search/videos?search_query=${encodeStr}&page=${pageNum}`
-          )
-        );
-        /* eslint-enable no-loop-func */
+      const $ = getCheerio(data);
 
-        const $ = getCheerio(data);
-        pageNum += 1;
+      $('a').each((i, e) => {
+        const url = $(e).attr('href');
+        const match = url.match(/.*\/videos\?o=mr&page=(\d+)/);
+        if (match && +match[1] > maxPageNum) maxPageNum = +match[1];
+      });
 
-        // eslint-disable-next-line no-loop-func
-        $('a').each((i, e) => {
-          const url = $(e).attr('href');
-          if (this._hasPage(url, pageNum)) {
-            searchUrls.add(url);
-            hasNextPage = true;
-          }
-        });
-      } catch (err) {
-        console.error(`err message: ${err.message}`);
-        console.error(`error at ${this.source} axios.get page ${pageNum}`);
+      for (let i = 1, len = maxPageNum; i <= len; i += 1) {
+        searchUrls.add(`/videos?o=mr&page=${i}`);
       }
-    } while (hasNextPage);
-    console.log(`get page num: ${pageNum - 1}`);
+    } catch (err) {
+      console.error(`err message: ${err.message}`);
+      console.error(`error at ${this.source} axios.get page ${maxPageNum}`);
+    }
+    console.log(`get page num: ${maxPageNum}`);
 
     return searchUrls;
-  };
-
-  _hasPage = (url, pageNum) => {
-    const re = new RegExp(`search_query=.*&page=${pageNum}`);
-    return re.test(url);
   };
 }

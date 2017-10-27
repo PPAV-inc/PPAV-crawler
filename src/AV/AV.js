@@ -76,8 +76,8 @@ export default class AV {
     return videoUrls;
   };
 
-  getVideos = async query => {
-    const pageUrls = await this._getAllPagesUrls(query);
+  getVideos = async () => {
+    const pageUrls = await this._getAllPagesUrls();
     const videoUrls = await this._getVideoUrls(pageUrls);
 
     // remove duplicate url
