@@ -27,7 +27,7 @@ export default class Avgle extends AV {
       const $ = getCheerio(data);
 
       $('a').each((i, e) => {
-        const url = $(e).attr('href');
+        const url = $(e).attr('href') || '';
         const match = url.match(/.*\/videos\?o=mr&page=(\d+)/);
         if (match && +match[1] > maxPageNum) maxPageNum = +match[1];
       });
@@ -37,7 +37,7 @@ export default class Avgle extends AV {
       }
     } catch (err) {
       console.error(`err message: ${err.message}`);
-      console.error(`error at ${this.source} axios.get page ${maxPageNum}`);
+      console.error(`error at ${this.source} axios.get`);
     }
     console.log(`get page num: ${maxPageNum}`);
 
