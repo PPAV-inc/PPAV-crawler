@@ -51,23 +51,27 @@ const main = async () => {
     new Iavtv(),
   ];
 
-  for (const av of newAVSources) {
-    console.log(`search from av: ${av.source}`);
-    let videos = await av.getVideos();
+  await pMap(
+    newAVSources,
+    async av => {
+      console.log(`search from av: ${av.source}`);
+      let videos = await av.getVideos();
 
-    videos = videos.filter(video => !existedVideosSet.has(video.url));
-    console.log(`videos length: ${videos.length}`);
+      videos = videos.filter(video => !existedVideosSet.has(video.url));
+      console.log(`videos length: ${videos.length}`);
 
-    const { foundInfos, skipInfos } = await getVideosInfos(videos);
+      const { foundInfos, skipInfos } = await getVideosInfos(videos);
 
-    await updateInfos(db, foundInfos, skipInfos);
+      await updateInfos(db, foundInfos, skipInfos);
 
-    console.log('================================');
-    console.log(`from: ${av.source}`);
-    console.log(`find video url count: ${foundInfos.length}`);
-    console.log(`skip video url count: ${skipInfos.length}`);
-    console.log('================================');
-  }
+      console.log('================================');
+      console.log(`from: ${av.source}`);
+      console.log(`find video url count: ${foundInfos.length}`);
+      console.log(`skip video url count: ${skipInfos.length}`);
+      console.log('================================');
+    },
+    { concurrency: 3 }
+  );
 
   const done = new Date();
   console.log(`crawler done at ${done}`);

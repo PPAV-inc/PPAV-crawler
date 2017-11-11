@@ -8,7 +8,7 @@ export default class JavMost extends AV {
   constructor() {
     super();
     this.source = 'javmost';
-    this.baseURL = 'http://www5.javmost.com';
+    this.baseURL = 'https://www5.javmost.com';
     this.http = axios.create({
       baseURL: this.baseURL,
       timeout: 10000,
