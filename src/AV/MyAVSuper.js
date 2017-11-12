@@ -33,7 +33,7 @@ export default class MyAVSuper extends AV {
       }
     } catch (err) {
       console.error(`err message: ${err.message}`);
-      console.error(`error at ${this.source} axios.get page ${maxPageNum}`);
+      console.error(`error at ${this.source} axios.get`);
     }
     console.log(`get page num: ${maxPageNum}`);
 

@@ -26,17 +26,19 @@ export default class AV {
   };
   /* eslint-enable no-unused-vars*/
 
+  _getCodeString = url => url;
+
   _getVideosCode = async urls => {
     const videosCode = [];
 
-    urls.forEach(url => {
-      // eslint-disable-next-line no-param-reassign
-      url = url.includes(this.baseURL) ? url : `${this.baseURL}${url}`;
+    for (let url of urls) {
+      const target = await this._getCodeString(url);
       const codeArr = []
-        .concat(url.match(/\w+-\d+/g), url.match(/\w+-\w+-\d+/g))
+        .concat(target.match(/\w+-\d+/g), target.match(/\w+-\w+-\d+/g))
         // filter not match
         .filter(code => !!code);
 
+      url = url.includes(this.baseURL) ? url : `${this.baseURL}${url}`;
       codeArr.forEach(code => {
         videosCode.push({
           code: code.toUpperCase(),
@@ -44,7 +46,7 @@ export default class AV {
           source: this.source,
         });
       });
-    });
+    }
 
     return videosCode;
   };

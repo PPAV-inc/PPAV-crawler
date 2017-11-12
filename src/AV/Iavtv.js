@@ -38,37 +38,20 @@ export default class Iavtv extends AV {
       }
     } catch (err) {
       console.error(`err message: ${err.message}`);
-      console.error(`error at ${this.source} axios.get page ${maxPageNum}`);
+      console.error(`error at ${this.source} axios.get`);
     }
     console.log(`get page num: ${maxPageNum}`);
 
     return searchUrls;
   };
 
-  _getVideosCode = async urls => {
-    const videosCode = [];
+  _getCodeString = async url => {
+    const { data } = await retryAxios(() => this.http.get(url));
 
-    for (let url of urls) {
-      const { data } = await retryAxios(() => this.http.get(url));
+    const $ = getCheerio(data);
+    const target = $('title').text();
 
-      const $ = getCheerio(data);
-      const target = $('title').text();
-      const codes = []
-        .concat(target.match(/\w+-\d+/g), target.match(/\w+-\w+-\d+/g))
-        // filter not match
-        .filter(code => !!code);
-
-      url = url.includes(this.baseURL) ? url : `${this.baseURL}${url}`;
-      codes.forEach(code => {
-        videosCode.push({
-          code: code.toUpperCase(),
-          url,
-          source: this.source,
-        });
-      });
-    }
-
-    return videosCode;
+    return target;
   };
 
   _filterVideoUrls = urls => {
