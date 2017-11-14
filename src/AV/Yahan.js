@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { URL } from 'url';
 
 import AV from './AV';
 import getCheerio from '../getCheerio';
@@ -54,9 +55,14 @@ export default class Yahan extends AV {
   };
 
   _filterVideoUrls = urls => {
-    const filterUrls = urls.filter(url =>
-      /bo_table=javc&wr_id=\d+&page=\d+/.test(url)
-    );
+    const filterUrls = urls
+      .filter(url => /bo_table=javc&wr_id=\d+&page=\d+/.test(url))
+      .map(url => {
+        const urlWithoutPage = new URL(url);
+        urlWithoutPage.searchParams.delete('page');
+
+        return urlWithoutPage.href;
+      });
 
     return filterUrls;
   };
