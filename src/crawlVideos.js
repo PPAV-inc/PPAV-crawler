@@ -4,7 +4,7 @@ import _debug from 'debug';
 
 import JavLib from './videoLib/JavLibrary';
 import database from './database';
-import { YouAV, MyAVSuper, Avgle, JavMost, Iavtv, Yahan } from './AV';
+import { YouAV, MyAVSuper, Avgle, JavMost, Iavtv, Yahan, JavForMe } from './AV';
 import updateInfos from './utils/updateInfos';
 
 const debug = _debug('crawler');
@@ -50,6 +50,7 @@ const main = async () => {
     new JavMost(),
     new Iavtv(),
     new Yahan(),
+    new JavForMe(),
   ];
 
   await pMap(

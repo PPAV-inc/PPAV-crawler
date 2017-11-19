@@ -28,15 +28,18 @@ export default class AV {
 
   _getCodeString = url => url;
 
+  _getCodes = target =>
+    []
+      .concat(target.match(/\w+-\d+/g), target.match(/\w+-\w+-\d+/g))
+      // filter not match
+      .filter(code => !!code);
+
   _getVideosCode = async urls => {
     const videosCode = [];
 
     for (let url of urls) {
       const target = await this._getCodeString(url);
-      const codeArr = []
-        .concat(target.match(/\w+-\d+/g), target.match(/\w+-\w+-\d+/g))
-        // filter not match
-        .filter(code => !!code);
+      const codeArr = this._getCodes(target);
 
       url = url.includes(this.baseURL) ? url : `${this.baseURL}${url}`;
       codeArr.forEach(code => {
