@@ -56,11 +56,11 @@ const main = async () => {
   await pMap(
     newAVSources,
     async av => {
-      console.log(`search from av: ${av.source}`);
       let videos = await av.getVideos();
 
       videos = videos.filter(video => !existedVideosSet.has(video.url));
-      console.log(`videos length: ${videos.length}`);
+      debug(`search from av: ${av.source}`);
+      debug(`videos length: ${videos.length}`);
 
       const { foundInfos, skipInfos } = await getVideosInfos(videos);
 
