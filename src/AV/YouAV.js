@@ -38,7 +38,6 @@ export default class YouAV extends AV {
       console.error(`err message: ${err.message}`);
       console.error(`error at ${this.source} axios.get`);
     }
-    console.log(`get page num: ${maxPageNum}`);
 
     return searchUrls;
   };

@@ -7,14 +7,14 @@ const updateInfos = async (db, foundInfos, skipInfos) => {
     async info => {
       const result = await db
         .collection('videos')
-        .findOne({ code: info.code, 'videos.source': info.source });
+        .findOne({ code: info.id, 'videos.source': info.source });
 
       if (!result) {
         await db.collection('videos').updateOne(
-          { code: info.code },
+          { code: info.id },
           {
             $setOnInsert: {
-              code: info.code,
+              code: info.id,
               title: info.title,
               models: info.models,
               img_url: info.imgUrl,
