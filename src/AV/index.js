@@ -5,5 +5,6 @@ import JavMost from './JavMost';
 import Iavtv from './Iavtv';
 import Yahan from './Yahan';
 import JavForMe from './JavForMe';
+import Jav777 from './Jav777';
 
-export { YouAV, MyAVSuper, Avgle, JavMost, Iavtv, Yahan, JavForMe };
+export { YouAV, MyAVSuper, Avgle, JavMost, Iavtv, Yahan, JavForMe, Jav777 };

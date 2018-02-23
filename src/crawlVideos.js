@@ -4,7 +4,16 @@ import _debug from 'debug';
 
 import JavLib from './videoLib/JavLibrary';
 import database from './database';
-import { YouAV, MyAVSuper, Avgle, JavMost, Iavtv, Yahan, JavForMe } from './AV';
+import {
+  YouAV,
+  MyAVSuper,
+  Avgle,
+  JavMost,
+  Iavtv,
+  Yahan,
+  JavForMe,
+  Jav777,
+} from './AV';
 import updateInfos from './utils/updateInfos';
 
 const debug = _debug('crawler');
@@ -51,6 +60,7 @@ const main = async () => {
     new Iavtv(),
     new Yahan(),
     new JavForMe(),
+    new Jav777(),
   ];
 
   await pMap(
@@ -64,7 +74,9 @@ const main = async () => {
 
       const { foundInfos, skipInfos } = await getVideosInfos(videos);
 
-      await updateInfos(db, foundInfos, skipInfos);
+      if (process.env.NODE_ENV === 'production') {
+        await updateInfos(db, foundInfos, skipInfos);
+      }
 
       console.log('================================');
       console.log(`from: ${av.source}`);
