@@ -1,7 +1,10 @@
 import pMap from 'p-map';
+import _debug from 'debug';
 
 import getCheerio from '../getCheerio';
 import retryAxios from '../utils/retryAxios';
+
+const debug = _debug('crawler');
 
 export default class AV {
   get source() {
@@ -56,6 +59,7 @@ export default class AV {
 
   _getVideoUrls = async pageUrls => {
     const videoUrls = [];
+    debug(`pageUrls length: ${pageUrls.length}`);
 
     await pMap(
       pageUrls,
@@ -86,7 +90,7 @@ export default class AV {
     const videoUrls = await this._getVideoUrls(pageUrls);
 
     // remove duplicate url
-    let filterUrls = Array.from(new Set(videoUrls));
+    let filterUrls = [...new Set(videoUrls)];
     filterUrls = this._filterVideoUrls(filterUrls);
     const videos = await this._getVideosCode(filterUrls);
 

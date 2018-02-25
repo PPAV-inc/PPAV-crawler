@@ -48,7 +48,8 @@
     "testonly": "NODE_ENV=test jest",
     "testonly:cov": "jest --coverage --runInBand --forceExit --no-cache",
     "testonly:watch": "jest --watch",
-    "crawler:video": "node ./bin/videoCrawler",
+    "crawler:dev": "node ./bin/videoCrawler",
+    "crawler:video": "NODE_ENV=production node ./bin/videoCrawler",
     "crawler:jav": "node ./bin/javCrawler",
     "precommit": "lint-staged"
   },
