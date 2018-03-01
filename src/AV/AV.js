@@ -41,17 +41,22 @@ export default class AV {
     const videosCode = [];
 
     for (let url of urls) {
-      const target = await this._getCodeString(url);
-      const codeArr = this._getCodes(target);
+      try {
+        const target = await this._getCodeString(url);
+        const codeArr = this._getCodes(target);
 
-      url = url.includes(this.baseURL) ? url : `${this.baseURL}${url}`;
-      codeArr.forEach(code => {
-        videosCode.push({
-          code: code.toUpperCase(),
-          url,
-          source: this.source,
+        url = url.includes(this.baseURL) ? url : `${this.baseURL}${url}`;
+        codeArr.forEach(code => {
+          videosCode.push({
+            code: code.toUpperCase(),
+            url,
+            source: this.source,
+          });
         });
-      });
+      } catch (err) {
+        console.error(`error message: ${err.message}`);
+        console.error(`error happens at _getVideosCode, get ${url}`);
+      }
     }
 
     return videosCode;
