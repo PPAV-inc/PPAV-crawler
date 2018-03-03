@@ -9,7 +9,7 @@ const database = require('../src/database').default;
 
 const debug = _debug('crawler');
 
-async function main() {
+(async () => {
   const text = fs.readFileSync('./video.json');
   const videos = JSON.parse(text);
   const jav = new JavLib();
@@ -90,6 +90,6 @@ async function main() {
 
   console.log(`find video url count: ${foundInfos.length}`);
   console.log(`skip video url count: ${skipInfos.length}`);
-}
 
-main();
+  await db.close();
+})();
