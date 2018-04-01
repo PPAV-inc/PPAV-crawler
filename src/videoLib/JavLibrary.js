@@ -1,3 +1,5 @@
+import { URL } from 'url';
+
 import axios from 'axios';
 
 import getCheerio from '../getCheerio';
@@ -56,7 +58,10 @@ export default class JavLibrary {
       const arr = $(elem).text().split(' ').filter(e => e);
       models.push(...arr);
     });
-    const imgUrl = $('link[rel=image_src]').attr('href');
+    const { href: imgUrl } = new URL(
+      $('#video_jacket_img').attr('src'),
+      this.baseURL
+    );
     const publishedAt = new Date($('#video_date td.text').text());
     const length = Number($('#video_length span.text').text());
     const score = Number($('#video_review span.score').text().slice(1, -1));
