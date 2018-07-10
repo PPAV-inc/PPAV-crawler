@@ -42,10 +42,6 @@ jobs:
           command: |
             yarn config set cache-folder .yarn-cache
             yarn
-      - run:
-          name: Copy config file
-          command: |
-            cp -r ./config.sample.json ./config.json
       - save_cache:
           key: ppav-crawler-cache-{{checksum "yarn.lock"}}
           paths:
