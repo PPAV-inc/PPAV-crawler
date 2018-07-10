@@ -36,8 +36,8 @@ jspm_packages
 # Optional REPL history
 .node_repl_history
 
-# Ignore config.json
-config.json
+# Ignore .env
+.env
 
 # Ignore /lib
 lib
