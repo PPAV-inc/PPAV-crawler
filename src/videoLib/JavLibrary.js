@@ -14,11 +14,18 @@ export default class JavLibrary {
   }
 
   _isSearchPage = data => /識別碼搜尋結果/.test(data);
+
   _hasResult = data => !/(搜尋沒有結果|搜尋字串是無效)/.test(data);
 
   _getVideoUrl = (code, $) => {
     const url = $('div.video')
-      .filter((i, elem) => $(elem).children().find('div.id').text() === code)
+      .filter(
+        (i, elem) =>
+          $(elem)
+            .children()
+            .find('div.id')
+            .text() === code
+      )
       .find('a')
       .attr('href');
 
@@ -55,7 +62,10 @@ export default class JavLibrary {
     const title = $('#video_title h3.post-title.text').text();
     const models = [];
     $('#video_cast span.cast').each((i, elem) => {
-      const arr = $(elem).text().split(' ').filter(e => e);
+      const arr = $(elem)
+        .text()
+        .split(' ')
+        .filter(e => e);
       models.push(...arr);
     });
     const { href: imgUrl } = new URL(
@@ -64,7 +74,11 @@ export default class JavLibrary {
     );
     const publishedAt = new Date($('#video_date td.text').text());
     const length = Number($('#video_length span.text').text());
-    const score = Number($('#video_review span.score').text().slice(1, -1));
+    const score = Number(
+      $('#video_review span.score')
+        .text()
+        .slice(1, -1)
+    );
     const tags = [];
     $('#video_genres span.genre').each((i, elem) => {
       tags.push($(elem).text());

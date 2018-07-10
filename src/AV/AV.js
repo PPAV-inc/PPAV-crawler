@@ -23,11 +23,11 @@ export default class AV {
     this._baseURL = url;
   }
 
-  /* eslint-disable no-unused-vars*/
+  /* eslint-disable no-unused-vars */
   _getAllPagesUrls = query => {
     throw new Error('need to implement getAllPagesUrls');
   };
-  /* eslint-enable no-unused-vars*/
+  /* eslint-enable no-unused-vars */
 
   _getCodeString = url => url;
 

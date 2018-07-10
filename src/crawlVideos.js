@@ -49,7 +49,10 @@ const main = async () => {
 
   const db = await database();
 
-  const existedVideos = await db.collection('sources').find().toArray();
+  const existedVideos = await db
+    .collection('sources')
+    .find()
+    .toArray();
   const existedVideosSet = new Set(existedVideos.map(video => video.url));
 
   const newAVSources = [
