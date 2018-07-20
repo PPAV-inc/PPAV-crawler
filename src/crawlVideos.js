@@ -9,7 +9,6 @@ import {
   MyAVSuper,
   Avgle,
   JavMost,
-  // Iavtv,
   Yahan,
   JavForMe,
   Jav777,
@@ -33,9 +32,12 @@ async function getVideosInfos(videos) {
         foundInfos.push({ ...info, ...video, updated_at: now });
         debug(`find url: ${video.url}, code: ${video.code}`);
       } catch (err) {
-        // will get error if code not found
-        skipInfos.push({ ...video, updated_at: now });
-        debug(err.message);
+        if (err.errorType === undefined) {
+          // will get error if code not found
+          skipInfos.push({ ...video, updated_at: now });
+        }
+
+        debug(err);
       }
     },
     { concurrency: 20 }
@@ -60,7 +62,6 @@ const main = async () => {
     new MyAVSuper(),
     new Avgle(),
     new JavMost(),
-    // new Iavtv(),
     new Yahan(),
     new JavForMe(),
     new Jav777(),
@@ -72,8 +73,7 @@ const main = async () => {
       let videos = await av.getVideos();
 
       videos = videos.filter(video => !existedVideosSet.has(video.url));
-      debug(`search from av: ${av.source}`);
-      debug(`videos length: ${videos.length}`);
+      debug(`source: ${av.source}, videos length: ${videos.length}`);
 
       const { foundInfos, skipInfos } = await getVideosInfos(videos);
 

@@ -32,7 +32,7 @@ export default class Avgle extends AV {
         if (match && +match[1] > maxPageNum) maxPageNum = +match[1];
       });
 
-      for (let i = 1, len = maxPageNum; i <= len; i += 1) {
+      for (let i = 1, len = maxPageNum / 100; i <= len; i += 1) {
         searchUrls.add(`/videos?o=mr&page=${i}`);
       }
     } catch (err) {

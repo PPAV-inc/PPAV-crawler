@@ -33,7 +33,7 @@ export default class Yahan extends AV {
         if (match && +match[1] > maxPageNum) maxPageNum = +match[1];
       });
 
-      for (let i = 1, len = maxPageNum; i <= len; i += 1) {
+      for (let i = 1, len = maxPageNum / 10; i <= len; i += 1) {
         searchUrls.add(`/bbs/board.php?bo_table=javc&page=${i}`);
       }
     } catch (err) {

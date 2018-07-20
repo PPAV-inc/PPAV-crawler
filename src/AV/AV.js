@@ -64,7 +64,7 @@ export default class AV {
 
   _getVideoUrls = async pageUrls => {
     const videoUrls = [];
-    debug(`pageUrls length: ${pageUrls.length}`);
+    debug(`${this.source} pageUrls length: ${pageUrls.length}`);
 
     await pMap(
       pageUrls,
