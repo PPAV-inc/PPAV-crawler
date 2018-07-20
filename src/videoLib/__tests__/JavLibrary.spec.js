@@ -56,7 +56,7 @@ it('#_getVideoUrl', () => {
   expect(jav._getVideoUrl(code, searchPage$)).toBe(sourceUrl);
 });
 
-describe('#_getCodePage', () => {
+describe.skip('#_getCodePage', () => {
   it("should return sourcePage's cheerio even if get searchPage first", async () => {
     const { jav, searchPage, sourcePage, sourcePage$ } = setup();
 
@@ -122,7 +122,7 @@ describe('#getCodeInfo', () => {
     expect(infos.tags).toBeInstanceOf(Array);
   });
 
-  it('should throw error infos if sourcePage is not same as code', async () => {
+  it.skip('should throw error infos if sourcePage is not same as code', async () => {
     const { jav, otherSourcePage$ } = setup();
 
     const code = 'SNIS-001';

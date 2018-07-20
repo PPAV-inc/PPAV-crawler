@@ -1,16 +1,25 @@
 import { URL } from 'url';
 
-import axios from 'axios';
+import cloudscraper from 'cloudscraper';
+import thenify from 'thenify';
 
 import getCheerio from '../getCheerio';
+
+const request = thenify(cloudscraper.request);
 
 export default class JavLibrary {
   constructor() {
     this.baseURL = 'http://www.javlibrary.com/tw';
-    this.http = axios.create({
-      baseURL: this.baseURL,
-      headers: { Cookie: 'over18=18' },
-    });
+    this.headers = { Cookie: 'over18=18' };
+    this.request = async url => {
+      const [, data] = await request({
+        method: 'GET',
+        url: `${this.baseURL}${url}`,
+        headers: this.headers,
+      });
+
+      return data;
+    };
   }
 
   _isSearchPage = data => /識別碼搜尋結果/.test(data);
@@ -37,7 +46,7 @@ export default class JavLibrary {
   };
 
   _getCodePage = async code => {
-    const { data } = await this.http.get(`/vl_searchbyid.php?keyword=${code}`);
+    const data = await this.request(`/vl_searchbyid.php?keyword=${code}`);
 
     if (!this._hasResult(data)) {
       throw new Error(`code: ${code}, video not found`);
@@ -46,9 +55,9 @@ export default class JavLibrary {
     let $ = getCheerio(data);
     if (this._isSearchPage(data)) {
       const url = this._getVideoUrl(code, $);
-      const response = await this.http.get(url);
+      const _data = await this.request(url);
 
-      $ = getCheerio(response.data);
+      $ = getCheerio(_data);
     }
 
     return $;
