@@ -33,7 +33,7 @@ export default class JavMost extends AV {
         if (match && +match[1] > maxPageNum) maxPageNum = +match[1];
       });
 
-      for (let i = 1, len = maxPageNum; i <= len; i += 1) {
+      for (let i = 1, len = maxPageNum / 50; i <= len; i += 1) {
         searchUrls.add(`/category/all/page/${i}`);
       }
     } catch (err) {
