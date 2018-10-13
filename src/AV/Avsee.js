@@ -5,11 +5,11 @@ import AV from './AV';
 import getCheerio from '../getCheerio';
 import retryAxios from '../utils/retryAxios';
 
-export default class Yahan extends AV {
+export default class Avsee extends AV {
   constructor() {
     super();
-    this.source = 'yahan';
-    this.baseURL = 'https://yahan.tv';
+    this.source = 'avsee';
+    this.baseURL = 'https://avsee.tv';
     this.http = axios.create({
       baseURL: this.baseURL,
       timeout: 10000,
