@@ -9,7 +9,7 @@ import {
   MyAVSuper,
   Avgle,
   JavMost,
-  Yahan,
+  Avsee,
   JavForMe,
   Jav777,
 } from './AV';
@@ -62,7 +62,7 @@ const main = async () => {
     new MyAVSuper(),
     new Avgle(),
     new JavMost(),
-    new Yahan(),
+    new Avsee(),
     new JavForMe(),
     new Jav777(),
   ];
