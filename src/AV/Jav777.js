@@ -20,7 +20,7 @@ export default class Jav777 extends AV {
     let maxPageNum = 1;
 
     try {
-      // Page 1 dont have total page number
+      // Page 2 can get total page number
       const { data } = await retryAxios(() => this.http.get('/page/2'));
 
       const $ = getCheerio(data);

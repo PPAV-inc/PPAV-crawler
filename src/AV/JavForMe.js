@@ -8,7 +8,7 @@ export default class JavForMe extends AV {
   constructor() {
     super();
     this.source = 'javforme';
-    this.baseURL = 'http://javfor.me';
+    this.baseURL = 'https://javfor.me';
     this.http = axios.create({
       baseURL: this.baseURL,
       timeout: 10000,
@@ -20,18 +20,31 @@ export default class JavForMe extends AV {
     let maxPageNum = 1;
 
     try {
-      const { data } = await retryAxios(() => this.http.get('/'));
+      while (true) {
+        // eslint-disable-next-line
+        const { data } = await retryAxios(() =>
+          this.http.get(`/list/new/${maxPageNum}.html`)
+        );
 
-      const $ = getCheerio(data);
+        const $ = getCheerio(data);
 
-      $('a').each((i, e) => {
-        const url = $(e).attr('href') || '';
-        const match = url.match(/.*\/page\/(\d+)/);
-        if (match && +match[1] > maxPageNum) maxPageNum = +match[1];
-      });
+        const max = maxPageNum;
+        // eslint-disable-next-line
+        $('a').each((i, e) => {
+          const url = $(e).attr('href') || '';
+          const match = url.match(/.*\/list\/new\/(\d+).html/);
+          if (match && +match[1] > maxPageNum) {
+            maxPageNum = +match[1];
+          }
+        });
 
-      for (let i = 1, len = maxPageNum / 10; i <= len; i += 1) {
-        searchUrls.add(`/page/${i}`);
+        if (max === maxPageNum) {
+          break;
+        }
+      }
+
+      for (let i = 1, len = maxPageNum / 1; i <= len; i += 1) {
+        searchUrls.add(`/list/new/${i}.html`);
       }
     } catch (err) {
       console.error(`err message: ${err.message}`);
