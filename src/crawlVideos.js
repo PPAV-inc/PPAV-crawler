@@ -83,6 +83,7 @@ const main = async () => {
 
       console.log('================================');
       console.log(`from: ${av.source}`);
+      console.log(`total videos: ${videos.length}`);
       console.log(`find video url count: ${foundInfos.length}`);
       console.log(`skip video url count: ${skipInfos.length}`);
       console.log('================================');
