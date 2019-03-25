@@ -13,14 +13,13 @@
     "babel-polyfill": "^6.26.0",
     "babel-register": "^6.26.0",
     "cheerio": "^0.22.0",
-    "cloudscraper": "^1.5.0",
+    "cloudscraper": "^3.3.0",
     "date-fns": "^1.29.0",
     "debug": "^3.1.0",
     "delay": "^3.0.0",
     "dotenv": "^6.0.0",
     "mongodb": "^2.2.27",
-    "p-map": "^1.2.0",
-    "thenify": "^3.3.0"
+    "p-map": "^1.2.0"
   },
   "devDependencies": {
     "axios-mock-adapter": "^1.15.0",

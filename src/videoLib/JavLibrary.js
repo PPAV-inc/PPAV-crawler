@@ -1,18 +1,15 @@
 import { URL } from 'url';
 
 import cloudscraper from 'cloudscraper';
-import thenify from 'thenify';
 
 import getCheerio from '../getCheerio';
-
-const request = thenify(cloudscraper.request);
 
 export default class JavLibrary {
   constructor() {
     this.baseURL = 'http://www.javlibrary.com/tw';
     this.headers = { Cookie: 'over18=18' };
     this.request = async url => {
-      const [, data] = await request({
+      const [, data] = await cloudscraper({
         method: 'GET',
         url: `${this.baseURL}${url}`,
         headers: this.headers,
