@@ -1593,10 +1593,10 @@ cliui@^4.0.0:
     strip-ansi "^4.0.0"
     wrap-ansi "^2.0.0"
 
-cloudscraper@^3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/cloudscraper/-/cloudscraper-3.3.0.tgz#0f512b2b29f71e0895029bdfc81894433597a870"
-  integrity sha512-WbRNxAz+x21Vf08Im3g7jsevekx7svW0bwG1IVgL3CFnESL8qLM2dpjg6jC/X8krMB/WDVGGv/3Fd68+cI14Xw==
+cloudscraper@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/cloudscraper/-/cloudscraper-3.5.0.tgz#f035781365bd88d176cb66bbd80ee41eba768766"
+  integrity sha512-iXrrAFSZbASi2FMKO5+ZVWMEY+POImtO0AwPBILyKExEjx72aStPtBhQmFbN4gUWKdNicYItqPO4/tFx85mCMw==
   dependencies:
     request "^2.88.0"
     request-promise "^4.2.4"
