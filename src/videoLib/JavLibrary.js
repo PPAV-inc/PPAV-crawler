@@ -9,7 +9,7 @@ export default class JavLibrary {
     this.baseURL = 'http://www.javlibrary.com/tw';
     this.headers = { Cookie: 'over18=18' };
     this.request = async url => {
-      const [, data] = await cloudscraper({
+      const data = await cloudscraper({
         method: 'GET',
         url: `${this.baseURL}${url}`,
         headers: this.headers,
