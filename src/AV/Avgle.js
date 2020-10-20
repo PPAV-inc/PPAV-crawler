@@ -29,7 +29,10 @@ export default class Avgle extends AV {
       $('a').each((i, e) => {
         const url = $(e).attr('href') || '';
         const match = url.match(/.*\/videos\?o=mr&page=(\d+)/);
-        if (match && +match[1] > maxPageNum) maxPageNum = +match[1];
+
+        if (match && +match[1] > maxPageNum) {
+          maxPageNum = +match[1];
+        }
       });
 
       for (let i = 1, len = maxPageNum / 100; i <= len; i += 1) {

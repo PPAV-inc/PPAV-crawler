@@ -1,5 +1,6 @@
 import pMap from 'p-map';
 import _debug from 'debug';
+import randomUseragent from 'random-useragent';
 
 import getCheerio from '../getCheerio';
 import retryAxios from '../utils/retryAxios';
@@ -71,8 +72,13 @@ export default class AV {
       async pageUrl => {
         try {
           const { data } = await retryAxios(() =>
-            this.http.get(encodeURI(pageUrl))
+            this.http.get(encodeURI(pageUrl), {
+              headers: {
+                'User-Agent': randomUseragent.getRandom(),
+              },
+            })
           );
+
           const $ = getCheerio(data);
 
           $('a').each((i, e) => {

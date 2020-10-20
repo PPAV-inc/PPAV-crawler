@@ -8,25 +8,30 @@ export default class Jav777 extends AV {
   constructor() {
     super();
     this.source = 'jav777';
-    this.baseURL = 'http://www.jav777.cc';
+    this.baseURL = 'http://www.jav777.xyz';
     this.http = axios.create({
       baseURL: this.baseURL,
       timeout: 10000,
     });
   }
 
+  _getCodes = target =>
+    []
+      .concat(target.match(/\w+-\d+/g), target.match(/\w+-\w+-\d+/g))
+      .filter(code => !!code)
+      .map(code => code.replace(/^(hd-|fhd-)/, ''));
+
   _getAllPagesUrls = async () => {
     const searchUrls = new Set();
     let maxPageNum = 1;
 
     try {
-      // Page 2 can get total page number
-      const { data } = await retryAxios(() => this.http.get('/page/2'));
+      const { data } = await retryAxios(() => this.http.get('/page/1'));
 
       const $ = getCheerio(data);
 
-      const PageStr = $('div.page-title.section-inner h5').text();
-      for (const num of PageStr.match(/\d+/g)) {
+      const pageStr = $('div.page-title.section-inner h5').text();
+      for (const num of pageStr.match(/\d+/g)) {
         if (+num > maxPageNum) {
           maxPageNum = +num;
         }

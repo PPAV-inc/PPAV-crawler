@@ -19,7 +19,8 @@
     "delay": "^4.1.0",
     "dotenv": "^7.0.0",
     "mongodb": "^2.2.27",
-    "p-map": "^2.0.0"
+    "p-map": "^2.0.0",
+    "random-useragent": "^0.5.0"
   },
   "devDependencies": {
     "axios-mock-adapter": "^1.16.0",
