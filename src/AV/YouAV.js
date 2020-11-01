@@ -25,10 +25,12 @@ export default class YouAV extends AV {
       );
       const $ = getCheerio(data);
 
-      $('a').each((i, e) => {
+      $('page-link').each((i, e) => {
         const url = $(e).attr('href');
         const match = url.match(/.*\/videos\?page=(\d+)/);
-        if (match && +match[1] > maxPageNum) maxPageNum = +match[1];
+        if (match && +match[1] > maxPageNum) {
+          maxPageNum = +match[1];
+        }
       });
 
       for (let i = 1, len = maxPageNum; i <= len; i += 1) {

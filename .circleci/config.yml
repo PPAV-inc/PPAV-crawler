@@ -1,11 +1,11 @@
-version: 2
+version: 2.1
 
 # Reference variables.
 references:
   docker_default: &docker_default
     working_directory: /tmp/app
     docker:
-      - image: node:8
+      - image: circleci/node:12
     environment:
       TZ: "/usr/share/zoneinfo/Asia/Taipei"
   move_to_workspace: &move_to_workspace

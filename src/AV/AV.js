@@ -46,7 +46,9 @@ export default class AV {
         const target = await this._getCodeString(url);
         const codeArr = this._getCodes(target);
 
-        url = url.includes(this.baseURL) ? url : `${this.baseURL}${url}`;
+        const { hostname } = new URL(this.baseURL);
+        url = url.includes(hostname) ? url : `${this.baseURL}${url}`;
+
         codeArr.forEach(code => {
           videosCode.push({
             code: code.toUpperCase(),
