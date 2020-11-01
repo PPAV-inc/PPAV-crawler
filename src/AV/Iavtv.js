@@ -44,7 +44,7 @@ export default class Iavtv extends AV {
     return searchUrls;
   };
 
-  _getCodeString = async url => {
+  _getCodeString = async (url) => {
     const { data } = await retryAxios(() => this.http.get(url));
 
     const $ = getCheerio(data);
@@ -53,9 +53,9 @@ export default class Iavtv extends AV {
     return target;
   };
 
-  _filterVideoUrls = urls => {
+  _filterVideoUrls = (urls) => {
     // filter not video url
-    const filterUrls = urls.filter(url => /player\.php\?uuid.*/.test(url));
+    const filterUrls = urls.filter((url) => /player\.php\?uuid.*/.test(url));
 
     return filterUrls;
   };

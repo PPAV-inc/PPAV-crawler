@@ -11,10 +11,10 @@ export default class IndexAV {
     });
   }
 
-  searchCode = code =>
+  searchCode = (code) =>
     retryAxios(() => this.http.get(`/search?keyword=${code}`));
 
-  getCodeInfo = async code => {
+  getCodeInfo = async (code) => {
     let $;
     try {
       const { data } = await this.searchCode(code);
@@ -43,9 +43,7 @@ export default class IndexAV {
       .children()
       .each((idx, elem) => {
         if ($(elem).hasClass('col-sm-7')) {
-          title = $(elem)
-            .find('span.video_title')
-            .text();
+          title = $(elem).find('span.video_title').text();
 
           models = $(elem)
             .children()
@@ -54,9 +52,7 @@ export default class IndexAV {
             .map((i, e) => $(e).text())
             .get();
 
-          imgUrl = $(elem)
-            .find('span.preview_btn')
-            .attr('rel');
+          imgUrl = $(elem).find('span.preview_btn').attr('rel');
         }
       });
 

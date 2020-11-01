@@ -44,7 +44,7 @@ export default class Avsee extends AV {
     return searchUrls;
   };
 
-  _getCodeString = async url => {
+  _getCodeString = async (url) => {
     const { data } = await retryAxios(() => this.http.get(url));
 
     const $ = getCheerio(data);
@@ -53,10 +53,10 @@ export default class Avsee extends AV {
     return target;
   };
 
-  _filterVideoUrls = urls => {
+  _filterVideoUrls = (urls) => {
     const filterUrls = urls
-      .filter(url => /bo_table=javc&wr_id=\d+&page=\d+/.test(url))
-      .map(url => {
+      .filter((url) => /bo_table=javc&wr_id=\d+&page=\d+/.test(url))
+      .map((url) => {
         const urlWithoutPage = new URL(url);
         urlWithoutPage.searchParams.delete('page');
 

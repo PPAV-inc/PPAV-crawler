@@ -44,9 +44,9 @@ export default class JavMost extends AV {
     return searchUrls;
   };
 
-  _filterVideoUrls = urls => {
+  _filterVideoUrls = (urls) => {
     // filter not video url
-    const filterUrls = urls.filter(url => !/tag/.test(url));
+    const filterUrls = urls.filter((url) => !/tag/.test(url));
     return filterUrls;
   };
 }

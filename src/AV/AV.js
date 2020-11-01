@@ -25,20 +25,20 @@ export default class AV {
   }
 
   /* eslint-disable no-unused-vars */
-  _getAllPagesUrls = query => {
+  _getAllPagesUrls = (query) => {
     throw new Error('need to implement getAllPagesUrls');
   };
   /* eslint-enable no-unused-vars */
 
-  _getCodeString = url => url;
+  _getCodeString = (url) => url;
 
-  _getCodes = target =>
+  _getCodes = (target) =>
     []
       .concat(target.match(/\w+-\d+/g), target.match(/\w+-\w+-\d+/g))
       // filter not match
-      .filter(code => !!code);
+      .filter((code) => !!code);
 
-  _getVideosCode = async urls => {
+  _getVideosCode = async (urls) => {
     const videosCode = [];
 
     for (let url of urls) {
@@ -49,7 +49,7 @@ export default class AV {
         const { hostname } = new URL(this.baseURL);
         url = url.includes(hostname) ? url : `${this.baseURL}${url}`;
 
-        codeArr.forEach(code => {
+        codeArr.forEach((code) => {
           videosCode.push({
             code: code.toUpperCase(),
             url,
@@ -65,13 +65,13 @@ export default class AV {
     return videosCode;
   };
 
-  _getVideoUrls = async pageUrls => {
+  _getVideoUrls = async (pageUrls) => {
     const videoUrls = [];
     debug(`${this.source} pageUrls length: ${pageUrls.length}`);
 
     await pMap(
       pageUrls,
-      async pageUrl => {
+      async (pageUrl) => {
         try {
           const { data } = await retryAxios(() =>
             this.http.get(encodeURI(pageUrl), {
@@ -110,9 +110,9 @@ export default class AV {
     return videos;
   };
 
-  _filterVideoUrls = urls => {
+  _filterVideoUrls = (urls) => {
     // filter not video url
-    const filterUrls = urls.filter(url => !/(search_query|\/\?s=)/.test(url));
+    const filterUrls = urls.filter((url) => !/(search_query|\/\?s=)/.test(url));
     return filterUrls;
   };
 }

@@ -4,7 +4,7 @@ const updateInfos = async (db, foundInfos, skipInfos) => {
   // updateVideos
   await pMap(
     foundInfos,
-    async info => {
+    async (info) => {
       const result = await db
         .collection('videos')
         .findOne({ code: info.id, 'videos.source': info.source });
@@ -45,7 +45,7 @@ const updateInfos = async (db, foundInfos, skipInfos) => {
   // updateSources
   await pMap(
     foundInfos,
-    info =>
+    (info) =>
       db
         .collection('sources')
         .updateOne(
@@ -58,7 +58,7 @@ const updateInfos = async (db, foundInfos, skipInfos) => {
 
   await pMap(
     skipInfos,
-    info =>
+    (info) =>
       db.collection('sources').updateOne(
         { url: info.url },
         {

@@ -25,7 +25,7 @@ async function getVideosInfos(videos) {
 
   await pMap(
     videos,
-    async video => {
+    async (video) => {
       try {
         const info = await jav.getCodeInfos(video.code);
 
@@ -51,11 +51,8 @@ const main = async () => {
 
   const db = await database();
 
-  const existedVideos = await db
-    .collection('sources')
-    .find()
-    .toArray();
-  const existedVideosSet = new Set(existedVideos.map(video => video.url));
+  const existedVideos = await db.collection('sources').find().toArray();
+  const existedVideosSet = new Set(existedVideos.map((video) => video.url));
 
   const newAVSources = [
     new YouAV(),
@@ -69,10 +66,10 @@ const main = async () => {
 
   await pMap(
     newAVSources,
-    async av => {
+    async (av) => {
       let videos = await av.getVideos();
 
-      videos = videos.filter(video => !existedVideosSet.has(video.url));
+      videos = videos.filter((video) => !existedVideosSet.has(video.url));
       debug(`source: ${av.source}, videos length: ${videos.length}`);
 
       const { foundInfos, skipInfos } = await getVideosInfos(videos);

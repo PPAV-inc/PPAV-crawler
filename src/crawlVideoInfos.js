@@ -14,7 +14,7 @@ async function main() {
 
   await pMap(
     videos,
-    async video => {
+    async (video) => {
       try {
         const videoInfos = await jav.getCodeInfos(video.code);
         console.log(
