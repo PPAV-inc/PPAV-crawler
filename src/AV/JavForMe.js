@@ -54,7 +54,7 @@ export default class JavForMe extends AV {
     return searchUrls;
   };
 
-  _getCodeString = async url => {
+  _getCodeString = async (url) => {
     const { data } = await retryAxios(() => this.http.get(url));
 
     const $ = getCheerio(data);
@@ -63,11 +63,11 @@ export default class JavForMe extends AV {
     return target;
   };
 
-  _getCodes = target => {
+  _getCodes = (target) => {
     const _code = target.match(/\[.*?(\w+\d+)\]/);
 
     return _code ? [_code[1]] : [];
   };
 
-  _filterVideoUrls = urls => urls.filter(url => /.*\/.*.html$/.test(url));
+  _filterVideoUrls = (urls) => urls.filter((url) => /.*\/.*.html$/.test(url));
 }

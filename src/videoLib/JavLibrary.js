@@ -8,7 +8,7 @@ export default class JavLibrary {
   constructor() {
     this.baseURL = 'http://www.javlibrary.com/tw';
     this.headers = { Cookie: 'over18=18' };
-    this.request = async url => {
+    this.request = async (url) => {
       const data = await cloudscraper({
         method: 'GET',
         url: `${this.baseURL}${url}`,
@@ -19,19 +19,13 @@ export default class JavLibrary {
     };
   }
 
-  _isSearchPage = data => /識別碼搜尋結果/.test(data);
+  _isSearchPage = (data) => /識別碼搜尋結果/.test(data);
 
-  _hasResult = data => !/(搜尋沒有結果|搜尋字串是無效)/.test(data);
+  _hasResult = (data) => !/(搜尋沒有結果|搜尋字串是無效)/.test(data);
 
   _getVideoUrl = (code, $) => {
     const url = $('div.video')
-      .filter(
-        (i, elem) =>
-          $(elem)
-            .children()
-            .find('div.id')
-            .text() === code
-      )
+      .filter((i, elem) => $(elem).children().find('div.id').text() === code)
       .find('a')
       .attr('href');
 
@@ -42,7 +36,7 @@ export default class JavLibrary {
     return url.slice(1);
   };
 
-  _getCodePage = async code => {
+  _getCodePage = async (code) => {
     const data = await this.request(`/vl_searchbyid.php?keyword=${code}`);
 
     if (!this._hasResult(data)) {
@@ -60,7 +54,7 @@ export default class JavLibrary {
     return $;
   };
 
-  getCodeInfos = async code => {
+  getCodeInfos = async (code) => {
     const $ = await this._getCodePage(code);
 
     const id = $('#video_id td.text').text();
@@ -71,7 +65,7 @@ export default class JavLibrary {
       const arr = $(elem)
         .text()
         .split(' ')
-        .filter(e => e);
+        .filter((e) => e);
       models.push(...arr);
     });
     const { href: imgUrl } = new URL(
@@ -80,11 +74,7 @@ export default class JavLibrary {
     );
     const publishedAt = new Date($('#video_date td.text').text());
     const length = Number($('#video_length span.text').text());
-    const score = Number(
-      $('#video_review span.score')
-        .text()
-        .slice(1, -1)
-    );
+    const score = Number($('#video_review span.score').text().slice(1, -1));
     const tags = [];
     $('#video_genres span.genre').each((i, elem) => {
       tags.push($(elem).text());

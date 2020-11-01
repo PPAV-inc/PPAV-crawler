@@ -15,11 +15,11 @@ export default class Jav777 extends AV {
     });
   }
 
-  _getCodes = target =>
+  _getCodes = (target) =>
     []
       .concat(target.match(/\w+-\d+/g), target.match(/\w+-\w+-\d+/g))
-      .filter(code => !!code)
-      .map(code => code.replace(/^(hd-|fhd-)/, ''));
+      .filter((code) => !!code)
+      .map((code) => code.replace(/^(hd-|fhd-)/, ''));
 
   _getAllPagesUrls = async () => {
     const searchUrls = new Set();
@@ -48,9 +48,9 @@ export default class Jav777 extends AV {
     return [...searchUrls];
   };
 
-  _filterVideoUrls = urls => {
+  _filterVideoUrls = (urls) => {
     // filter not video url
-    const filterUrls = urls.filter(url => /\.html/.test(url));
+    const filterUrls = urls.filter((url) => /\.html/.test(url));
 
     return filterUrls;
   };
