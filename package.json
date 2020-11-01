@@ -9,7 +9,7 @@
     "url": "https://github.com/PPAV-inc/PPAV-crawler.git"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "babel-polyfill": "^6.26.0",
     "babel-register": "^6.26.0",
     "cheerio": "^0.22.0",
