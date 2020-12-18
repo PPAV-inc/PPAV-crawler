@@ -1,5 +1,5 @@
 import pMap from 'p-map';
-import differenceInMinutes from 'date-fns/difference_in_minutes';
+import differenceInMinutes from 'date-fns/differenceInMinutes';
 import _debug from 'debug';
 
 import JavLib from './videoLib/JavLibrary';
