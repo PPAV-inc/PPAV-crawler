@@ -4,9 +4,11 @@ import cloudscraper from 'cloudscraper';
 
 import getCheerio from '../getCheerio';
 
+const { LANG = 'tw' } = process.env;
+
 export default class JavLibrary {
   constructor() {
-    this.baseURL = 'http://www.javlibrary.com/tw';
+    this.baseURL = `http://www.javlibrary.com/${LANG}`;
     this.headers = { Cookie: 'over18=18' };
     this.request = async (url) => {
       const data = await cloudscraper({
@@ -19,9 +21,12 @@ export default class JavLibrary {
     };
   }
 
-  _isSearchPage = (data) => /識別碼搜尋結果/.test(data);
+  _isSearchPage = (data) => /(識別碼搜尋結果|ID Search Result)/.test(data);
 
-  _hasResult = (data) => !/(搜尋沒有結果|搜尋字串是無效)/.test(data);
+  _hasResult = (data) =>
+    !/(搜尋沒有結果|搜尋字串是無效|Search returned no result|The search term you entered is invalid)/.test(
+      data
+    );
 
   _getVideoUrl = (code, $) => {
     const url = $('div.video')
